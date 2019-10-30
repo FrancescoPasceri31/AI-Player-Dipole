@@ -153,8 +153,8 @@ public class Scacchiera {
 
 								int AVANTI = 0;
 								String[] dir = { "AVANTI", "DIETRO" };
-								int direction = JOptionPane.showOptionDialog(null, "Quale giocatore sei?",
-										"Scegli colore", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+								int direction = JOptionPane.showOptionDialog(null, "Quale direzione vuoi?",
+										"Scegli direzione", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 										dir, dir[0]);
 								while (direction != 0 && direction != 1) {
 									direction = JOptionPane.showOptionDialog(null, "Quale direzione vuoi?",
@@ -199,6 +199,7 @@ public class Scacchiera {
 					 * Il metodo annulla le celle in cui posso andare se queste risultano essere
 					 * maggiori del mio stack
 					 */
+					
 					private char[] editMask(char[] maskTmp, int nPedineMosse, int miaCella) {
 						for (int k = 0; k < maskTmp.length; k++) {
 							if (maskTmp[k] == '0') {

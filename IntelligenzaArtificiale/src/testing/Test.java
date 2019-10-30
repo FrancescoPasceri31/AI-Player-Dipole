@@ -36,6 +36,8 @@ public class Test {
 		System.out.println();
 		System.out.println("Mosse");
 		stampaScacchiera((new Test()).zerosPosition(r));
+		
+		System.out.println(charToString(new char[] {'0','1'}));
 	}
 
 	public int[] onesPosition(long l) {
@@ -57,6 +59,14 @@ public class Test {
 		return onesPosition(~(l+(~x)));
 	}
 	
+	static String charToString(char[] c) {
+		String ret = "";
+		for(char k: c) {
+			ret+=k;
+		}
+		return ret;
+	}
+
 	public static void stampaScacchiera(int[] pos) {
 		int x = 0;
 		int y = 31;

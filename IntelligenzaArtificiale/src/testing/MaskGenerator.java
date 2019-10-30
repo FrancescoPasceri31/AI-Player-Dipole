@@ -61,7 +61,7 @@ public class MaskGenerator {
 			for (int k = 0; k < scacchiera.getRowNumber(); k++) {
 				for (int l = 0; l < scacchiera.getColumnNumber(); l++) {
 					if ((scacchiera.getCell(k, l).colore).equals("B")) {
-						if (k > i) { 	// riga avanti
+						if (k > i||((k==i)&l==j)) { 	// riga avanti
 							mask += "1";
 						} else {	// riga dietro
 							int offset = Math.abs(k - i);
@@ -81,7 +81,7 @@ public class MaskGenerator {
 			for (int k = 0; k < scacchiera.getRowNumber(); k++) {
 				for (int l = 0; l < scacchiera.getColumnNumber(); l++) {
 					if ((scacchiera.getCell(k, l).colore).equals("B")) {
-						if (k < i) {
+						if (k < i||((k==i)&l==j)) {
 							mask += "1";
 						} else {
 							int offset = Math.abs(k - i);
@@ -171,4 +171,5 @@ public class MaskGenerator {
 	public List<String> getIndietro_WHITE_MASK() {
 		return Indietro_WHITE_MASK;
 	}
+	
 }
