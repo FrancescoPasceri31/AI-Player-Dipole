@@ -39,10 +39,16 @@ public class Scacchiera {
 			}
 		}
 		MaskGenerator mg = new MaskGenerator(this);
+
+//		LocalDateTime time = LocalDateTime.now();
+//		System.out.println("inizio -> " + time.getSecond() + ":" + time.getNano());
+		long t = System.currentTimeMillis();
 		BLACK_MASK = mg.getBlackMask();
 		WHITE_MASK = mg.getWhiteMask();
 		Indietro_BLACK_MASK = mg.getIndietro_BLACK_MASK();
 		Indietro_WHITE_MASK = mg.getIndietro_WHITE_MASK();
+//		LocalDateTime timeEnd = LocalDateTime.now();
+//		System.out.println("fine -> " + timeEnd.getSecond() + ":" + time.getNano());
 	} // costruttore Scacchiera()
 
 	public Cella[][] getMatrix() {
@@ -196,10 +202,10 @@ public class Scacchiera {
 					private char[] editMask(char[] maskTmp, int nPedineMosse, int miaCella) {
 						for (int k = 0; k < maskTmp.length; k++) {
 							if (maskTmp[k] == '0') {
-								int differenzaRiga = Math.abs(miaCella / (matrix.length / 2) - k / (matrix.length / 2)); 
+								int differenzaRiga = Math.abs(miaCella / (matrix.length / 2) - k / (matrix.length / 2));
 								if (differenzaRiga > nPedineMosse) {
 									maskTmp[k] = '1';
-								}else if ( differenzaRiga == 0 && 2*Math.abs(miaCella - k) > nPedineMosse ) {
+								} else if (differenzaRiga == 0 && 2 * Math.abs(miaCella - k) > nPedineMosse) {
 									maskTmp[k] = '1';
 								}
 							}
