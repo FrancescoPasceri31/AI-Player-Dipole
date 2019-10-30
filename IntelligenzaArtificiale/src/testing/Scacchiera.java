@@ -21,7 +21,7 @@ public class Scacchiera {
 	private List<String> Indietro_BLACK_MASK = new ArrayList<String>();
 	private List<String> WHITE_MASK = new ArrayList<String>();
 	private List<String> Indietro_WHITE_MASK = new ArrayList<String>();
-	
+
 	private final String ALFABETO = "ABCDEFGH";
 	private final char[] COLORE_SCACCHIERA = { 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'B', 'W', 'B', 'W', 'B', 'W',
 			'B', 'W', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'W', 'B', 'W',
@@ -145,15 +145,34 @@ public class Scacchiera {
 								}
 								int nPedineMosse = Integer.valueOf(nPedine);
 
+								int AVANTI = 0;
+								String[] dir = { "AVANTI", "DIETRO" };
+								int direction = JOptionPane.showOptionDialog(null, "Quale giocatore sei?",
+										"Scegli colore", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+										dir, dir[0]);
+								while (direction != 0 && direction != 1) {
+									direction = JOptionPane.showOptionDialog(null, "Quale direzione vuoi?",
+											"Scegli direzione", JOptionPane.DEFAULT_OPTION,
+											JOptionPane.QUESTION_MESSAGE, null, dir, dir[0]);
+								}
+
 								char[] maskTmp;
-								if (choice == WHITE) { // scelto il bianco
-									maskTmp = WHITE_MASK.get(miaCella).toCharArray();
-								} else { // scelto il nero
-									maskTmp = BLACK_MASK.get(miaCella).toCharArray();
+								if (direction == AVANTI) { // mosse avanti
+									if (choice == WHITE) { // scelto il bianco
+										maskTmp = WHITE_MASK.get(miaCella).toCharArray();
+									} else { // scelto il nero
+										maskTmp = BLACK_MASK.get(miaCella).toCharArray();
+									}
+								} else { // mosse indietro
+									if (choice == WHITE) { // scelto il bianco
+										maskTmp = Indietro_WHITE_MASK.get(miaCella).toCharArray();
+									} else { // scelto il nero
+										maskTmp = Indietro_BLACK_MASK.get(miaCella).toCharArray();
+									}
 								}
 								maskTmp = editMask(maskTmp, nPedineMosse, miaCella);
-								System.out.println(
-										( choice!=WHITE ? "BLACK_" : "WHITE_")+"Mask " + miaCella + " con " + nPedineMosse + " pedine:\t " + String.valueOf(maskTmp) + "\n");
+								System.out.println((choice != WHITE ? "BLACK_" : "WHITE_") + "Mask " + miaCella
+										+ " con " + nPedineMosse + " pedine:\t " + String.valueOf(maskTmp) + "\n");
 								for (int c = 0; c < jbuttons.length; c++) {
 									if (((JButton) panel.getComponent(c)).getBackground().equals(Color.BLACK)) {
 										if (maskTmp[c / 2] == '0') {
@@ -180,7 +199,7 @@ public class Scacchiera {
 								if (Math.abs(miaCella / (matrix.length / 2) - k / (matrix.length / 2)) > nPedineMosse) {
 									maskTmp[k] = '1';
 								}
-								//if() {
+								// if() {
 							}
 						}
 						return maskTmp;
