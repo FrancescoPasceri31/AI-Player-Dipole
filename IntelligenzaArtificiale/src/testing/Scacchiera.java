@@ -39,8 +39,10 @@ public class Scacchiera {
 			}
 		}
 		MaskGenerator mg = new MaskGenerator(this);
-		BLACK_MASK = mg.getIndietro_BLACK_MASK();
+		BLACK_MASK = mg.getBlackMask();
 		WHITE_MASK = mg.getWhiteMask();
+		Indietro_BLACK_MASK = mg.getIndietro_BLACK_MASK();
+		Indietro_WHITE_MASK = mg.getIndietro_WHITE_MASK();
 	} // costruttore Scacchiera()
 
 	public Cella[][] getMatrix() {
