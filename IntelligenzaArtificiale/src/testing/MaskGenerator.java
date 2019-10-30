@@ -81,13 +81,13 @@ public class MaskGenerator {
 			for (int k = 0; k < scacchiera.getRowNumber(); k++) {
 				for (int l = 0; l < scacchiera.getColumnNumber(); l++) {
 					if ((scacchiera.getCell(k, l).colore).equals("B")) {
-						if (k >= i) {
+						if (k < i) {
 							mask += "1";
 						} else {
 							int offset = Math.abs(k - i);
 
 							if ((scacchiera.getCell(i, j).colore).equals("B")) {
-								if (l == j || l == j - offset || l == j + offset) {
+								if (l == j || l == j - offset || l == j + offset ||  k==i) {
 									mask += "0";
 								} else {
 									mask += "1";
@@ -98,7 +98,6 @@ public class MaskGenerator {
 				}
 			}
 		}
-
 		return mask;
 	}
 
