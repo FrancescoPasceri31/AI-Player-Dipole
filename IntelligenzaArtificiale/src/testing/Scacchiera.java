@@ -196,10 +196,12 @@ public class Scacchiera {
 					private char[] editMask(char[] maskTmp, int nPedineMosse, int miaCella) {
 						for (int k = 0; k < maskTmp.length; k++) {
 							if (maskTmp[k] == '0') {
-								if (Math.abs(miaCella / (matrix.length / 2) - k / (matrix.length / 2)) > nPedineMosse) {
+								int differenzaRiga = Math.abs(miaCella / (matrix.length / 2) - k / (matrix.length / 2)); 
+								if (differenzaRiga > nPedineMosse) {
+									maskTmp[k] = '1';
+								}else if ( differenzaRiga == 0 && 2*Math.abs(miaCella - k) > nPedineMosse ) {
 									maskTmp[k] = '1';
 								}
-								// if() {
 							}
 						}
 						return maskTmp;
