@@ -15,8 +15,9 @@ public class Test {
 		long t = System.currentTimeMillis();
 		
 		//long r =((c|m)&m)&(~e);
-		long r =m&(p|(~e));
-		//long r = y|(~e);
+		//long r =m&(p|(~e));
+		long r = y|(~e);
+		//long r = m&p;
 		
 		System.out.println((System.currentTimeMillis() - t) / 1000.0);
 		
