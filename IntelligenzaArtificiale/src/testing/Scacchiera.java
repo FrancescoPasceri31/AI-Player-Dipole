@@ -18,7 +18,10 @@ import javax.swing.border.LineBorder;
 public class Scacchiera {
 
 	private List<String> BLACK_MASK = new ArrayList<String>();
+	private List<String> Indietro_BLACK_MASK = new ArrayList<String>();
 	private List<String> WHITE_MASK = new ArrayList<String>();
+	private List<String> Indietro_WHITE_MASK = new ArrayList<String>();
+	
 	private final String ALFABETO = "ABCDEFGH";
 	private final char[] COLORE_SCACCHIERA = { 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'B', 'W', 'B', 'W', 'B', 'W',
 			'B', 'W', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'W', 'B', 'W',
