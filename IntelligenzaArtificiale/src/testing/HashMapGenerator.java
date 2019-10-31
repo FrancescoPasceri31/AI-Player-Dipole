@@ -1,15 +1,8 @@
 package testing;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 public class HashMapGenerator {
@@ -62,37 +55,52 @@ public class HashMapGenerator {
 //		System.out.println(posToCell.toString());
 //		System.out.println();
 //		System.out.println(cellToPos.toString());
-		
-		
+
 		Scacchiera s = new Scacchiera();
 		MaskGenerator mg = new MaskGenerator(s);
 		List<String> BLACK_MASK = mg.getBlackMask();
 		List<String> Indietro_BLACK_MASK = mg.getIndietro_BLACK_MASK();
 		List<String> WHITE_MASK = mg.getWhiteMask();
 		List<String> Indietro_WHITE_MASK = mg.getIndietro_WHITE_MASK();
-		
-		HashMap<Byte,Object[]> masksBlack = new HashMap();
+
+		HashMap<Byte, Object[]> masksBlack = new HashMap();
 
 		for (int i = 7; i >= 0; i--) {
 			for (int j = 3; j >= 0; j--) {
 				int x = (i * 4) + j;
-				HashMap<Byte,Long[]> m = new HashMap();
-				for(int z=1;z<=12;z++) {
-					m.put((byte)z,new Long[]{Long.parseUnsignedLong(charToString(editMask(BLACK_MASK.get(x).toCharArray(), z, x)),2),Long.parseUnsignedLong(charToString(editMask(Indietro_BLACK_MASK.get(x).toCharArray(), z, x)),2)});
+				HashMap<Byte, Long[]> m = new HashMap();
+				for (int z = 1; z <= 12; z++) {
+					m.put((byte) z, new Long[] {
+							Long.parseUnsignedLong(charToString(editMask(BLACK_MASK.get(x).toCharArray(), z, x)), 2),
+							Long.parseUnsignedLong(
+									charToString(editMask(Indietro_BLACK_MASK.get(x).toCharArray(), z, x)), 2) });
 				}
-				masksBlack.put((byte) (x), new Object[] {0,m});
+				masksBlack.put((byte) (x), new Object[] { 0, m }); // new Object { #pedine, hashMap<numPedine,Maschere>
+																	// }
 			}
 		}
-//		System.out.println();
-//		System.out.println(masksBlack);
-//		System.out.println();
-//		System.out.println(masksBlack.get(31));
 		System.out.println();
-		long m = Long.parseUnsignedLong(charToString(editMask(BLACK_MASK.get(9).toCharArray(), 1, 9)),2);
-		long p = Long.parseUnsignedLong(charToString(editMask(Indietro_BLACK_MASK.get(9).toCharArray(), 1, 9)),2);
-		long c = Long.parseUnsignedLong("00000001010000000000000001000000", 2); //centrato in 22
-		long e = Long.parseUnsignedLong("01001000100000000100000000000000", 2); //nemico
-		
+//		System.out.println(masksBlack);
+		System.out.print("{ ");
+		for (Entry<Byte, Object[]> e : masksBlack.entrySet()) {
+			System.out.print("'" + e.getKey() + "' : {\n");
+			Object[] o = e.getValue();
+			HashMap<Byte, Long[]> hTmp = (HashMap<Byte, Long[]>) o[1];
+			for (Entry<Byte, Long[]> e1 : hTmp.entrySet()) {
+				byte numPedine = e1.getKey();
+				Long[] maschere = e1.getValue();
+				System.out.print("\t\t'" + numPedine + "' : [ " + maschere[0] + " , " + maschere[1] + " ]\n");
+			}
+		}
+		System.out.println(" }");
+		System.out.println();
+//		System.out.println(masksBlack.get(31));
+//		System.out.println();
+		long m = Long.parseUnsignedLong(charToString(editMask(BLACK_MASK.get(9).toCharArray(), 1, 9)), 2);
+		long p = Long.parseUnsignedLong(charToString(editMask(Indietro_BLACK_MASK.get(9).toCharArray(), 1, 9)), 2);
+		long c = Long.parseUnsignedLong("00000001010000000000000001000000", 2); // centrato in 22
+		long e = Long.parseUnsignedLong("01001000100000000100000000000000", 2); // nemico
+
 		System.out.println("Nero");
 		Test.stampaScacchiera(Test.onesPosition(c));
 		System.out.println();
@@ -100,12 +108,10 @@ public class HashMapGenerator {
 		Test.stampaScacchiera(Test.onesPosition(e));
 		System.out.println();
 		System.out.println("Mosse");
-		Test.stampaScacchiera(Test.zerosPosition(m&(p|(~e))));
-		
-		
+		Test.stampaScacchiera(Test.zerosPosition(m & (p | (~e))));
 
 	}
-	
+
 	static char[] editMask(char[] maskTmp, int nPedineMosse, int miaCella) {
 		for (int k = 0; k < maskTmp.length; k++) {
 			if (maskTmp[k] == '0') {
@@ -119,11 +125,11 @@ public class HashMapGenerator {
 		}
 		return maskTmp;
 	}
-	
+
 	static String charToString(char[] c) {
 		String ret = "";
-		for(char k: c) {
-			ret+=k;
+		for (char k : c) {
+			ret += k;
 		}
 		return ret;
 	}
