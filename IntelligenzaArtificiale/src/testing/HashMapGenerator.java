@@ -104,6 +104,27 @@ public class HashMapGenerator {
 //		
 //		System.out.println(masksBlack);
 
+//		System.out.print("{ ");
+//		for (Entry<Byte, Object[]> e : masksBlack.entrySet()) {
+//			System.out.print("'" + e.getKey() + "' : {\n");
+//			Object[] o = e.getValue();
+//			HashMap<Byte, Long[]> hTmp = (HashMap<Byte, Long[]>) o[1];
+//			for (Entry<Byte, Long[]> e1 : hTmp.entrySet()) {
+//				byte numPedine = e1.getKey();
+//				Long[] maschere = e1.getValue();
+//				System.out.print("\t'" + numPedine + "' : [ " + maschere[0] + " , " + maschere[1] + " ]\n");
+//			}
+//		}
+//		System.out.println(" }");
+//		System.out.println();
+////		System.out.println(masksBlack.get(31));
+////		System.out.println();
+//		long m = Long.parseUnsignedLong(charToString(editMask(BLACK_MASK.get(9).toCharArray(), 1, 9)), 2);
+//		long p = Long.parseUnsignedLong(charToString(editMask(Indietro_BLACK_MASK.get(9).toCharArray(), 1, 9)), 2);
+//		long c = Long.parseUnsignedLong("00000001010000000000000001000000", 2); // centrato in 22
+//		long e = Long.parseUnsignedLong("01001000100000000100000000000000", 2); // nemico
+
+
 //      Test sulla tabella 
 
 //		System.out.println(charToString(editMask(WHITE_MASK.get(9).toCharArray(), 3, 9)));
