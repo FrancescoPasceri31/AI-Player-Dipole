@@ -89,7 +89,7 @@ public class HashMapGenerator {
 			for (Entry<Byte, Long[]> e1 : hTmp.entrySet()) {
 				byte numPedine = e1.getKey();
 				Long[] maschere = e1.getValue();
-				System.out.print("\t\t'" + numPedine + "' : [ " + maschere[0] + " , " + maschere[1] + " ]\n");
+				System.out.print("\t'" + numPedine + "' : [ " + maschere[0] + " , " + maschere[1] + " ]\n");
 			}
 		}
 		System.out.println(" }");
