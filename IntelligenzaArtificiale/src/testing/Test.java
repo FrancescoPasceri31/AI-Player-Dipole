@@ -15,8 +15,8 @@ public class Test {
 		long t = System.currentTimeMillis();
 		
 		//long r =((c|m)&m)&(~e);
-		//long r =m&(p|(~e));
-		long r = y|(~e);
+		long r =m&(p|(~e));
+		//long r = y|(~e);
 		//long r = m&p;
 		
 		System.out.println((System.currentTimeMillis() - t) / 1000.0);
@@ -24,23 +24,22 @@ public class Test {
 		
 		System.out.println("Numero di uni: "+Long.bitCount(r));
 		System.out.println("Stringa: "+Long.toBinaryString(r));
-		System.out.println("Zeri: "+Arrays.toString((new Test()).zerosPosition(r)));
-		System.out.println("Uni: "+Arrays.toString((new Test()).onesPosition(r)));
+		System.out.println("Zeri: "+Arrays.toString(zerosPosition(r)));
+		System.out.println("Uni: "+Arrays.toString(onesPosition(r)));
 		
 		System.out.println();
 		System.out.println("Nero");
-		stampaScacchiera((new Test()).onesPosition(c));
+		stampaScacchiera(onesPosition(c));
 		System.out.println();
 		System.out.println("Bianco");
-		stampaScacchiera((new Test()).onesPosition(e));
+		stampaScacchiera(onesPosition(e));
 		System.out.println();
 		System.out.println("Mosse");
-		stampaScacchiera((new Test()).zerosPosition(r));
-		
-		System.out.println(charToString(new char[] {'0','1'}));
+		stampaScacchiera(zerosPosition(r));
+
 	}
 
-	public int[] onesPosition(long l) {
+	static public int[] onesPosition(long l) {
 		int n = Long.bitCount(l);
 		int[] ret = new int[n];
 		long x=0,y = l;
@@ -54,7 +53,7 @@ public class Test {
 
 	}
 
-	public int[] zerosPosition(long l) {
+	static public int[] zerosPosition(long l) {
 		long x = 4294967295L;
 		return onesPosition(~(l+(~x)));
 	}

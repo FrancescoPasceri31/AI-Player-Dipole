@@ -83,10 +83,24 @@ public class HashMapGenerator {
 				masksBlack.put((byte) (x), new Object[] {0,m});
 			}
 		}
+//		System.out.println();
+//		System.out.println(masksBlack);
+//		System.out.println();
+//		System.out.println(masksBlack.get(31));
 		System.out.println();
-		System.out.println(masksBlack);
+		long m = Long.parseUnsignedLong(charToString(editMask(BLACK_MASK.get(9).toCharArray(), 1, 9)),2);
+		long p = Long.parseUnsignedLong(charToString(editMask(Indietro_BLACK_MASK.get(9).toCharArray(), 1, 9)),2);
+		long c = Long.parseUnsignedLong("00000001010000000000000001000000", 2); //centrato in 22
+		long e = Long.parseUnsignedLong("01001000100000000100000000000000", 2); //nemico
+		
+		System.out.println("Nero");
+		Test.stampaScacchiera(Test.onesPosition(c));
 		System.out.println();
-		System.out.println(masksBlack.get(31));
+		System.out.println("Bianco");
+		Test.stampaScacchiera(Test.onesPosition(e));
+		System.out.println();
+		System.out.println("Mosse");
+		Test.stampaScacchiera(Test.zerosPosition(m&(p|(~e))));
 		
 		
 
