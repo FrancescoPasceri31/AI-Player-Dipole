@@ -1,14 +1,9 @@
 package testing;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 
 public class HashMapGenerator {
@@ -124,7 +119,6 @@ public class HashMapGenerator {
 //		long c = Long.parseUnsignedLong("00000001010000000000000001000000", 2); // centrato in 22
 //		long e = Long.parseUnsignedLong("01001000100000000100000000000000", 2); // nemico
 
-
 //      Test sulla tabella 
 
 //		System.out.println(charToString(editMask(WHITE_MASK.get(9).toCharArray(), 3, 9)));
@@ -149,16 +143,25 @@ public class HashMapGenerator {
 //		System.out.println("Mosse");
 //		Test.stampaScacchiera(Test.zerosPosition(m & (p | (~e))));
 
-		ObjectInputStream i = new ObjectInputStream(new FileInputStream("hashMap"));
-		
-		long t = System.currentTimeMillis();
-		HashMap<Byte, String> posToCell = (HashMap<Byte, String>)i.readObject();
-		HashMap<Byte, String> cellToPos = (HashMap<Byte, String>)i.readObject();
-		HashMap<Byte, Object[]> masksBlack = (HashMap<Byte,Object[]>)i.readObject();
-		HashMap<Byte, Object[]> masksWhite = (HashMap<Byte,Object[]>)i.readObject();
-		i.close();
-		
-		System.out.println((System.currentTimeMillis()-t)/1000.0);
+		HashMap<Byte, String> posToCell = null;
+		HashMap<String, Byte> cellToPos = null;
+		Double tempi = 0.0;
+		HashMap<Byte, Object[]> masksBlack = null;
+		HashMap<Byte, Object[]> masksWhite = null;
+		int run = 10000;
+
+		for (int j = 0; j < run; j++) {
+			ObjectInputStream i = new ObjectInputStream(new FileInputStream("hashMap"));
+			long t = System.currentTimeMillis();
+			posToCell = (HashMap<Byte, String>) i.readObject();
+			cellToPos = (HashMap<String, Byte>) i.readObject();
+			masksBlack = (HashMap<Byte, Object[]>) i.readObject();
+			masksWhite = (HashMap<Byte, Object[]>) i.readObject();
+			i.close();
+			tempi += ((System.currentTimeMillis() - t) / 1000.0);
+		}
+
+		System.out.println(tempi / run);
 		System.out.println();
 		System.out.println(posToCell.toString());
 		System.out.println();
