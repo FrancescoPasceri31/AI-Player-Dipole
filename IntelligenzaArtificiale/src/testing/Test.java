@@ -19,23 +19,23 @@ public class Test {
 		//long r = y|(~e);
 		//long r = m&p;
 		
-		System.out.println((System.currentTimeMillis() - t) / 1000.0);
-		
-		
-		System.out.println("Numero di uni: "+Long.bitCount(r));
-		System.out.println("Stringa: "+Long.toBinaryString(r));
-		System.out.println("Zeri: "+Arrays.toString(zerosPosition(r)));
-		System.out.println("Uni: "+Arrays.toString(onesPosition(r)));
-		
-		System.out.println();
-		System.out.println("Nero");
-		stampaScacchiera(onesPosition(c));
-		System.out.println();
-		System.out.println("Bianco");
-		stampaScacchiera(onesPosition(e));
-		System.out.println();
-		System.out.println("Mosse");
-		stampaScacchiera(zerosPosition(r));
+//		System.out.println((System.currentTimeMillis() - t) / 1000.0);
+//		
+//		
+//		System.out.println("Numero di uni: "+Long.bitCount(r));
+//		System.out.println("Stringa: "+Long.toBinaryString(r));
+//		System.out.println("Zeri: "+Arrays.toString(zerosPosition(r)));
+//		System.out.println("Uni: "+Arrays.toString(onesPosition(r)));
+//		
+//		System.out.println();
+//		System.out.println("Nero");
+//		stampaScacchiera(onesPosition(c));
+//		System.out.println();
+//		System.out.println("Bianco");
+//		stampaScacchiera(onesPosition(e));
+//		System.out.println();
+//		System.out.println("Mosse");
+//		stampaScacchiera(zerosPosition(r));
 
 	}
 
