@@ -106,7 +106,7 @@ public class HashMapGenerator2 {
 		}
 //
 //		System.out.println();
-		
+
 //		printHash(masksBlack);
 //		System.out.println(Integer.toBinaryString(getMask(masksBlack, 31, 32, 1)));
 //		System.out.println();
@@ -198,11 +198,7 @@ public class HashMapGenerator2 {
 		printHash(masksBlack);
 		printHash(masksWhite);
 		System.out.println();
-<<<<<<< HEAD
-		System.out.println(Integer.toBinaryString(getMask(masksWhite,0,4,0)));
-=======
-		System.out.println(Long.toBinaryString(getMask(masksWhite, 0, 4, 0)));
->>>>>>> branch 'master' of https://github.com/FrancescoPasceri31/ProgettoAI.git
+		System.out.println(Integer.toBinaryString(getMask(masksWhite, 0, 4, 0)));
 		System.out.println();
 		System.out.println(Arrays.toString(getOutLeastPawns(masksWhite, 31)));
 		System.out.println();
@@ -227,7 +223,6 @@ public class HashMapGenerator2 {
 		return maskTmp;
 	}
 
-
 	static void printHash(HashMap<Byte, Object[]> hp) {
 
 		System.out.print("{ ");
@@ -237,34 +232,19 @@ public class HashMapGenerator2 {
 			HashMap<Byte, Integer[]> hTmp = (HashMap<Byte, Integer[]>) o[2];
 			for (Entry<Byte, Integer[]> e1 : hTmp.entrySet()) {
 				byte numPedine = e1.getKey();
-<<<<<<< HEAD
 				Integer[] maschere = e1.getValue();
-				System.out.print("\t\t'" + numPedine + "' : [ "+(byte)o[0]+" , "+(byte)o[1] +" , "+ maschere[0] + " , " + maschere[1] + " ]\n");
-=======
-				Long[] maschere = e1.getValue();
 				System.out.print("\t\t'" + numPedine + "' : [ " + (byte) o[0] + " , " + (byte) o[1] + " , "
 						+ maschere[0] + " , " + maschere[1] + " ]\n");
->>>>>>> branch 'master' of https://github.com/FrancescoPasceri31/ProgettoAI.git
 			}
 		}
 		System.out.println(" }");
 
 	}
-<<<<<<< HEAD
-	
+
 	static public int[] onesPosition(int l) {
 		int n = Integer.bitCount(l);
-=======
-
-	static public int[] onesPosition(long l) {
-		int n = Long.bitCount(l);
->>>>>>> branch 'master' of https://github.com/FrancescoPasceri31/ProgettoAI.git
 		int[] ret = new int[n];
-<<<<<<< HEAD
-		int x=0,y = l;
-=======
-		long x = 0, y = l;
->>>>>>> branch 'master' of https://github.com/FrancescoPasceri31/ProgettoAI.git
+		int x = 0, y = l;
 		for (int i = 0; i < n; i++) {
 			ret[i] = 31 - Integer.numberOfLeadingZeros(y);
 			x = Integer.highestOneBit(y);
@@ -275,41 +255,27 @@ public class HashMapGenerator2 {
 
 	}
 
-<<<<<<< HEAD
 	static public int[] zerosPosition(int l) {
-		//long x = 4294967295L;
+		// long x = 4294967295L;
 		return onesPosition(~l);
-=======
-	static public int[] zerosPosition(long l) {
-		long x = 4294967295L;
-		return onesPosition(~(l + (~x)));
->>>>>>> branch 'master' of https://github.com/FrancescoPasceri31/ProgettoAI.git
 	}
-<<<<<<< HEAD
-	
+
 	static String charToString(char[] c) {
 		String ret = "";
-		for(char k: c) {
-			ret+=k;
+		for (char k : c) {
+			ret += k;
 		}
 		return ret;
 	}
 
-	
-	
-	//Restituisce una maschera data la mappa (map), la posizione(pos), il numero di pedine(pawns) e la direzione(a_d, 0 avanti, 1 dietro)
-	static public int getMask(HashMap<Byte,Object[]> map, int pos,int pawns, int a_d) {
-		return ((Integer[])((HashMap<Byte,Integer[]>)(((Object[])(map.get((byte)pos)))[2])).get((byte)pawns))[a_d];
-=======
-
 	// Restituisce una maschera data la mappa (map), la posizione(pos), il numero di
 	// pedine(pawns) e la direzione(a_d, 0 avanti, 1 dietro)
-	static public long getMask(HashMap<Byte, Object[]> map, int pos, int pawns, int a_d) {
-		System.out.println("Sto accedendo a mappa "+map);
-		System.out.println(" in pos: " + pos + ", con pedine: " + pawns
-				+ ", in direzione: " + (a_d == 0 ? "avanti" : "dietro"));
-		return ((Long[]) ((HashMap<Byte, Long[]>) (((Object[]) (map.get((byte) pos)))[2])).get((byte) pawns))[a_d];
->>>>>>> branch 'master' of https://github.com/FrancescoPasceri31/ProgettoAI.git
+	static public int getMask(HashMap<Byte, Object[]> map, int pos, int pawns, int a_d) {
+		System.out.println("Sto accedendo a mappa " + map);
+		System.out.println(
+				" in pos: " + pos + ", con pedine: " + pawns + ", in direzione: " + (a_d == 0 ? "avanti" : "dietro"));
+		return ((Integer[]) ((HashMap<Byte, Integer[]>) (((Object[]) (map.get((byte) pos)))[2]))
+				.get((byte) pawns))[a_d];
 	}
 
 	// restituisce data la mappa(map) e la posizione(pos), il minimo numero di
