@@ -1,18 +1,11 @@
 package testing;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
-
-import java.util.Collections;
 
 public class HashMapGenerator2 {
 
@@ -62,7 +55,7 @@ public class HashMapGenerator2 {
 ////
 //		HashMap<Byte, Object[]> masksBlack = new HashMap();
 //		HashMap<Byte, Object[]> masksWhite = new HashMap();
-		HashMap<Byte,Byte> posToPawn = new HashMap();  /* 1-> 12 white, 21->32 black*/
+		HashMap<Byte, Byte> posToPawn = new HashMap(); /* 1-> 12 white, 21->32 black */
 //		byte[] dirWhite = {7,2,5,4,3,6,1,8,7,1,6,3,4,5,2,7,6,2,5,4,3,6,1,6,5,1,5,3,4,5,2,5,4,2,4,4,3,4,1,4,3,1,3,3,3,3,2,3,2,2,2,2,2,2,1,2,1,1,1,1,1,1,1,1};
 //		byte[] dirBlack = {1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,3,3,3,3,3,3,1,1,4,3,4,4,4,4,2,2,5,4,5,5,3,5,1,1,6,3,6,5,4,6,2,2,7,4,5,6,3,7,1,1,8,3,6,5,4,7,2};
 //		
@@ -103,13 +96,13 @@ public class HashMapGenerator2 {
 //			}
 //		}
 //		
-		for(int i=0;i<32;i++) {
-			if(i==1) //white start position
-				posToPawn.put((byte)i, (byte) 12 );
-			else if(i==30) //black start position
-				posToPawn.put((byte)i, (byte) 32 );
+		for (int i = 0; i < 32; i++) {
+			if (i == 1) // white start position
+				posToPawn.put((byte) i, (byte) 12);
+			else if (i == 30) // black start position
+				posToPawn.put((byte) i, (byte) 32);
 			else
-				posToPawn.put((byte)i, (byte) 0 );
+				posToPawn.put((byte) i, (byte) 0);
 		}
 //
 //		System.out.println();
@@ -185,7 +178,7 @@ public class HashMapGenerator2 {
 //			i.close();
 //			tempi += ((System.currentTimeMillis() - t) / 1000.0);
 //		}
-		
+
 		ObjectInputStream i = new ObjectInputStream(new FileInputStream("hashMaps"));
 		long t = System.currentTimeMillis();
 		posToCell = (HashMap<Byte, String>) i.readObject();
@@ -205,12 +198,12 @@ public class HashMapGenerator2 {
 		printHash(masksBlack);
 		printHash(masksWhite);
 		System.out.println();
-		System.out.println(Long.toBinaryString(getMask(masksWhite,0,4,0)));
+		System.out.println(Long.toBinaryString(getMask(masksWhite, 0, 4, 0)));
 		System.out.println();
 		System.out.println(Arrays.toString(getOutLeastPawns(masksWhite, 31)));
 		System.out.println();
 		System.out.println();
-		
+
 //		System.out.println(Long.toBinaryString(((Long[])((HashMap)masksWhite.get((byte)17)[3]).get((byte)4))[1]));
 //		System.out.println(masksWhite.get((byte)17)[1]+" "+masksWhite.get((byte)17)[2]);
 
@@ -248,17 +241,18 @@ public class HashMapGenerator2 {
 			for (Entry<Byte, Long[]> e1 : hTmp.entrySet()) {
 				byte numPedine = e1.getKey();
 				Long[] maschere = e1.getValue();
-				System.out.print("\t\t'" + numPedine + "' : [ "+(byte)o[0]+" , "+(byte)o[1] +" , "+ maschere[0] + " , " + maschere[1] + " ]\n");
+				System.out.print("\t\t'" + numPedine + "' : [ " + (byte) o[0] + " , " + (byte) o[1] + " , "
+						+ maschere[0] + " , " + maschere[1] + " ]\n");
 			}
 		}
 		System.out.println(" }");
 
 	}
-	
+
 	static public int[] onesPosition(long l) {
 		int n = Long.bitCount(l);
 		int[] ret = new int[n];
-		long x=0,y = l;
+		long x = 0, y = l;
 		for (int i = 0; i < n; i++) {
 			ret[i] = 63 - Long.numberOfLeadingZeros(y);
 			x = Long.highestOneBit(y);
@@ -271,17 +265,21 @@ public class HashMapGenerator2 {
 
 	static public int[] zerosPosition(long l) {
 		long x = 4294967295L;
-		return onesPosition(~(l+(~x)));
+		return onesPosition(~(l + (~x)));
 	}
-	
-	
-	//Restituisce una maschera data la mappa (map), la posizione(pos), il numero di pedine(pawns) e la direzione(a_d, 0 avanti, 1 dietro)
-	static public long getMask(HashMap<Byte,Object[]> map, int pos,int pawns, int a_d) {
-		return ((Long[])((HashMap<Byte,Long[]>)(((Object[])(map.get((byte)pos)))[2])).get((byte)pawns))[a_d];
+
+	// Restituisce una maschera data la mappa (map), la posizione(pos), il numero di
+	// pedine(pawns) e la direzione(a_d, 0 avanti, 1 dietro)
+	static public long getMask(HashMap<Byte, Object[]> map, int pos, int pawns, int a_d) {
+		System.out.println("Sto accedendo a mappa "+map);
+		System.out.println(" in pos: " + pos + ", con pedine: " + pawns
+				+ ", in direzione: " + (a_d == 0 ? "avanti" : "dietro"));
+		return ((Long[]) ((HashMap<Byte, Long[]>) (((Object[]) (map.get((byte) pos)))[2])).get((byte) pawns))[a_d];
 	}
-	
-	//restituisce data la mappa(map) e la posizione(pos), il minimo numero di pedine che servono per uscire fuori dalla scacchiera 
-	static public byte[] getOutLeastPawns(HashMap<Byte,Object[]> map, int pos) {
-		return new byte[]{(byte)((Object[])map.get((byte)pos))[0],(byte)((Object[])map.get((byte)pos))[1]};
+
+	// restituisce data la mappa(map) e la posizione(pos), il minimo numero di
+	// pedine che servono per uscire fuori dalla scacchiera
+	static public byte[] getOutLeastPawns(HashMap<Byte, Object[]> map, int pos) {
+		return new byte[] { (byte) ((Object[]) map.get((byte) pos))[0], (byte) ((Object[]) map.get((byte) pos))[1] };
 	}
 }
