@@ -42,7 +42,7 @@ public class MovesGenerator {
 
 		posToPawn.put((byte) 1, (byte) 0);
 		posToPawn.put((byte) 30, (byte) 0);
-		posToPawn.put((byte) 17, (byte) 6);
+		posToPawn.put((byte) 17, (byte) 4);
 		posToPawn.put((byte) 9, (byte) 21);
 		posToPawn.put((byte) 24, (byte) 21);
 		posToPawn.put((byte) 10, (byte) 1);
@@ -58,26 +58,26 @@ public class MovesGenerator {
 
 //		System.out.println(tempi / run);
 
-		long mc = Long.parseUnsignedLong("00000100000000100000010000000000", 2); // posizione 17
-		long ec = Long.parseUnsignedLong("00000001000000000000001000000000", 2);
+		int mc = Integer.parseUnsignedInt("00000100000000100000010000000000", 2); // posizione 17
+		int ec = Integer.parseUnsignedInt("00000001000000000000001000000000", 2);
 		
 		int miaPosizione = 17;
 		int miaRiga = miaPosizione / 4;
 
-		ArrayList<Long> ret = new ArrayList();
+		ArrayList<Integer> ret = new ArrayList();
 
 		int miePedine = posToPawn.get((byte)miaPosizione);
 
-		long m = HashMapGenerator2.getMask(masksWhite, miaPosizione, miePedine, 0); // maschera mossa posizione 17 in
+		int m = HashMapGenerator2.getMask(masksWhite, miaPosizione, miePedine, 0); // maschera mossa posizione 17 in
 																					// avanti
-		long p = HashMapGenerator2.getMask(masksWhite, miaPosizione, miePedine, 1); // maschera mossa posizione 17
+		int p = HashMapGenerator2.getMask(masksWhite, miaPosizione, miePedine, 1); // maschera mossa posizione 17
 																					// all'indietro
 
-		long r = m & (p | (~ec));
+		int r = m & (p | (~ec));
 
 		int[] positions = HashMapGenerator2.zerosPosition(r);
 
-		 //System.out.println(Arrays.toString(positions));
+		//System.out.println(Arrays.toString(positions));
 		//System.out.println(posToPawn.get((byte)9));
 		 
 
@@ -100,7 +100,7 @@ public class MovesGenerator {
 
 			if (!merge) { // sto attaccando
 				numPedine -=20;
-				if (miePedine >= numPedine) {
+				if (numPedineDaSpostare >= numPedine) {
 					posFiglio.put((byte) miaPosizione, (byte) (miePedine - numPedineDaSpostare));
 					posFiglio.put((byte) positions[j], (byte) (white ? numPedineDaSpostare : numPedineDaSpostare + 20));
 					System.out.println("attacco: "+posFiglio);
@@ -155,7 +155,7 @@ public class MovesGenerator {
 
 	}
 
-//	public ArrayList<Long> generateMoves(long mc,long ec, int pos, int ){
+//	public ArrayList<Integer> generateMoves(int mc,int ec, int pos, int ){
 //		
 //	}
 
