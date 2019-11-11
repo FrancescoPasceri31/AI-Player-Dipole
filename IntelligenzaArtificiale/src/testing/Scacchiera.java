@@ -276,7 +276,7 @@ public class Scacchiera {
 							boolean merge = nPawns == 0 || !(isWhiteMove ^ (nPawns > 0 && nPawns < 12));
 							nPawnsSpostare = Math.abs(from / 4 - to / 4);
 							if (!merge) { // sto attaccando
-								nPawns -= 20;
+								if(isWhiteMove) nPawns -= 20;
 								if (nPawnsSpostare >= nPawns && posToPawn.get(from) >= nPawnsSpostare) {
 									posToPawn.put(from, (byte) (posToPawn.get(from) - nPawnsSpostare));
 									posToPawn.put(to, (byte) (isWhiteMove ? nPawnsSpostare : nPawnsSpostare + 20));

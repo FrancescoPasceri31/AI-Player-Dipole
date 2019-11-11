@@ -42,14 +42,13 @@ public class MovesGenerator {
 
 		posToPawn.put((byte) 1, (byte) 0);
 		posToPawn.put((byte) 30, (byte) 0);
-		posToPawn.put((byte) 17, (byte) 4);
+		posToPawn.put((byte) 17, (byte) 5);
 		posToPawn.put((byte) 9, (byte) 21);
 		posToPawn.put((byte) 24, (byte) 21);
 		posToPawn.put((byte) 10, (byte) 1);
 		posToPawn.put((byte) 26, (byte) 1);
 
 		ObjectInputStream i = new ObjectInputStream(new FileInputStream("hashMaps"));
-		long t = System.currentTimeMillis();
 		posToCell = (HashMap<Byte, String>) i.readObject();
 		cellToPos = (HashMap<String, Byte>) i.readObject();
 		masksBlack = (HashMap<Byte, Object[]>) i.readObject();
@@ -60,98 +59,157 @@ public class MovesGenerator {
 
 		int mc = Integer.parseUnsignedInt("00000100000000100000010000000000", 2); // posizione 17
 		int ec = Integer.parseUnsignedInt("00000001000000000000001000000000", 2);
+
+		int[] myP = HashMapGenerator2.onesPosition(mc);
 		
-		int miaPosizione = 17;
-		int miaRiga = miaPosizione / 4;
-
-		ArrayList<Integer> ret = new ArrayList();
-
-		int miePedine = posToPawn.get((byte)miaPosizione);
-
-		int m = HashMapGenerator2.getMask(masksWhite, miaPosizione, miePedine, 0); // maschera mossa posizione 17 in
-																					// avanti
-		int p = HashMapGenerator2.getMask(masksWhite, miaPosizione, miePedine, 1); // maschera mossa posizione 17
-																					// all'indietro
-
-		int r = m & (p | (~ec));
-
-		int[] positions = HashMapGenerator2.zerosPosition(r);
-
-		//System.out.println(Arrays.toString(positions));
-		//System.out.println(posToPawn.get((byte)9));
-		 
-
-		boolean white = true;
+		boolean white = false;
 		
-		HashMap<Byte, Byte> posFiglio;
-		int rigaAvversario;
-		int numPedine;
-		boolean merge;
+		long t = System.currentTimeMillis();
+		for (int k = 0; k < myP.length; k++) {
+			
+			System.out.println();
+			System.out.println("Mia posizione: "+myP[k]);
+			System.out.println();
+			
+			int miaPosizione = myP[k];
+			int miaRiga = miaPosizione / 4;
 
-		for (int j = 0; j < positions.length; j++) {
+			ArrayList<Integer> ret = new ArrayList();
 
-			posFiglio = (HashMap<Byte,Byte>)posToPawn.clone();
+			int miePedine = posToPawn.get((byte) miaPosizione);
 
-			rigaAvversario = positions[j] / 4;
-			numPedine = posFiglio.get((byte) positions[j]);
-			System.out.println("posizione: "+positions[j]+", numero pedine: "+numPedine);
-			merge = numPedine == 0 || !(white ^ (numPedine > 0 && numPedine <= 12));
-			int numPedineDaSpostare = Math.abs(miaRiga - rigaAvversario);
+			int m = HashMapGenerator2.getMask(masksWhite, miaPosizione, miePedine, 0); // maschera mossa posizione 17 in
+																						// avanti
+			int p = HashMapGenerator2.getMask(masksWhite, miaPosizione, miePedine, 1); // maschera mossa posizione 17
+																						// all'indietro
 
-			if (!merge) { // sto attaccando
-				numPedine -=20; //CONTROLLARE QUA
-				if (numPedineDaSpostare >= numPedine) {
-					posFiglio.put((byte) miaPosizione, (byte) (miePedine - numPedineDaSpostare));
-					posFiglio.put((byte) positions[j], (byte) (white ? numPedineDaSpostare : numPedineDaSpostare + 20));
-					System.out.println("attacco: "+posFiglio);
-					System.out.println();
-					// genero mossa
+			int r = m & (p | (~ec));
+
+			int[] positions = HashMapGenerator2.zerosPosition(r);
+
+			// System.out.println(Arrays.toString(positions));
+			// System.out.println(posToPawn.get((byte)9));
+
+
+			HashMap<Byte, Byte> posFiglio;
+			int rigaAvversario;
+			int numPedine;
+			boolean merge;
+			int mcr, ecr;
+
+			for (int j = 0; j < positions.length; j++) {
+
+				mcr = mc;
+				ecr = ec;
+
+				posFiglio = (HashMap<Byte, Byte>) posToPawn.clone();
+
+				rigaAvversario = positions[j] / 4;
+				numPedine = posFiglio.get((byte) positions[j]);
+				System.out.println("posizione: " + positions[j] + ", numero pedine: " + numPedine);
+				merge = numPedine == 0 || !(white ^ (numPedine > 0 && numPedine <= 12));
+				int numPedineDaSpostare = Math.abs(miaRiga - rigaAvversario);
+
+				int n = miePedine - numPedineDaSpostare;
+
+				if (!merge) { // sto attaccando
+					if (white)
+						numPedine -= 20;
+					if (numPedineDaSpostare >= numPedine) {
+						posFiglio.put((byte) miaPosizione, (byte) (n));
+						posFiglio.put((byte) positions[j],
+								(byte) (white ? numPedineDaSpostare : numPedineDaSpostare + 20));
+						System.out.println("attacco: " + posFiglio);
+
+						ecr = ecr ^ (1 << positions[j]);
+						mcr = mcr | (1 << positions[j]);
+
+						if (n == 0)
+							mcr = mcr ^ (1 << miaPosizione);
+
+//					System.out.println(Integer.toBinaryString(mc));
+//					System.out.println(Integer.toBinaryString(mcr));
+//					System.out.println();
+
+					}
+				} else {
+					posFiglio.put((byte) miaPosizione, (byte) (n));
+					posFiglio.put((byte) positions[j], (byte) (numPedine + numPedineDaSpostare));
+					System.out.println("merge: " + posFiglio);
+
+					mcr = mcr | (1 << positions[j]);
+
+					if (posFiglio.get((byte) miaPosizione) == 0)
+						mcr = mcr ^ (1 << miaPosizione);
+
+//				System.out.println(Integer.toBinaryString(mc));
+//				System.out.println(Integer.toBinaryString(mcr));
+//				System.out.println();
 				}
-			} else {
-				posFiglio.put((byte) miaPosizione, (byte) (miePedine - numPedineDaSpostare));
-				posFiglio.put((byte) positions[j], (byte) (numPedine + numPedineDaSpostare));
-				System.out.println("merge: "+posFiglio);
-				System.out.println();
-				// genero mossa
 			}
-		}
 
-		byte[] direzioni = HashMapGenerator2.getOutLeastPawns(masksWhite, miaPosizione);
+			byte[] direzioni = HashMapGenerator2.getOutLeastPawns(masksWhite, miaPosizione);
 
-		posFiglio = (HashMap<Byte,Byte>)posToPawn.clone();
-		
-		System.out.println("mie pedine: "+miePedine);
+			posFiglio = (HashMap<Byte, Byte>) posToPawn.clone();
 
-		if (miePedine >= direzioni[0]) { // NW
+			System.out.println("mie pedine: " + miePedine);
 
-			int numPDT = miePedine - direzioni[0]; // numero di Pedine Da Togliere
-			// genero configurazione in cui tolgo tutto fuori
-			posFiglio.put((byte) miaPosizione, (byte) 0);
-			System.out.println("tolgo "+miePedine+" NW: "+posFiglio);
+			mcr = mc;
 
-			for (; numPDT > 0; numPDT--) {
-				posFiglio = (HashMap<Byte,Byte>)posToPawn.clone();
-				// genero mosse fuori numPDT nella mia casella
-				posFiglio.put((byte) miaPosizione, (byte) numPDT);
-				System.out.println("tolgo "+(miePedine-numPDT)+" NW: "+posFiglio);
+			if (miePedine >= direzioni[0]) { // NW
+
+				int numPDT = miePedine - direzioni[0]; // numero di Pedine Da Togliere
+
+				// genero configurazione in cui tolgo tutto fuori
+				mcr = mcr ^ (1 << miaPosizione);
+//			System.out.println(Integer.toBinaryString(mc));
+//			System.out.println(Integer.toBinaryString(mcr));
+//			System.out.println();
+
+				posFiglio.put((byte) miaPosizione, (byte) 0);
+				System.out.println("tolgo " + miePedine + " NW: " + posFiglio);
+
+				for (; numPDT > 0; numPDT--) {
+					posFiglio = (HashMap<Byte, Byte>) posToPawn.clone();
+					// genero mosse fuori numPDT nella mia casella
+					mcr = mc;
+//				System.out.println(Integer.toBinaryString(mc));
+//				System.out.println(Integer.toBinaryString(mcr));
+//				System.out.println();
+					posFiglio.put((byte) miaPosizione, (byte) numPDT);
+					System.out.println("tolgo " + (miePedine - numPDT) + " NW: " + posFiglio);
+				}
 			}
-		}
-		
 
-		if (miePedine >= direzioni[1]) { // NE
+			mcr = mc;
 
-			int numPDT = miePedine - direzioni[1]; // numero di Pedine Da Togliere
-			// genero configurazione in cui tolgo tutto fuori
-			posFiglio.put((byte) miaPosizione, (byte) 0);
-			System.out.println("tolgo "+miePedine+" NE: "+posFiglio);
+			if (miePedine >= direzioni[1]) { // NE
 
-			for (; numPDT > 0; numPDT--) {
-				posFiglio = (HashMap<Byte,Byte>)posToPawn.clone();
-				// genero mosse fuori numPDT nella mia casella
-				posFiglio.put((byte) miaPosizione, (byte) numPDT);
-				System.out.println("tolgo "+(miePedine-numPDT)+" NE: "+posFiglio);
+				int numPDT = miePedine - direzioni[1]; // numero di Pedine Da Togliere
+
+				// genero configurazione in cui tolgo tutto fuori
+				mcr = mcr ^ (1 << miaPosizione);
+//			System.out.println(Integer.toBinaryString(mc));
+//			System.out.println(Integer.toBinaryString(mcr));
+//			System.out.println();
+
+				posFiglio.put((byte) miaPosizione, (byte) 0);
+				System.out.println("tolgo " + miePedine + " NE: " + posFiglio);
+
+				for (; numPDT > 0; numPDT--) {
+					posFiglio = (HashMap<Byte, Byte>) posToPawn.clone();
+					// genero mosse fuori numPDT nella mia casella
+					mcr = mc;
+//				System.out.println(Integer.toBinaryString(mc));
+//				System.out.println(Integer.toBinaryString(mcr));
+//				System.out.println();
+					posFiglio.put((byte) miaPosizione, (byte) numPDT);
+					System.out.println("tolgo " + (miePedine - numPDT) + " NE: " + posFiglio);
+				}
 			}
+
 		}
+		System.out.println((System.currentTimeMillis()-t)/1000.0);
 
 	}
 

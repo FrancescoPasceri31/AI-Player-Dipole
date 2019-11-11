@@ -271,9 +271,6 @@ public class HashMapGenerator2 {
 	// Restituisce una maschera data la mappa (map), la posizione(pos), il numero di
 	// pedine(pawns) e la direzione(a_d, 0 avanti, 1 dietro)
 	static public int getMask(HashMap<Byte, Object[]> map, int pos, int pawns, int a_d) {
-		System.out.println("Sto accedendo a mappa " + map);
-		System.out.println(
-				" in pos: " + pos + ", con pedine: " + pawns + ", in direzione: " + (a_d == 0 ? "avanti" : "dietro"));
 		return ((Integer[]) ((HashMap<Byte, Integer[]>) (((Object[]) (map.get((byte) pos)))[2]))
 				.get((byte) pawns))[a_d];
 	}
