@@ -99,7 +99,7 @@ public class MovesGenerator {
 			int numPedineDaSpostare = Math.abs(miaRiga - rigaAvversario);
 
 			if (!merge) { // sto attaccando
-				numPedine -=20;
+				numPedine -=20; //CONTROLLARE QUA
 				if (numPedineDaSpostare >= numPedine) {
 					posFiglio.put((byte) miaPosizione, (byte) (miePedine - numPedineDaSpostare));
 					posFiglio.put((byte) positions[j], (byte) (white ? numPedineDaSpostare : numPedineDaSpostare + 20));

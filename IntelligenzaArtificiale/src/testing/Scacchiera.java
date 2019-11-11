@@ -24,6 +24,12 @@ public class Scacchiera {
 	private HashMap<Byte, Object[]> masksWhite = null;
 	private HashMap<Byte, Byte> posToPawn = new HashMap(); /* 1-> 12 white, 21->32 black */
 
+	private static boolean selected = false;
+	private static char[] maskTmp;
+	private static byte from = -1, to = -1;
+	private static int nPawnsSpostare = -1;
+	private static boolean isWhiteMove;
+
 	private final String ALFABETO = "ABCDEFGH";
 	private final char[] COLORE_SCACCHIERA = { 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'B', 'W', 'B', 'W', 'B', 'W',
 			'B', 'W', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'W', 'B', 'W',
@@ -91,7 +97,6 @@ public class Scacchiera {
 
 	public void show() {
 		javax.swing.ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
-		;
 		JFrame f = new JFrame("Scacchiera");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setResizable(false);
@@ -99,15 +104,15 @@ public class Scacchiera {
 		f.setLocation(300, 100);
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(getRowNumber(), getColumnNumber()));
-		int pos = 0;
+		int pos = 31;
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[0].length; j++) {
 				int miaCella = pos;
-				int pawns=0;
+				int pawns = 0;
 				if (miaCella >= 0 && miaCella <= 31) {
 					pawns = posToPawn.get((byte) miaCella);
 				}
-				System.out.println("In pos: " + miaCella + " ho " + pawns + " pedine");
+				System.out.println("cella " + (i * 8 + j) + " - In pos: " + miaCella + " ho " + pawns + " pedine");
 				JPanel b = new JPanel();
 				String cellPosition = "(" + ALFABETO.charAt(i) + "," + (j + 1) + ")";
 				b.setToolTipText(cellPosition);
@@ -119,12 +124,16 @@ public class Scacchiera {
 					if (pawns > 0) {
 						if (pawns > 12) {
 							System.out.println("MASK_black");
-							AV_bmask = Long.toBinaryString(HashMapGenerator2.getMask(masksBlack, miaCella, pawns, 0));
-							IN_bmask = Long.toBinaryString(HashMapGenerator2.getMask(masksBlack, miaCella, pawns, 1));
+							AV_bmask = Integer
+									.toBinaryString(HashMapGenerator2.getMask(masksBlack, miaCella, pawns, 0));
+							IN_bmask = Integer
+									.toBinaryString(HashMapGenerator2.getMask(masksBlack, miaCella, pawns, 1));
 						} else {
 							System.out.println("MASK_white");
-							AV_wmask = Long.toBinaryString(HashMapGenerator2.getMask(masksWhite, miaCella, pawns, 0));
-							IN_wmask = Long.toBinaryString(HashMapGenerator2.getMask(masksWhite, miaCella, pawns, 1));
+							AV_wmask = Integer
+									.toBinaryString(HashMapGenerator2.getMask(masksWhite, miaCella, pawns, 0));
+							IN_wmask = Integer
+									.toBinaryString(HashMapGenerator2.getMask(masksWhite, miaCella, pawns, 1));
 						}
 
 						String textPos = "Posizione = " + cellPosition + " -> " + miaCella;
@@ -135,87 +144,105 @@ public class Scacchiera {
 
 						pawns = pawns <= 12 ? pawns : pawns - 20;
 						JButton but = new JButton("" + pawns);
-						but.setBorder(new LineBorder(Color.YELLOW, 1, true));
+						but.setBorder(new LineBorder(Color.WHITE, 1, true));
+						b.add(but);
+					} else {
+						String textPos = "Posizione = " + cellPosition + " -> " + miaCella;
+						String toolTipText = "<html>" + textPos + "</html>";
+						b.setToolTipText(toolTipText);
+
+						JButton but = new JButton();
 						b.add(but);
 					}
-					pos++;
+
+					pos--;
 				} else {
 					b.setBackground(Color.WHITE);
 				}
 
 				b.addMouseListener(new MouseAdapter() {
+
+					/**
+					 * Il metodo gestisce lo spostamento delle pedine
+					 */
 					@Override
-					public void mouseClicked(MouseEvent e) {
+					public void mousePressed(MouseEvent e) {
+
+						/* GESTISCO MOSSA, RESETTO COLORI SCACCHIERA E VISUALIZZO MOSSE */
 						if (SwingUtilities.isLeftMouseButton(e)) {
-							showMoves();
+							// riporto in B&W tutte le celle
+							Component[] jbuttons = panel.getComponents();
+							for (int k = 0; k < jbuttons.length; k++) {
+								if (COLORE_SCACCHIERA[k] == 'B') {
+									((JPanel) jbuttons[k]).setBackground(Color.BLACK);
+								} else {
+									((JPanel) jbuttons[k]).setBackground(Color.WHITE);
+								}
+								((JPanel) jbuttons[k]).setBorder(new LineBorder(Color.WHITE, 0));
+							}
+
+							if (b.getBackground().equals(Color.BLACK)) {
+								if (!selected) {
+									primoClick();
+									selected = true;
+								} else if (selected) {
+									secondoClick();
+									selected = false;
+								}
+							} else {
+								selected = false;
+							}
+
+						}
+						/* TOLGO FUORI */
+						if (SwingUtilities.isRightMouseButton(e)) {
+							int nPawns = posToPawn.get((byte) miaCella);
+							byte[] direzioni = HashMapGenerator2
+									.getOutLeastPawns(nPawns <= 12 ? masksWhite : masksBlack, (byte) miaCella);
+							String[] coord = { "NW", "NE" };
+
+							String choicedDir = (String) JOptionPane.showInputDialog(null,
+									"Scegliere direzione per togliere fuori pedine?", "", JOptionPane.QUESTION_MESSAGE,
+									null, coord, coord[0]);
+							int choosen = choicedDir.equals("NW") ? direzioni[0] : direzioni[1];
+							int choice = Integer
+									.valueOf(JOptionPane.showInputDialog("Inserire numero di pedine da togliere"));
+							while (choice < choosen || choice > nPawns) {
+								choice = Integer
+										.valueOf(JOptionPane.showInputDialog("Inserire numero di pedine da togliere"));
+							}
+
+							if (choice > 0) {
+								posToPawn.put((byte) miaCella, (byte) (posToPawn.get((byte) miaCella) - choice));
+								((JButton) b.getComponent(0)).setText("" + posToPawn.get((byte) miaCella));
+							}
 						}
 					}
 
-					/**
-					 * Il metodo gestisce la visualizzazione della mossa quando si clicca sx
-					 */
-					private void showMoves() {
-
-						// riporto in B&W tutte le celle
+					private void primoClick() {
 						Component[] jbuttons = panel.getComponents();
-						for (int k = 0; k < jbuttons.length; k++) {
-							if (COLORE_SCACCHIERA[k] == 'B') {
-								((JPanel) jbuttons[k]).setBackground(Color.BLACK);
-							} else {
-								((JPanel) jbuttons[k]).setBackground(Color.WHITE);
-							}
-							((JPanel) jbuttons[k]).setBorder(new LineBorder(Color.WHITE, 0));
-						}
+						int nPawns = posToPawn.get((byte) miaCella);
+						if (nPawns > 0) {
+							from = (byte) miaCella;
+							isWhiteMove = nPawns <= 12;
 
-						// coloro di rosso le celle della maschera solo se clicco su casella nera
-						if (b.getBackground().equals(Color.BLACK)) {
-
-							final int WHITE = 0;
-							String[] players = { "WHITE", "BLACK" };
-							int choice = JOptionPane.showOptionDialog(null, "Quale giocatore sei?", "Scegli colore",
-									JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, players,
-									players[0]);
-							while (choice != 0 && choice != 1) {
-								choice = JOptionPane.showOptionDialog(null, "Quale giocatore sei?", "Scegli colore",
-										JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, players,
-										players[0]);
-							}
-
-							String nPedine = JOptionPane.showInputDialog(null, null, "Quante pedine muovi?", 1);
-							while (nPedine.isEmpty() || Integer.valueOf(nPedine) <= 0
-									|| Integer.valueOf(nPedine) > 12) {
-								nPedine = JOptionPane.showInputDialog(null, null, "Quante pedine muovi?", 1);
-							}
-							int nPedineMosse = Integer.valueOf(nPedine);
-
-							int AVANTI = 0;
-							String[] dir = { "AVANTI", "DIETRO" };
-							int direction = JOptionPane.showOptionDialog(null, "Quale direzione vuoi?",
-									"Scegli direzione", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-									dir, dir[0]);
-							while (direction != 0 && direction != 1) {
-								direction = JOptionPane.showOptionDialog(null, "Quale direzione vuoi?",
-										"Scegli direzione", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
-										null, dir, dir[0]);
-							}
-
-							char[] maskTmp;
-							if (direction == AVANTI) { // mosse avanti
-								if (choice == WHITE) { // scelto il bianco
-									maskTmp = WHITE_MASK.get(miaCella).toCharArray();
-								} else { // scelto il nero
-									maskTmp = BLACK_MASK.get(miaCella).toCharArray();
-								}
-							} else { // mosse indietro
-								if (choice == WHITE) { // scelto il bianco
-									maskTmp = Indietro_WHITE_MASK.get(miaCella).toCharArray();
-								} else { // scelto il nero
-									maskTmp = Indietro_BLACK_MASK.get(miaCella).toCharArray();
+							// coloro di rosso le celle della maschera solo se clicco su casella nera
+							String enemy = "";
+							for (Byte position : posToPawn.keySet()) {
+								if (posToPawn.get(position) > 12) {
+									enemy += "1";
+								} else {
+									enemy += "0";
 								}
 							}
-							maskTmp = editMask(maskTmp, nPedineMosse, miaCella);
-							System.out.println((choice != WHITE ? "BLACK_" : "WHITE_") + "Mask " + miaCella + " con "
-									+ nPedineMosse + " pedine:\t " + String.valueOf(maskTmp) + "\n");
+							int en = Integer.parseUnsignedInt(enemy, 2);
+							int AV_mask = HashMapGenerator2.getMask((nPawns > 12 ? masksBlack : masksWhite), miaCella,
+									nPawns, 0);
+							int IN_mask = HashMapGenerator2.getMask((nPawns > 12 ? masksBlack : masksWhite), miaCella,
+									nPawns, 1);
+							String maskTmpS = Integer.toBinaryString(AV_mask & (IN_mask | (~en)));
+
+							maskTmp = maskTmpS.toCharArray();
 							for (int c = 0; c < jbuttons.length; c++) {
 								if (((JPanel) panel.getComponent(c)).getBackground().equals(Color.BLACK)) {
 									if (maskTmp[c / 2] == '0') {
@@ -223,32 +250,61 @@ public class Scacchiera {
 										b.setBorder(new LineBorder(Color.BLACK, 15));
 										((JPanel) jbuttons[c]).setBorder(new LineBorder(Color.BLACK, 15));
 										((JPanel) jbuttons[c]).setBackground(Color.YELLOW);
-										;
 									}
 								}
 							}
-
 						}
 					}
 
-					/**
-					 * Il metodo annulla le celle in cui posso andare se queste risultano essere
-					 * maggiori del mio stack
-					 */
+					private void secondoClick() {
+						to = (byte) miaCella;
 
-					private char[] editMask(char[] maskTmp, int nPedineMosse, int miaCella) {
-						for (int k = 0; k < maskTmp.length; k++) {
-							if (maskTmp[k] == '0') {
-								int differenzaRiga = Math.abs(miaCella / (matrix.length / 2) - k / (matrix.length / 2));
-								if (differenzaRiga > nPedineMosse) {
-									maskTmp[k] = '1';
-								} else if (differenzaRiga == 0 && 2 * Math.abs(miaCella - k) > nPedineMosse) {
-									maskTmp[k] = '1';
+//						for (int k = 0; k < maskTmp.length; k++) {
+//							if (k == 31 - miaCella) {
+//								System.out.print("{" + maskTmp[k] + "}");
+//							} else {
+//								System.out.print("" + maskTmp[k]);
+//							}
+//						}
+//						System.out.println();
+//						System.out.println(maskTmp[maskTmp.length - 1 - miaCella]);
+
+						boolean condizioneSoddisfatta = maskTmp[maskTmp.length - 1 - miaCella] == '0';
+
+						if (from != -1 && !(from == to) && condizioneSoddisfatta) {
+							int nPawns = posToPawn.get(to);
+							boolean merge = nPawns == 0 || !(isWhiteMove ^ (nPawns > 0 && nPawns < 12));
+							nPawnsSpostare = Math.abs(from / 4 - to / 4);
+							if (!merge) { // sto attaccando
+								nPawns -= 20;
+								if (nPawnsSpostare >= nPawns && posToPawn.get(from) >= nPawnsSpostare) {
+									posToPawn.put(from, (byte) (posToPawn.get(from) - nPawnsSpostare));
+									posToPawn.put(to, (byte) (isWhiteMove ? nPawnsSpostare : nPawnsSpostare + 20));
+								}
+							} else {
+								posToPawn.put(from, (byte) (posToPawn.get(from) - nPawnsSpostare));
+								posToPawn.put(to, (byte) (nPawns + nPawnsSpostare));
+							}
+
+							Component[] jpanels = panel.getComponents();
+							for (int k = 0; k < jpanels.length; k++) {
+								if (COLORE_SCACCHIERA[k] == 'B') {
+									int posScacchiera = Math.abs(31 - (k / 2));
+									int nPed = posToPawn.get((byte) posScacchiera);
+									byte nPedByte = (byte) (nPed <= 12 ? nPed : nPed - 20);
+
+									String text = nPedByte == 0 ? "" : "" + nPedByte;
+									((JButton) ((JPanel) jpanels[k]).getComponent(0)).setText(text);
 								}
 							}
+
+							System.out.println("MOSSA: " + posToPawn);
 						}
-						return maskTmp;
+						from = -1;
+						to = -1;
+						nPawnsSpostare = -1;
 					}
+
 				});
 
 				panel.add(b);
