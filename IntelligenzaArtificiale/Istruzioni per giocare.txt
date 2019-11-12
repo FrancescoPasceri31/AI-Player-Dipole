@@ -1,0 +1,14 @@
+Istruzioni per usare la scacchiera:
+
+1) NON CI SONO I TURNI;
+
+2) Il primo click sulla casella (non sul bottone perché mi seccavo)
+seleziona lo stack da muovere e visualizza le possibili mosse;
+
+3) Il secondo click fa muovere. Va a buon fine se si può altrimenti
+semplicemente fa cliccare ma non porta a fine una mossa;
+
+4) Click destro consente di togliere fuori le pedine andando a scrivere
+quante ne voglio togliere.
+
+Per ora non mi viene in mente altro
