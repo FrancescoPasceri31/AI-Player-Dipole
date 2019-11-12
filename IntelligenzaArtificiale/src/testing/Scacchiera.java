@@ -143,7 +143,7 @@ public class Scacchiera {
 						b.setToolTipText(toolTipText);
 
 						JButton but = new JButton();
-						but.setBackground(pawns == 0 ? null : pawns <= 12 ? Color.CYAN : Color.DARK_GRAY);
+						but.setBackground(pawns == 0 ? null : pawns <= 12 ? Color.CYAN : Color.GREEN);
 						pawns = pawns <= 12 ? pawns : pawns - 20;
 						but.setText("" + pawns);
 						but.setBorder(new LineBorder(Color.WHITE, 1, true));
@@ -214,22 +214,30 @@ public class Scacchiera {
 							String choicedDir = (String) JOptionPane.showInputDialog(null,
 									"Scegliere direzione per togliere fuori pedine?", "", JOptionPane.QUESTION_MESSAGE,
 									null, coord, coord[0]);
-							int choosen = choicedDir.equals("NW") || choicedDir.equals("SE") ? direzioni[0]
-									: direzioni[1];
-							int choice = Integer
-									.valueOf(JOptionPane.showInputDialog("Inserire numero di pedine da togliere"));
-							while (choice < choosen || choice > nPawns) {
-								choice = Integer
-										.valueOf(JOptionPane.showInputDialog("Inserire numero di pedine da togliere"));
-							}
+							if (choicedDir != null) {
+								int choosen = choicedDir.equals("NW") || choicedDir.equals("SE") ? direzioni[0]
+										: direzioni[1];
+								String nPedineTogliereFuori = (JOptionPane
+										.showInputDialog("Inserire numero di pedine da togliere"));
 
-							if (choice > 0) {
-								byte nPawnsIn = posToPawn.get((byte) miaCella);
-								posToPawn.put((byte) miaCella,
-										(byte) (nPawnsIn - choice == 20 ? 0 : nPawnsIn - choice));
-								((JButton) b.getComponent(0)).setText("" + posToPawn.get((byte) miaCella));
-								((JButton) b.getComponent(0)).setBackground(posToPawn.get((byte) miaCella) == 0 ? null
-										: posToPawn.get((byte) miaCella) <= 12 ? Color.CYAN : Color.DARK_GRAY);
+								if (nPedineTogliereFuori != null && !nPedineTogliereFuori.isEmpty()) {
+									int choice = Integer.valueOf(nPedineTogliereFuori);
+									while (choice < choosen || choice > nPawns) {
+										choice = Integer.valueOf(
+												JOptionPane.showInputDialog("Inserire numero di pedine da togliere"));
+									}
+
+									if (choice > 0) {
+										byte nPawnsIn = posToPawn.get((byte) miaCella);
+										posToPawn.put((byte) miaCella,
+												(byte) (nPawnsIn - choice == 20 ? 0 : nPawnsIn - choice));
+										((JButton) b.getComponent(0)).setText("" + posToPawn.get((byte) miaCella));
+										((JButton) b.getComponent(0)).setBackground(posToPawn.get((byte) miaCella) == 0
+												? null
+												: posToPawn.get((byte) miaCella) <= 12 ? Color.CYAN : Color.GREEN);
+
+									}
+								}
 							}
 						}
 					}
@@ -244,15 +252,14 @@ public class Scacchiera {
 							// coloro di rosso le celle della maschera solo se clicco su casella nera
 							String enemy = "";
 							for (Byte position : posToPawn.keySet()) {
-								if (posToPawn.get(position) > 12) {
+								int nP = posToPawn.get(position);
+								if ((isWhiteMove && nP > 12) || (!isWhiteMove && nP < 12 && nP > 0)) {
 									enemy = "1" + enemy;
 								} else {
 									enemy = "0" + enemy;
 								}
 							}
-							
-							metto errore per segnalare che con il nero non funziona
-							
+
 							int en = Integer.parseUnsignedInt(enemy, 2);
 							int AV_mask = HashMapGenerator2.getMask((nPawns > 12 ? masksBlack : masksWhite), miaCella,
 									nPawns, 0);
@@ -286,17 +293,25 @@ public class Scacchiera {
 						if (from != -1 && !(from == to) && condizioneSoddisfatta) {
 							int nPawns = posToPawn.get(to);
 							boolean merge = nPawns == 0 || !(isWhiteMove ^ (nPawns > 0 && nPawns < 12));
-							nPawnsSpostare = Math.abs(from / 4 - to / 4);
+							nPawnsSpostare = Math.abs(from / 4 - to / 4);	// se uguale a 0 sono sulla stessa riga
 							if (!merge) { // sto attaccando
 								if (isWhiteMove)
 									nPawns -= 20;
-								if (nPawnsSpostare >= nPawns || (nPawnsSpostare == 0
-										&& (Math.abs(posToCol[from] - posToCol[to]) >= nPawns))) {
+								if (nPawnsSpostare >= nPawns && nPawnsSpostare != 0) {
 
 									posToPawn.put(from, (byte) (posToPawn.get(from) - nPawnsSpostare
 											- (!isWhiteMove && (posToPawn.get(from) - nPawnsSpostare) == 20 ? 20 : 0)));
 									posToPawn.put(to, (byte) (isWhiteMove ? nPawnsSpostare : nPawnsSpostare + 20));
-
+								} else {
+									nPawnsSpostare = (Math.abs(posToCol[from] - posToCol[to]));
+									if (nPawnsSpostare >= nPawns) {
+										posToPawn.put(from,
+												(byte) (posToPawn.get(from) - nPawnsSpostare
+														- (!isWhiteMove && (posToPawn.get(from) - nPawnsSpostare) == 20
+																? 20
+																: 0)));
+										posToPawn.put(to, (byte) (isWhiteMove ? nPawnsSpostare : nPawnsSpostare + 20));
+									}
 								}
 							} else {
 								posToPawn.put(from, (byte) (posToPawn.get(from) - nPawnsSpostare
@@ -315,8 +330,8 @@ public class Scacchiera {
 									String text = nPedByte == 0 ? "" : "" + nPedByte;
 									((JButton) ((JPanel) jpanels[k]).getComponent(0)).setText(text);
 
-									((JButton) ((JPanel) jpanels[k]).getComponent(0)).setBackground(
-											nPed == 0 ? null : nPed <= 12 ? Color.CYAN : Color.DARK_GRAY);
+									((JButton) ((JPanel) jpanels[k]).getComponent(0))
+											.setBackground(nPed == 0 ? null : nPed <= 12 ? Color.CYAN : Color.GREEN);
 								}
 							}
 
