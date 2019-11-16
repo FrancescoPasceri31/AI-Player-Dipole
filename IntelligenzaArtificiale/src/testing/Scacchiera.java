@@ -1,5 +1,11 @@
 package testing;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
@@ -13,6 +19,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 public class Scacchiera {
+
+	private final Color BROWN = new Color(102,51,0);
 
 	private HashMap<Byte, String> posToCell = null;
 	private HashMap<String, Byte> cellToPos = null;
@@ -116,7 +124,7 @@ public class Scacchiera {
 				String cellPosition = "(" + ALFABETO.charAt(i) + "," + (j + 1) + ")";
 				b.setToolTipText(cellPosition);
 				if ((matrix[i][j].colore).equals("B")) {
-					b.setBackground(Color.BLACK);
+					b.setBackground(BROWN);
 
 					String AV_bmask = "", IN_bmask = "", AV_wmask = "", IN_wmask = "";
 
@@ -140,7 +148,7 @@ public class Scacchiera {
 						b.setToolTipText(toolTipText);
 
 						JButton but = new JButton();
-						but.setBackground(pawns == 0 ? null : pawns <= 12 ? Color.CYAN : Color.GREEN);
+						but.setBackground(pawns == 0 ? null : pawns <= 12 ? Color.cyan : Color.green);
 						pawns = pawns <= 12 ? pawns : pawns - 20;
 						but.setText("" + pawns);
 						but.setBorder(new LineBorder(Color.WHITE, 1, true));
@@ -178,17 +186,17 @@ public class Scacchiera {
 								Component[] jbuttons = panel.getComponents();
 								for (int k = 0; k < jbuttons.length; k++) {
 									if (COLORE_SCACCHIERA[k] == 'B') {
-										((JPanel) jbuttons[k]).setBackground(Color.BLACK);
+										((JPanel) jbuttons[k]).setBackground(BROWN);
 									} else {
 										((JPanel) jbuttons[k]).setBackground(Color.WHITE);
 									}
 									((JPanel) jbuttons[k]).setBorder(new LineBorder(Color.WHITE, 0));
 								}
 
-								if (b.getBackground().equals(Color.BLACK)) {
+								if (b.getBackground().equals(BROWN)) {
 									if (!selected) {
 										primoClick();
-										selected = true;
+										//selected = true;
 									} else if (selected) {
 										secondoClick();
 										selected = false;
@@ -236,8 +244,8 @@ public class Scacchiera {
 											((JButton) b.getComponent(0)).setText("" + posToPawn.get((byte) miaCella));
 											((JButton) b.getComponent(0))
 													.setBackground(posToPawn.get((byte) miaCella) == 0 ? null
-															: posToPawn.get((byte) miaCella) <= 12 ? Color.CYAN
-																	: Color.GREEN);
+															: posToPawn.get((byte) miaCella) <= 12 ? Color.cyan
+																	: Color.green);
 
 										}
 									}
@@ -272,13 +280,18 @@ public class Scacchiera {
 								}
 							});
 
-							JLabel ll = new JLabel( ("VITTORIA " + (whiteFinished ? "WHITE" : "BLACK") );
+							JLabel ll = new JLabel("VITTORIA " + (blackFinished ? "WHITE" : "BLACK"));
 
-							f.getContentPane().add(ll), BorderLayout.SOUTH);
-							f.getContentPane().add(exitButton, BorderLayout.NORTH);
-							f.getContentPane().add(startNewMatchButton, BorderLayout.NORTH);
+							JPanel panel_north = new JPanel();
+							panel_north.setBorder(new LineBorder(Color.BLACK, 1));
+							panel_north.setBackground(Color.GREEN);
+							panel_north.add(ll);
+							panel_north.add(startNewMatchButton);
+							panel_north.add(exitButton);
+							f.getContentPane().add(panel_north, BorderLayout.NORTH);
 						}
-					}
+
+					} // mouse pressed
 
 					private boolean controllaVittoria() {
 						whiteFinished = true;
@@ -294,12 +307,13 @@ public class Scacchiera {
 							}
 						}
 						return whiteFinished || blackFinished;
-					}
+					} // controllaVittoria
 
 					private void primoClick() {
 						Component[] jbuttons = panel.getComponents();
 						int nPawns = posToPawn.get((byte) miaCella);
 						if (nPawns > 0) {
+							selected  = true;
 							from = (byte) miaCella;
 							isWhiteMove = nPawns <= 12;
 
@@ -327,7 +341,7 @@ public class Scacchiera {
 							maskTmp = maskTmpS.toCharArray();
 
 							for (int c = 0; c < jbuttons.length; c++) {
-								if (((JPanel) panel.getComponent(c)).getBackground().equals(Color.BLACK)) {
+								if (((JPanel) panel.getComponent(c)).getBackground().equals(BROWN)) {
 									if (maskTmp[c / 2] == '0') {
 										b.setBackground(Color.RED);
 										b.setBorder(new LineBorder(Color.BLACK, 15));
@@ -337,7 +351,7 @@ public class Scacchiera {
 								}
 							}
 						}
-					}
+					} // primo click
 
 					private void secondoClick() {
 						to = (byte) miaCella;
@@ -385,7 +399,7 @@ public class Scacchiera {
 									((JButton) ((JPanel) jpanels[k]).getComponent(0)).setText(text);
 
 									((JButton) ((JPanel) jpanels[k]).getComponent(0))
-											.setBackground(nPed == 0 ? null : nPed <= 12 ? Color.CYAN : Color.GREEN);
+											.setBackground(nPed == 0 ? null : nPed <= 12 ? Color.cyan : Color.green);
 								}
 							}
 
@@ -394,9 +408,8 @@ public class Scacchiera {
 						from = -1;
 						to = -1;
 						nPawnsSpostare = -1;
-					}
-
-				});
+					} // secondo click
+				}); // listener mouse su casella
 
 				panel.add(b);
 			}
