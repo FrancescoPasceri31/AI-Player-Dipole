@@ -55,7 +55,7 @@ public class HashMapGenerator2 {
 //
 //		HashMap<Byte, Object[]> masksBlack = new HashMap();
 //		HashMap<Byte, Object[]> masksWhite = new HashMap();
-		HashMap<Byte, Byte> posToPawn = new HashMap(); /* 1-> 12 white, 21->32 black */
+		HashMap<Byte, Byte> posToPawn = new HashMap<Byte,Byte>(); /* 1-> 12 white, 21->32 black */
 //		byte[] dirWhite = {7,2,5,4,3,6,1,8,7,1,6,3,4,5,2,7,6,2,5,4,3,6,1,6,5,1,5,3,4,5,2,5,4,2,4,4,3,4,1,4,3,1,3,3,3,3,2,3,2,2,2,2,2,2,1,2,1,1,1,1,1,1,1,1};
 //		byte[] dirBlack = {1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,3,3,3,3,3,3,1,1,4,3,4,4,4,4,2,2,5,4,5,5,3,5,1,1,6,3,6,5,4,6,2,2,7,4,5,6,3,7,1,1,8,3,6,5,4,7,2};
 //		

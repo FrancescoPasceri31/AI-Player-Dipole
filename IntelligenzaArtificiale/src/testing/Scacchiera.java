@@ -22,7 +22,7 @@ public class Scacchiera {
 	private HashMap<String, Byte> cellToPos = null;
 	private HashMap<Byte, Object[]> masksBlack = null;
 	private HashMap<Byte, Object[]> masksWhite = null;
-	private HashMap<Byte, Byte> posToPawn = new HashMap(); /* 1-> 12 white, 21->32 black */
+	private HashMap<Byte, Byte> posToPawn = new HashMap<Byte,Byte>(); /* 1-> 12 white, 21->32 black */
 
 	private static boolean selected = false;
 	private static char[] maskTmp;

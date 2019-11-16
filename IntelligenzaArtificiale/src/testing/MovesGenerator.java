@@ -51,7 +51,7 @@ public class MovesGenerator {
 			int miaPosizione = myP[k];
 			int miaRiga = miaPosizione / 4;
 
-			ArrayList<Integer> ret = new ArrayList();
+			ArrayList<Integer> ret = new ArrayList<Integer>();
 
 			int miePedine = posToPawn.get((byte) miaPosizione);
 
