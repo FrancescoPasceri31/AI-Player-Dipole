@@ -1,16 +1,12 @@
 package testing;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -22,7 +18,7 @@ public class Scacchiera {
 	private HashMap<String, Byte> cellToPos = null;
 	private HashMap<Byte, Object[]> masksBlack = null;
 	private HashMap<Byte, Object[]> masksWhite = null;
-	private HashMap<Byte, Byte> posToPawn = new HashMap<Byte,Byte>(); /* 1-> 12 white, 21->32 black */
+	private HashMap<Byte, Byte> posToPawn = new HashMap<Byte, Byte>(); /* 1-> 12 white, 21->32 black */
 
 	private static boolean selected = false;
 	private static char[] maskTmp;
@@ -40,7 +36,8 @@ public class Scacchiera {
 	private static Byte[] posToCol = { 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3,
 			1, 8, 6, 4, 2 };
 
-	public Scacchiera() throws Exception, Exception {
+	@SuppressWarnings("unchecked")
+	public void init() throws Exception, Exception {
 		int pos = 0;
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[0].length; j++) {
@@ -66,7 +63,7 @@ public class Scacchiera {
 				posToPawn.put((byte) k, (byte) 0);
 		}
 
-	} // costruttore Scacchiera()
+	} // init di Scacchiera
 
 	public Cella[][] getMatrix() {
 		return matrix;
@@ -164,82 +161,139 @@ public class Scacchiera {
 
 				b.addMouseListener(new MouseAdapter() {
 
+					private boolean whiteFinished, blackFinished;
+
 					/**
 					 * Il metodo gestisce lo spostamento delle pedine
 					 */
 					@Override
 					public void mousePressed(MouseEvent e) {
 
-						/* GESTISCO MOSSA, RESETTO COLORI SCACCHIERA E VISUALIZZO MOSSE */
-						if (SwingUtilities.isLeftMouseButton(e)) {
-							// riporto in B&W tutte le celle
-							Component[] jbuttons = panel.getComponents();
-							for (int k = 0; k < jbuttons.length; k++) {
-								if (COLORE_SCACCHIERA[k] == 'B') {
-									((JPanel) jbuttons[k]).setBackground(Color.BLACK);
-								} else {
-									((JPanel) jbuttons[k]).setBackground(Color.WHITE);
-								}
-								((JPanel) jbuttons[k]).setBorder(new LineBorder(Color.WHITE, 0));
-							}
+						boolean finished = controllaVittoria();
 
-							if (b.getBackground().equals(Color.BLACK)) {
-								if (!selected) {
-									primoClick();
-									selected = true;
-								} else if (selected) {
-									secondoClick();
+						if (!finished) {
+							/* GESTISCO MOSSA, RESETTO COLORI SCACCHIERA E VISUALIZZO MOSSE */
+							if (SwingUtilities.isLeftMouseButton(e)) {
+								// riporto in B&W tutte le celle
+								Component[] jbuttons = panel.getComponents();
+								for (int k = 0; k < jbuttons.length; k++) {
+									if (COLORE_SCACCHIERA[k] == 'B') {
+										((JPanel) jbuttons[k]).setBackground(Color.BLACK);
+									} else {
+										((JPanel) jbuttons[k]).setBackground(Color.WHITE);
+									}
+									((JPanel) jbuttons[k]).setBorder(new LineBorder(Color.WHITE, 0));
+								}
+
+								if (b.getBackground().equals(Color.BLACK)) {
+									if (!selected) {
+										primoClick();
+										selected = true;
+									} else if (selected) {
+										secondoClick();
+										selected = false;
+									}
+								} else {
 									selected = false;
 								}
-							} else {
-								selected = false;
+
 							}
+							/* TOLGO FUORI */
+							if (SwingUtilities.isRightMouseButton(e)) {
+								int nPawns = posToPawn.get((byte) miaCella);
+								byte[] direzioni = HashMapGenerator2
+										.getOutLeastPawns(nPawns <= 12 ? masksWhite : masksBlack, (byte) miaCella);
+								String[] coord = null;
 
-						}
-						/* TOLGO FUORI */
-						if (SwingUtilities.isRightMouseButton(e)) {
-							int nPawns = posToPawn.get((byte) miaCella);
-							byte[] direzioni = HashMapGenerator2
-									.getOutLeastPawns(nPawns <= 12 ? masksWhite : masksBlack, (byte) miaCella);
-							String[] coord = null;
+								if (nPawns <= 12) {
+									String[] coord2 = { "NW", "NE" };
+									coord = coord2;
+								} else {
+									String[] coord2 = { "SW", "SE" };
+									coord = coord2;
+								}
 
-							if (nPawns <= 12) {
-								String[] coord2 = { "NW", "NE" };
-								coord = coord2;
-							} else {
-								String[] coord2 = { "SW", "SE" };
-								coord = coord2;
-							}
+								String choicedDir = (String) JOptionPane.showInputDialog(null,
+										"Scegliere direzione per togliere fuori pedine?", "",
+										JOptionPane.QUESTION_MESSAGE, null, coord, coord[0]);
+								if (choicedDir != null) {
+									int choosen = choicedDir.equals("NW") || choicedDir.equals("SE") ? direzioni[0]
+											: direzioni[1];
+									String nPedineTogliereFuori = (JOptionPane
+											.showInputDialog("Inserire numero di pedine da togliere"));
 
-							String choicedDir = (String) JOptionPane.showInputDialog(null,
-									"Scegliere direzione per togliere fuori pedine?", "", JOptionPane.QUESTION_MESSAGE,
-									null, coord, coord[0]);
-							if (choicedDir != null) {
-								int choosen = choicedDir.equals("NW") || choicedDir.equals("SE") ? direzioni[0]
-										: direzioni[1];
-								String nPedineTogliereFuori = (JOptionPane
-										.showInputDialog("Inserire numero di pedine da togliere"));
+									if (nPedineTogliereFuori != null && !nPedineTogliereFuori.isEmpty()) {
+										int choice = Integer.valueOf(nPedineTogliereFuori);
+										while (choice < choosen || choice > nPawns) {
+											choice = Integer.valueOf(JOptionPane
+													.showInputDialog("Inserire numero di pedine da togliere"));
+										}
 
-								if (nPedineTogliereFuori != null && !nPedineTogliereFuori.isEmpty()) {
-									int choice = Integer.valueOf(nPedineTogliereFuori);
-									while (choice < choosen || choice > nPawns) {
-										choice = Integer.valueOf(
-												JOptionPane.showInputDialog("Inserire numero di pedine da togliere"));
-									}
+										if (choice > 0) {
+											byte nPawnsIn = posToPawn.get((byte) miaCella);
+											posToPawn.put((byte) miaCella,
+													(byte) (nPawnsIn - choice == 20 ? 0 : nPawnsIn - choice));
+											((JButton) b.getComponent(0)).setText("" + posToPawn.get((byte) miaCella));
+											((JButton) b.getComponent(0))
+													.setBackground(posToPawn.get((byte) miaCella) == 0 ? null
+															: posToPawn.get((byte) miaCella) <= 12 ? Color.CYAN
+																	: Color.GREEN);
 
-									if (choice > 0) {
-										byte nPawnsIn = posToPawn.get((byte) miaCella);
-										posToPawn.put((byte) miaCella,
-												(byte) (nPawnsIn - choice == 20 ? 0 : nPawnsIn - choice));
-										((JButton) b.getComponent(0)).setText("" + posToPawn.get((byte) miaCella));
-										((JButton) b.getComponent(0)).setBackground(posToPawn.get((byte) miaCella) == 0
-												? null
-												: posToPawn.get((byte) miaCella) <= 12 ? Color.CYAN : Color.GREEN);
-
+										}
 									}
 								}
 							}
 						}
+
+						if (controllaVittoria()) {
+							JButton exitButton = new JButton("Termina partita");
+							exitButton.addMouseListener(new MouseAdapter() {
+								@Override
+								public void mouseClicked(MouseEvent e) {
+									if (SwingUtilities.isLeftMouseButton(e)) {
+										f.dispose();
+										System.exit(0);
+									}
+								}
+							});
+
+							JButton startNewMatchButton = new JButton("Inizia nuova partita");
+							startNewMatchButton.addMouseListener(new MouseAdapter() {
+								@Override
+								public void mouseClicked(MouseEvent e) {
+									try {
+										init();
+										f.dispose();
+										show();
+									} catch (Exception ex) {
+										ex.printStackTrace();
+										System.exit(-1);
+									}
+								}
+							});
+
+							JLabel ll = new JLabel( ("VITTORIA " + (whiteFinished ? "WHITE" : "BLACK") );
+
+							f.getContentPane().add(ll), BorderLayout.SOUTH);
+							f.getContentPane().add(exitButton, BorderLayout.NORTH);
+							f.getContentPane().add(startNewMatchButton, BorderLayout.NORTH);
+						}
+					}
+
+					private boolean controllaVittoria() {
+						whiteFinished = true;
+						blackFinished = true;
+
+						/* PRIMA DI FARE UNA QUALSIASI MOSSA VEDO SE QUALCUNO HA VINTO */
+						for (Byte nP : posToPawn.values()) {
+							if (nP > 0) {
+								if (nP > 12)
+									blackFinished = false;
+								if (nP <= 12)
+									whiteFinished = false;
+							}
+						}
+						return whiteFinished || blackFinished;
 					}
 
 					private void primoClick() {
@@ -293,7 +347,7 @@ public class Scacchiera {
 						if (from != -1 && !(from == to) && condizioneSoddisfatta) {
 							int nPawns = posToPawn.get(to);
 							boolean merge = nPawns == 0 || !(isWhiteMove ^ (nPawns > 0 && nPawns < 12));
-							nPawnsSpostare = Math.abs(from / 4 - to / 4);	// se uguale a 0 sono sulla stessa riga
+							nPawnsSpostare = Math.abs(from / 4 - to / 4); // se uguale a 0 sono sulla stessa riga
 							if (!merge) { // sto attaccando
 								if (isWhiteMove)
 									nPawns -= 20;
@@ -347,7 +401,7 @@ public class Scacchiera {
 				panel.add(b);
 			}
 		}
-		f.getContentPane().add(panel);
+		f.getContentPane().add(panel, BorderLayout.CENTER);
 		f.setVisible(true);
 	} // show
 
