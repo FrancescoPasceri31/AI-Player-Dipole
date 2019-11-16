@@ -9,8 +9,9 @@ public class Node {
 	private double value = (new Random()).nextDouble();
 	private LinkedList<Node> sons = new LinkedList<Node>();
 	private Node parent;
+	private boolean isMax;
 
-	private int mc, ec;
+	private int mc, ec;	//mia configurazione e avversaria
 	private String mossa;
 	private HashMap<Byte, Byte> posToPawns;
 
@@ -73,6 +74,9 @@ public class Node {
 	public Node getParent() {
 		return parent;
 	}
+	public boolean hasValue(){
+		return getValue()>=0.0;
+	}
 
 	public HashMap<Byte, Byte> getPosToPawns() {
 		return posToPawns;
@@ -82,5 +86,20 @@ public class Node {
 	public String toString() {
 		return "(" + value + ", " + sons + ") ";
 	}
+
+	public boolean isMax() {
+		return this.isMax;
+	}
+
+	
+	public boolean equals(Node n) {		
+		return this.mc==n.mc && this.ec==n.ec;
+	}
+
+	public boolean leaf() {
+		return this.numSons()==0;
+	}
+	
+	
 
 }
