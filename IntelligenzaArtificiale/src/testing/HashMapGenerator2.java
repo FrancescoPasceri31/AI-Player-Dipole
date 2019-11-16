@@ -200,7 +200,7 @@ public class HashMapGenerator2 {
 		System.out.println();
 		System.out.println(Integer.toBinaryString(getMask(masksWhite, 0, 4, 0)));
 		System.out.println();
-		System.out.println(Arrays.toString(getOutLeastPawns(masksWhite, 31)));
+		System.out.println(Arrays.toString(getOutLeastPawns(masksWhite, (byte)31)));
 		System.out.println();
 		System.out.println();
 
@@ -241,12 +241,12 @@ public class HashMapGenerator2 {
 
 	}
 
-	static public int[] onesPosition(int l) {
+	static public byte[] onesPosition(int l) {
 		int n = Integer.bitCount(l);
-		int[] ret = new int[n];
+		byte[] ret = new byte[n];
 		int x = 0, y = l;
 		for (int i = 0; i < n; i++) {
-			ret[i] = 31 - Integer.numberOfLeadingZeros(y);
+			ret[i] = (byte)(31 - Integer.numberOfLeadingZeros(y));
 			x = Integer.highestOneBit(y);
 			// long x = (long) Math.pow(2, ret[i]);
 			y -= x;
@@ -255,7 +255,7 @@ public class HashMapGenerator2 {
 
 	}
 
-	static public int[] zerosPosition(int l) {
+	static public byte[] zerosPosition(int l) {
 		// long x = 4294967295L;
 		return onesPosition(~l);
 	}
@@ -277,7 +277,7 @@ public class HashMapGenerator2 {
 
 	// restituisce data la mappa(map) e la posizione(pos), il minimo numero di
 	// pedine che servono per uscire fuori dalla scacchiera
-	static public byte[] getOutLeastPawns(HashMap<Byte, Object[]> map, int pos) {
-		return new byte[] { (byte) ((Object[]) map.get((byte) pos))[0], (byte) ((Object[]) map.get((byte) pos))[1] };
+	static public byte[] getOutLeastPawns(HashMap<Byte, Object[]> map, byte pos) {
+		return new byte[] { (byte) ((Object[]) map.get((byte) pos))[0], (byte) ((Object[]) map.get(pos))[1] };
 	}
 }
