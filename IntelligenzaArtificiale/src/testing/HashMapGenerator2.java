@@ -198,7 +198,7 @@ public class HashMapGenerator2 {
 		printHash(masksBlack);
 		printHash(masksWhite);
 		System.out.println();
-		System.out.println(Integer.toBinaryString(getMask(masksWhite, 0, 4, 0)));
+		//System.out.println(Integer.toBinaryString(getMask(masksWhite, 0, 4, 0)));
 		System.out.println();
 		System.out.println(Arrays.toString(getOutLeastPawns(masksWhite, (byte)31)));
 		System.out.println();
@@ -270,9 +270,10 @@ public class HashMapGenerator2 {
 
 	// Restituisce una maschera data la mappa (map), la posizione(pos), il numero di
 	// pedine(pawns) e la direzione(a_d, 0 avanti, 1 dietro)
-	static public int getMask(HashMap<Byte, Object[]> map, int pos, int pawns, int a_d) {
-		return ((Integer[]) ((HashMap<Byte, Integer[]>) (((Object[]) (map.get((byte) pos)))[2]))
-				.get((byte) pawns))[a_d];
+	static public int[] getMask(HashMap<Byte, Object[]> map, int pos, int pawns) {
+		Integer[] ret=((Integer[]) ((HashMap<Byte, Integer[]>) (((Object[]) (map.get((byte) pos)))[2]))
+				.get((byte) pawns));
+		return new int[] {ret[0],ret[1]};
 	}
 
 	// restituisce data la mappa(map) e la posizione(pos), il minimo numero di

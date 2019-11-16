@@ -61,11 +61,11 @@ public class MovesGenerator {
 			// int p = HashMapGenerator2.getMask(masksWhite, miaPosizione, miePedine, 1); //
 			// maschera mossa posizione 17
 			// all'indietro
-
-			int m = HashMapGenerator2.getMask(masks, miaPosizione, miePedine, 0);
+			
+			int[] msk = HashMapGenerator2.getMask(masks, miaPosizione, miePedine);
+			int m = msk[0];
 			// avanti
-			int p = HashMapGenerator2.getMask(masks, miaPosizione, miePedine, 1);
-
+			int p = msk[1];
 			int r = m & (p | (~ec));
 
 			byte[] positions = HashMapGenerator2.zerosPosition(r);

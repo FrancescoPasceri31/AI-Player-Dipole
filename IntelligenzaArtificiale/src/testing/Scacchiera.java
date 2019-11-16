@@ -127,18 +127,20 @@ public class Scacchiera {
 					b.setBackground(BROWN);
 
 					String AV_bmask = "", IN_bmask = "", AV_wmask = "", IN_wmask = "";
-
+					
 					if (pawns > 0) {
 						if (pawns > 12) {
+							int[] msk = HashMapGenerator2.getMask(masksBlack, miaCella, pawns);
 							AV_bmask = Integer
-									.toBinaryString(HashMapGenerator2.getMask(masksBlack, miaCella, pawns, 0));
+									.toBinaryString(msk[0]);
 							IN_bmask = Integer
-									.toBinaryString(HashMapGenerator2.getMask(masksBlack, miaCella, pawns, 1));
+									.toBinaryString(msk[1]);
 						} else {
+							int[] msk = HashMapGenerator2.getMask(masksWhite, miaCella, pawns);
 							AV_wmask = Integer
-									.toBinaryString(HashMapGenerator2.getMask(masksWhite, miaCella, pawns, 0));
+									.toBinaryString(msk[0]);
 							IN_wmask = Integer
-									.toBinaryString(HashMapGenerator2.getMask(masksWhite, miaCella, pawns, 1));
+									.toBinaryString(msk[1]);
 						}
 
 						String textPos = "Posizione = " + cellPosition + " -> " + miaCella;
@@ -329,10 +331,9 @@ public class Scacchiera {
 							}
 
 							int en = Integer.parseUnsignedInt(enemy, 2);
-							int AV_mask = HashMapGenerator2.getMask((nPawns > 12 ? masksBlack : masksWhite), miaCella,
-									nPawns, 0);
-							int IN_mask = HashMapGenerator2.getMask((nPawns > 12 ? masksBlack : masksWhite), miaCella,
-									nPawns, 1);
+							int[] msk = HashMapGenerator2.getMask((nPawns > 12 ? masksBlack : masksWhite), miaCella, nPawns);
+							int AV_mask = msk[0];
+							int IN_mask = msk[1];
 
 							String maskTmpS = Integer.toBinaryString(AV_mask & (IN_mask | (~en)));
 							while (maskTmpS.length() < 32) {
