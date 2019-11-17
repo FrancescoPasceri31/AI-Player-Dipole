@@ -93,7 +93,7 @@ public class Node {
 
 	
 	public boolean equals(Node n) {		
-		return this.mc==n.mc && this.ec==n.ec;
+		return this.mc==n.mc && this.ec==n.ec && this.getParent().mc==n.getParent().mc && this.getParent().ec==n.getParent().ec;
 	}
 
 	public boolean leaf() {
