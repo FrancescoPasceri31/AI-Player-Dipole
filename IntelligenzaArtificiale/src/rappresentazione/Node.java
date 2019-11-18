@@ -9,7 +9,7 @@ public class Node {
 	private double value = (new Random()).nextDouble();
 	private LinkedList<Node> sons = new LinkedList<Node>();
 	private Node parent;
-	private boolean isMax;
+	private boolean isMax, hasValue=false;
 
 	private int mc, ec;	//mia configurazione e avversaria
 	private String mossa;
@@ -17,6 +17,7 @@ public class Node {
 
 	public Node(Node parent) {
 		this.parent = parent;
+		isMax = (parent==null)? true : !parent.isMax();
 	}
 
 	public double getValue() {
@@ -24,6 +25,7 @@ public class Node {
 	}
 
 	public void setValue(double value) {
+		hasValue = true;
 		this.value = value;
 	}
 
@@ -74,9 +76,6 @@ public class Node {
 	public Node getParent() {
 		return parent;
 	}
-	public boolean hasValue(){
-		return getValue()>=0.0;
-	}
 
 	public HashMap<Byte, Byte> getPosToPawns() {
 		return posToPawns;
@@ -98,6 +97,31 @@ public class Node {
 
 	public boolean leaf() {
 		return this.numSons()==0;
+	}
+
+	public LinkedList<Node> siblings() {
+		LinkedList<Node> ll = (LinkedList<Node>) parent.getSons().clone();
+		ll.remove(this);
+		return ll;
+		
+	}
+
+	public LinkedList<Node> ancestors() {	
+		LinkedList<Node> ll = new LinkedList<Node>();
+		Node p = this.getParent().getParent();
+		while(p!=null) {
+			ll.add(p);
+			p = p.getParent().getParent();
+		}
+		return ll;
+	}
+
+	public boolean hasValue() {
+		return hasValue;
+	}
+
+	public void reset() {
+		hasValue = false;
 	}
 	
 	
