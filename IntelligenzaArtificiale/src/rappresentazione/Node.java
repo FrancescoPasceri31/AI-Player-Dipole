@@ -123,6 +123,13 @@ public class Node {
 	public void reset() {
 		hasValue = false;
 	}
+
+	/**
+	 * DA CAMBIARE!!
+	 */
+	public boolean expandable() {
+		return false;
+	}
 	
 	
 

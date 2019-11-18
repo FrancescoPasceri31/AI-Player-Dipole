@@ -1,11 +1,9 @@
 package ricerca;
 
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Random;
 
-import rappresentazione.Tree;
 import rappresentazione.Node;
 
 public class Search {
@@ -39,13 +37,13 @@ public class Search {
 					}
 				}
 				if(!pruned) {
-					if(! p.isMax()) p.setValue(min(x.getValue(),p.getValue()));
-					else p.setValue(max(x.getValue(),p.getValue()));
+					if(! p.isMax()) p.setValue(Math.min(x.getValue(),p.getValue()));
+					else p.setValue(Math.max(x.getValue(),p.getValue()));
 					l.remove(x);
 				}
 			}else {
 				if(!x.hasValue() && (x.leaf() || !x.expandable())) {
-					x.setValue(/*calcola euristica*/);
+					x.setValue((new Random()).nextDouble());
 				}else {
 					if(x.isMax()) x.setValue(Double.MIN_VALUE);
 					else if(! x.isMax()) x.setValue(Double.MAX_VALUE);
@@ -57,6 +55,8 @@ public class Search {
 				}
 			}
 		}
+		
+		return null; 	// DA CAMBIARE!!
 	}
 
 	private double max(LinkedList<Node> siblings, LinkedList<Node> ancestors) {
