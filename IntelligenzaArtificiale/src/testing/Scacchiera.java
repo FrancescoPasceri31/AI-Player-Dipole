@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
+import rappresentazione.Node;
+
 public class Scacchiera {
 
 	private final Color BROWN = new Color(102,51,0);
@@ -418,7 +420,7 @@ public class Scacchiera {
 		f.getContentPane().add(panel, BorderLayout.CENTER);
 		f.setVisible(true);
 	} // show
-
+	
 } // scacchiera
 
 class Cella {
