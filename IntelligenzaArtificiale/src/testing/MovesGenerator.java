@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import rappresentazione.Node;
-import rappresentazione.Tree;
+import ricerca.Search;
 
 public class MovesGenerator {
 
@@ -18,8 +18,7 @@ public class MovesGenerator {
 	// private HashMap<Byte, Byte> posToPawn = null;
 	private Byte[] posToCol = { 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8,
 			6, 4, 2 };
-	private Tree t = new Tree();
-	private Node cur = t.getRoot();
+
 
 	public void init() throws Exception {
 
@@ -32,21 +31,31 @@ public class MovesGenerator {
 
 	}
 
-	public ArrayList<Integer> generateMoves(int mc, int ec, HashMap<Byte, Byte> posToPawn, boolean isWhite) {
+	public void generateMoves(Node root,boolean isWhite) {//(int mc, int ec, HashMap<Byte, Byte> posToPawn, boolean isWhite) {
+		
+		//Node root = new Node(null);
+		int mc;
+		int ec;
+		
+		if(isWhite) {
+			mc = root.getWc();
+			ec = root.getBc();
+		}else {
+			mc = root.getBc();
+			ec = root.getWc();
+		}
+		
+		HashMap<Byte, Byte> posToPawn = root.getPosToPawns();
 
 		byte[] myP = HashMapGenerator2.onesPosition(mc);
 
-		HashMap<Byte, Object[]> masks = null;
+		HashMap<Byte, Object[]> masks = masksBlack;
 		if (isWhite)
 			masks = masksWhite;
-		else
-			masks = masksBlack;
-
+		
+		//System.out.println(isWhite);
+		//HashMapGenerator2.printHash(masks);
 		for (int k = 0; k < myP.length; k++) {
-
-			System.out.println();
-			System.out.println("Mia posizione: " + myP[k]);
-			System.out.println();
 
 			byte miaPosizione = myP[k];
 			byte miaRiga = (byte) (miaPosizione / (byte) 4);
@@ -54,6 +63,10 @@ public class MovesGenerator {
 			ArrayList<Integer> ret = new ArrayList<Integer>();
 
 			byte miePedine = posToPawn.get(miaPosizione);
+			
+//			System.out.println();
+//			System.out.println("Mia posizione: " + myP[k]+" num pedine: "+miePedine+" "+Integer.toBinaryString(mc) );
+//			System.out.println();
 
 			// int m = HashMapGenerator2.getMask(masksWhite, miaPosizione, miePedine, 0); //
 			// maschera mossa posizione 17 in
@@ -61,7 +74,6 @@ public class MovesGenerator {
 			// int p = HashMapGenerator2.getMask(masksWhite, miaPosizione, miePedine, 1); //
 			// maschera mossa posizione 17
 			// all'indietro
-			
 			int[] msk = HashMapGenerator2.getMask(masks, miaPosizione, miePedine);
 			int m = msk[0];
 			// avanti
@@ -88,7 +100,7 @@ public class MovesGenerator {
 
 				rigaAvversario = (byte) (positions[j] / 4);
 				numPedine = posFiglio.get(positions[j]);
-				System.out.println("posizione: " + positions[j] + ", numero pedine: " + numPedine);
+				//System.out.println("posizione: " + positions[j] + ", numero pedine: " + numPedine);
 				merge = numPedine == 0 || !(isWhite ^ (numPedine > 0 && numPedine <= 12));
 				byte numPedineDaSpostare = (byte) Math.abs(miaRiga - rigaAvversario);
 
@@ -106,7 +118,7 @@ public class MovesGenerator {
 															// orizzontale
 						posFiglio.put(miaPosizione, (byte) (n - (!isWhite && n == 20 ? 20 : 0)));
 						posFiglio.put(positions[j], (byte) (isWhite ? numPedineDaSpostare : numPedineDaSpostare + 20));
-						System.out.println("attacco: " + posFiglio);
+						//System.out.println("attacco: " + posFiglio);
 
 						ecr = ecr ^ (1 << positions[j]);
 						mcr = mcr | (1 << positions[j]);
@@ -114,7 +126,7 @@ public class MovesGenerator {
 						if (n == 0)
 							mcr = mcr ^ (1 << miaPosizione);
 
-						t.createSons();
+						root.addSon(new Node(root,mcr,ecr,posFiglio));
 
 						// System.out.println(Integer.toBinaryString(mc));
 						// System.out.println(Integer.toBinaryString(mcr));
@@ -125,14 +137,14 @@ public class MovesGenerator {
 					posFiglio.put(miaPosizione, (byte) (n - (!isWhite && n == 20 ? 20 : 0)));
 					posFiglio.put(positions[j],
 							(byte) (numPedine + numPedineDaSpostare + (!isWhite && numPedine == 0 ? 20 : 0)));
-					System.out.println("merge: " + posFiglio);
+					//System.out.println("merge: " + posFiglio);
 
 					mcr = mcr | (1 << positions[j]);
 
 					if (posFiglio.get(miaPosizione) == 0)
 						mcr = mcr ^ (1 << miaPosizione);
 
-					t.createSons();
+					root.addSon(new Node(root,mcr,ecr,posFiglio));
 
 					// System.out.println(Integer.toBinaryString(mc));
 					// System.out.println(Integer.toBinaryString(mcr));
@@ -146,7 +158,7 @@ public class MovesGenerator {
 
 			posFiglio = (HashMap<Byte, Byte>) posToPawn.clone();
 
-			System.out.println("mie pedine: " + miePedine);
+			//System.out.println("mie pedine: " + miePedine);
 
 			mcr = mc;
 
@@ -160,13 +172,13 @@ public class MovesGenerator {
 				// genero configurazione in cui tolgo tutto fuori
 				mcr = mcr ^ (1 << miaPosizione);
 
-				t.createSons();
+				root.addSon(new Node(root,mcr,ec,posFiglio));
 				// System.out.println(Integer.toBinaryString(mc));
 				// System.out.println(Integer.toBinaryString(mcr));
 				// System.out.println();
 
 				posFiglio.put(miaPosizione, (byte) 0);
-				System.out.println("tolgo " + miePedine + " NW: " + posFiglio);
+				//System.out.println("tolgo " + miePedine + " NW: " + posFiglio);
 
 				for (; numPDT > 0; numPDT--) {
 					posFiglio = (HashMap<Byte, Byte>) posToPawn.clone();
@@ -176,8 +188,8 @@ public class MovesGenerator {
 					// System.out.println(Integer.toBinaryString(mcr));
 					// System.out.println();
 					posFiglio.put(miaPosizione, (byte) (numPDT + (!isWhite ? 20 : 0)));
-					System.out.println("tolgo " + (miePedine - numPDT) + " NW: " + posFiglio);
-					t.createSons();
+					//System.out.println("tolgo " + (miePedine - numPDT) + " NW: " + posFiglio);
+					root.addSon(new Node(root,mcr,ec,posFiglio));
 				}
 
 			}
@@ -193,10 +205,10 @@ public class MovesGenerator {
 				// System.out.println(Integer.toBinaryString(mc));
 				// System.out.println(Integer.toBinaryString(mcr));
 				// System.out.println();
-				t.createSons();
+				root.addSon(new Node(root,mcr,ec,posFiglio));
 
 				posFiglio.put(miaPosizione, (byte) 0);
-				System.out.println("tolgo " + miePedine + " NE: " + posFiglio);
+				//System.out.println("tolgo " + miePedine + " NE: " + posFiglio);
 
 				for (; numPDT > 0; numPDT--) {
 					posFiglio = (HashMap<Byte, Byte>) posToPawn.clone();
@@ -206,13 +218,12 @@ public class MovesGenerator {
 					// System.out.println(Integer.toBinaryString(mcr));
 					// System.out.println();
 					posFiglio.put(miaPosizione, (byte) (numPDT + (!isWhite ? 20 : 0)));
-					System.out.println("tolgo " + (miePedine - numPDT) + " NE: " + posFiglio);
-					t.createSons();
+					//System.out.println("tolgo " + (miePedine - numPDT) + " NE: " + posFiglio);
+					root.addSon(new Node(root,mcr,ec,posFiglio));
 				}
 			}
 
 		}
-		return null;
 
 	}
 
@@ -229,11 +240,8 @@ public class MovesGenerator {
 
 	}
 
-	public void printTree() {
-		System.out.println(t);
-	}
-
 	public static void main(String[] args) throws Exception, IOException {
+		
 
 		HashMap<Byte, Byte> posToPawn = new HashMap<Byte, Byte>();
 		for (int i = 0; i < 32; i++) {
@@ -244,18 +252,30 @@ public class MovesGenerator {
 			else
 				posToPawn.put((byte) i, (byte) 0);
 		}
+		
+		long t = System.currentTimeMillis();
 
 		MovesGenerator mg = new MovesGenerator();
 		mg.init();
 
-		int mc = mg.createConfig(posToPawn, false);
-		int ec = mg.createConfig(posToPawn, true);
+		int bc = mg.createConfig(posToPawn, false);
+		int wc = mg.createConfig(posToPawn, true);
 
-		long t = System.currentTimeMillis();
-		mg.generateMoves(mc, ec, posToPawn, false);
-		// mg.printTree();
-
-		System.out.println(System.currentTimeMillis() - t);
-
+		Node root = new Node(null, bc, wc, posToPawn);
+		mg.generateMoves(root, false);
+		//System.out.println(root.getSons().size());
+		
+		for(Node n: root.getSons()) {
+			mg.generateMoves(n, true);
+		}
+		
+		System.out.println("num nodi tot: "+root.getSize());
+		Search s = new Search();
+		Node ret = s.search(root);
+		System.out.println((System.currentTimeMillis() - t)/1000.0);
+		System.out.println(ret.getId());
+		System.out.println(ret.hasValue());
+		System.out.println(ret.getValue());
+		
 	}
 }

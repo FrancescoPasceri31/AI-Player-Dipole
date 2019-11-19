@@ -9,14 +9,18 @@ import rappresentazione.Node;
 public class Search {
 	
 	public Node search(Node t) {
+		int z = 0;
 		LinkedList<Node> l = new LinkedList();  //va settata più grande
 		l.add(t);
 		double alpha = Double.MIN_VALUE, beta = Double.MAX_VALUE;
+		int p_min =0 ,p_max = 0, not_pruned =0;
 		
 		while(!l.isEmpty()) {
+			z++;
 			Node x = l.getFirst(); 
-			if(x.equals(t) && x.hasValue()) return x; //Perchè lo stiamo ritornando? Se c'è dobbiamo andare avanti, altrimenti passiamo al prossimo
+			if(x.equals(t) && x.hasValue()) {System.out.println("iterazioni: "+z+"\npruned min: "+p_min+"\npruned max: "+p_max+"\nnot pruned: "+not_pruned); return x;} //Perchè lo stiamo ritornando? Se c'è dobbiamo andare avanti, altrimenti passiamo al prossimo
 			if(x.hasValue()) {
+				//System.out.println(x.getId()+" "+x.getValue());
 				Node p = x.getParent();
 				boolean pruned = false;
 				
@@ -26,6 +30,7 @@ public class Search {
 						for(Node n: p.getSons()) l.remove(n);
 						l.remove(p);
 						pruned = true;
+						p_min++;
 					}
 					
 				}else if( p.isMax()) {
@@ -34,16 +39,19 @@ public class Search {
 						for(Node n: p.getSons()) l.remove(n);
 						l.remove(p);
 						pruned = true;
+						p_max++;
 					}
 				}
 				if(!pruned) {
+					not_pruned++;
 					if(! p.isMax()) p.setValue(Math.min(x.getValue(),p.getValue()));
 					else p.setValue(Math.max(x.getValue(),p.getValue()));
 					l.remove(x);
 				}
 			}else {
 				if(!x.hasValue() && (x.leaf() || !x.expandable())) {
-					x.setValue((new Random()).nextDouble());
+					//x.setValue((new Random()).nextDouble());
+					x.setValue(1000-z);
 				}else {
 					if(x.isMax()) x.setValue(Double.MIN_VALUE);
 					else if(! x.isMax()) x.setValue(Double.MAX_VALUE);
@@ -52,6 +60,7 @@ public class Search {
 						l.add(i, n);
 						i++;
 					}
+					//System.out.println(l);
 				}
 			}
 		}
@@ -67,9 +76,11 @@ public class Search {
 			}
 		}
 		
-		for (Node node : ancestors) {
-			if(node.hasValue() && node.getValue()>max) {
-				max = node.getValue();
+		if(siblings!=null) {
+			for (Node node : siblings) {
+				if(node.hasValue() && node.getValue()>max) {
+					max = node.getValue();
+				}
 			}
 		}
 		return max;
@@ -83,9 +94,11 @@ public class Search {
 			}
 		}
 		
-		for (Node node : ancestors) {
-			if(node.hasValue() && node.getValue()<min) {
-				min = node.getValue();
+		if(siblings!=null) {
+			for (Node node : siblings) {
+				if(node.hasValue() && node.getValue()<min) {
+					min = node.getValue();
+				}
 			}
 		}
 		return min;

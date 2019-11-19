@@ -273,6 +273,7 @@ public class HashMapGenerator2 {
 	static public int[] getMask(HashMap<Byte, Object[]> map, int pos, int pawns) {
 		Integer[] ret=((Integer[]) ((HashMap<Byte, Integer[]>) (((Object[]) (map.get((byte) pos)))[2]))
 				.get((byte) pawns));
+		//System.out.println(ret);
 		return new int[] {ret[0],ret[1]};
 	}
 

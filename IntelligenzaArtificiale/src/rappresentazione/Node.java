@@ -5,19 +5,33 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class Node {
-
+	
+	
+	private static int gid = 0;
+	private int id;
 	private double value = (new Random()).nextDouble();
 	private LinkedList<Node> sons = new LinkedList<Node>();
 	private Node parent;
 	private boolean isMax, hasValue=false;
+	private static int size = 0;
 
-	private int mc, ec;	//mia configurazione e avversaria
+	private int bc, wc;	//mia configurazione e avversaria
 	private String mossa;
 	private HashMap<Byte, Byte> posToPawns;
+	
 
-	public Node(Node parent) {
+	public Node(Node parent, int bc, int wc, HashMap<Byte, Byte> posToPawns) {
 		this.parent = parent;
+		this.bc = bc;
+		this.wc = wc;
+		this.posToPawns = posToPawns;
 		isMax = (parent==null)? true : !parent.isMax();
+		id = gid++;
+		size++;
+	}
+	
+	public int getSize() {
+		return size;
 	}
 
 	public double getValue() {
@@ -27,6 +41,10 @@ public class Node {
 	public void setValue(double value) {
 		hasValue = true;
 		this.value = value;
+	}
+	
+	public void addSon(Node n) {
+		sons.add(n);
 	}
 
 	public LinkedList<Node> getSons() {
@@ -41,12 +59,12 @@ public class Node {
 		return sons.size();
 	}
 
-	public void setEc(int ec) {
-		this.ec = ec;
+	public void setWc(int wc) {
+		this.wc = wc;
 	}
 
-	public void setMc(int mc) {
-		this.mc = mc;
+	public void setBc(int bc) {
+		this.bc = bc;
 	}
 
 	public void setMossa(String mossa) {
@@ -61,12 +79,12 @@ public class Node {
 		this.posToPawns = (HashMap<Byte, Byte>) posToPawns.clone();
 	}
 
-	public int getEc() {
-		return ec;
+	public int getWc() {
+		return wc;
 	}
 
-	public int getMc() {
-		return mc;
+	public int getBc() {
+		return bc;
 	}
 
 	public String getMossa() {
@@ -83,7 +101,8 @@ public class Node {
 
 	@Override
 	public String toString() {
-		return "(" + value + ", " + sons + ") ";
+		//return "(" + value + ", " + sons + ") ";
+		return "(" + id + ") ";
 	}
 
 	public boolean isMax() {
@@ -92,7 +111,8 @@ public class Node {
 
 	
 	public boolean equals(Node n) {		
-		return this.mc==n.mc && this.ec==n.ec && this.getParent().mc==n.getParent().mc && this.getParent().ec==n.getParent().ec;
+		//return this.mc==n.mc && this.ec==n.ec && this.getParent().mc==n.getParent().mc && this.getParent().ec==n.getParent().ec;
+		return id == n.getId();
 	}
 
 	public boolean leaf() {
@@ -100,6 +120,7 @@ public class Node {
 	}
 
 	public LinkedList<Node> siblings() {
+		if(getParent()==null)return null;
 		LinkedList<Node> ll = (LinkedList<Node>) parent.getSons().clone();
 		ll.remove(this);
 		return ll;
@@ -108,10 +129,11 @@ public class Node {
 
 	public LinkedList<Node> ancestors() {	
 		LinkedList<Node> ll = new LinkedList<Node>();
-		Node p = this.getParent().getParent();
+		Node p = this.getParent();
 		while(p!=null) {
-			ll.add(p);
-			p = p.getParent().getParent();
+				if(!(isMax ^ p.isMax)) 
+					ll.add(p);
+				p = p.getParent();
 		}
 		return ll;
 	}
@@ -123,12 +145,16 @@ public class Node {
 	public void reset() {
 		hasValue = false;
 	}
+	
+	public int getId() {
+		return id;
+	}
 
 	/**
 	 * DA CAMBIARE!!
 	 */
 	public boolean expandable() {
-		return false;
+		return true;
 	}
 	
 	
