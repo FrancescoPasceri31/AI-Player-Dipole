@@ -22,13 +22,39 @@ public class BoardMap {
 			'B', 'W', 'B', 'W', 'B', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B',
 			'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W', };
 
-	private static LinkedList<JFrame> opened = new LinkedList<JFrame>();
+	private static LinkedList<BoardMap> opened = new LinkedList<BoardMap>();
+
+	private Node n;
+	private JFrame f;
+
+	public Node getNode() {
+		return n;
+	}
+
+	public JFrame getFrame() {
+		return f;
+	}
 
 	public void createFrameBoard(Node n) {
 		for (int i = 0; i < opened.size(); i++) {
-			opened.get(i).dispose();
+			boolean isMyAncestor = false;
+			Node node = opened.get(i).getNode();
+			Node myAncestor = n.getParent();
+			while (node != null) {
+				while (myAncestor != null) {
+					if (myAncestor.getId() == node.getId()) {
+						isMyAncestor = true;
+					}
+					myAncestor = myAncestor.getParent();
+				}
+				node = node.getParent();
+			}
+			if (!isMyAncestor) {
+				(opened.get(i).getFrame()).dispose();
+			}
 		}
 
+		this.n = n;
 		JFrame frame = new JFrame("Board " + n.getId());
 //		int whiteConf = n.getWc();
 //		int blackConf = n.getBc();
@@ -56,8 +82,10 @@ public class BoardMap {
 			panel.add(b);
 		}
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
-		opened.add(frame);
 		frame.setVisible(true);
+
+		this.f = frame;
+		opened.add(this);
 	}
 
 	public static void main(String[] args) throws Exception {
