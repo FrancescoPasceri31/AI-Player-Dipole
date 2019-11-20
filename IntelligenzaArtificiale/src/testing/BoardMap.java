@@ -107,9 +107,12 @@ public class BoardMap {
 		int bc = mg.createConfig(posToPawn, false);
 		int wc = mg.createConfig(posToPawn, true);
 		Node root = new Node(null, bc, wc, posToPawn);
-		mg.generateMoves(root, false);
+	
+//		generateMovesRecursive(mg, root, false, 0, 2);
+		
+		mg.generateMoves(root, true);
 		for (Node n : root.getSons()) {
-			mg.generateMoves(n, true);
+			mg.generateMoves(n, false);
 		}
 
 		/* CREO LE VARIE SCACCHIERE CON DEEP FIRST */
@@ -129,5 +132,14 @@ public class BoardMap {
 			sc.nextLine();
 		}
 		sc.close();
+	}
+	
+	/* liv: indica il livello attuale, limite: il livello max di generazione */
+	private static void generateMovesRecursive(MovesGenerator mg ,Node n, boolean isWhite, int liv, int limite) {
+		if(liv==limite) return;
+		mg.generateMoves(n, isWhite);
+		for(Node son : n.getSons()) {
+			generateMovesRecursive(mg, son, !isWhite, liv++, limite);
+		}
 	}
 }

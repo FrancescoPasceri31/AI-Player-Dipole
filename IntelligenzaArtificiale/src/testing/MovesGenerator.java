@@ -49,12 +49,12 @@ public class MovesGenerator {
 
 		byte[] myP = HashMapGenerator2.onesPosition(mc);
 
-		HashMap<Byte, Object[]> masks = masksBlack;
-		if (isWhite)
-			masks = masksWhite;
+		HashMap<Byte, Object[]> masks = null;
+		masks = isWhite? masksWhite : masksBlack;
 		
-		//System.out.println(isWhite);
-		//HashMapGenerator2.printHash(masks);
+//		System.out.println(isWhite);
+//		HashMapGenerator2.printHash(masks);
+	
 		for (int k = 0; k < myP.length; k++) {
 
 			byte miaPosizione = myP[k];
@@ -74,6 +74,9 @@ public class MovesGenerator {
 			// int p = HashMapGenerator2.getMask(masksWhite, miaPosizione, miePedine, 1); //
 			// maschera mossa posizione 17
 			// all'indietro
+			
+			
+			
 			int[] msk = HashMapGenerator2.getMask(masks, miaPosizione, miePedine);
 			int m = msk[0];
 			// avanti
