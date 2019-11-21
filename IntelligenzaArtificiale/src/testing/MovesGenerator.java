@@ -285,7 +285,9 @@ public class MovesGenerator {
 
 		Node root = new Node(null, bc, wc, posToPawn,"");
 		
-		generateMovesRecursive(mg, root, false, 0, 3);
+		generateMovesRecursive(mg, root, false, 0, 1);
+		
+		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
 		
 /*		mg.generateMoves(root, false);
 //		System.out.println(root.getSons().size());
@@ -316,7 +318,7 @@ public class MovesGenerator {
 		for(int i=0; i<liv; i++) {
 			System.out.print("\t");
 		}
-	    System.out.println((isWhite? "BLACK" : "WHITE")+"_TURN"+n.toString()+" --> "+ n.getPosToPawns());
+	    //System.out.println((isWhite? "BLACK" : "WHITE")+"_TURN"+n.toString()+" --> "+ n.getPosToPawns());
 		
 		for(Node son : n.getSons()) {
 			generateMovesRecursive(mg, son, !isWhite, liv+1, limite);

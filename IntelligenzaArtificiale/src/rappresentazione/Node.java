@@ -1,7 +1,9 @@
 package rappresentazione;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public class Node {
@@ -172,6 +174,35 @@ public class Node {
 	public boolean expandable() {
 		return true;
 	}
+	
+	public static String generateGenericVerbose(Node node, String prefix, boolean isRightMost, boolean isLeftMost, StringBuilder sb) {
+        int halfSize = (node.getSons().size() + 1) / 2;
+        List<Node> children = new ArrayList<>(node.getSons());
+        for (int i = children.size() - 1 ; i >= halfSize; i--) {
+            Node child = children.get(i);
+            generateGenericVerbose(child, 
+                    prefix + (isRightMost && !isLeftMost ? "    " : "│   "), 
+                    child.equals(children.get(node.getSons().size()-1)) ? true : false,
+                    child.equals(children.get(0))  ? true : false,
+                    sb);
+        }
+        sb.append(prefix).
+        append(isRightMost && isLeftMost ? "└── " : "").
+        append(isRightMost && !isLeftMost  ? "┌── " : "").
+        append(isLeftMost  && !isRightMost ? "└── " : "").
+        append(!isRightMost && !isLeftMost ? "├── " : "").
+        append(node.toString()).
+        append("\n");
+        for (int i = halfSize - 1; i >= 0; i--) {
+            Node child = children.get(i);
+            generateGenericVerbose(children.get(i), 
+                    prefix + (isLeftMost ? "    " : "│   "),
+                    child.equals(children.get(node.getSons().size()-1))? true : false,
+                    child.equals(children.get(0))  ? true : false,
+                    sb);
+        }
+        return sb.toString();
+    }
 	
 	
 
