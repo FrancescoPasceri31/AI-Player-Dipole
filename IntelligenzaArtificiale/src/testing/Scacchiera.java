@@ -18,11 +18,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
-import rappresentazione.Node;
-
 public class Scacchiera {
 
-	private final Color BROWN = new Color(102,51,0);
+	private final Color BROWN = new Color(102, 51, 0);
 
 	private HashMap<Byte, String> posToCell = null;
 	private HashMap<String, Byte> cellToPos = null;
@@ -46,8 +44,7 @@ public class Scacchiera {
 	private static Byte[] posToCol = { 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3,
 			1, 8, 6, 4, 2 };
 
-	@SuppressWarnings("unchecked")
-	public void init() throws Exception, Exception {
+	public Scacchiera() {
 		int pos = 0;
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[0].length; j++) {
@@ -56,7 +53,9 @@ public class Scacchiera {
 				pos++;
 			}
 		}
+	}
 
+	public void init() throws Exception, Exception {
 		ObjectInputStream i = new ObjectInputStream(new FileInputStream("hashMaps"));
 		posToCell = (HashMap<Byte, String>) i.readObject();
 		cellToPos = (HashMap<String, Byte>) i.readObject();
@@ -129,20 +128,16 @@ public class Scacchiera {
 					b.setBackground(BROWN);
 
 					String AV_bmask = "", IN_bmask = "", AV_wmask = "", IN_wmask = "";
-					
+
 					if (pawns > 0) {
 						if (pawns > 12) {
 							int[] msk = HashMapGenerator2.getMask(masksBlack, miaCella, pawns);
-							AV_bmask = Integer
-									.toBinaryString(msk[0]);
-							IN_bmask = Integer
-									.toBinaryString(msk[1]);
+							AV_bmask = Integer.toBinaryString(msk[0]);
+							IN_bmask = Integer.toBinaryString(msk[1]);
 						} else {
 							int[] msk = HashMapGenerator2.getMask(masksWhite, miaCella, pawns);
-							AV_wmask = Integer
-									.toBinaryString(msk[0]);
-							IN_wmask = Integer
-									.toBinaryString(msk[1]);
+							AV_wmask = Integer.toBinaryString(msk[0]);
+							IN_wmask = Integer.toBinaryString(msk[1]);
 						}
 
 						String textPos = "Posizione = " + cellPosition + " -> " + miaCella;
@@ -200,7 +195,7 @@ public class Scacchiera {
 								if (b.getBackground().equals(BROWN)) {
 									if (!selected) {
 										primoClick();
-										//selected = true;
+										// selected = true;
 									} else if (selected) {
 										secondoClick();
 										selected = false;
@@ -317,7 +312,7 @@ public class Scacchiera {
 						Component[] jbuttons = panel.getComponents();
 						int nPawns = posToPawn.get((byte) miaCella);
 						if (nPawns > 0) {
-							selected  = true;
+							selected = true;
 							from = (byte) miaCella;
 							isWhiteMove = nPawns <= 12;
 
@@ -333,7 +328,8 @@ public class Scacchiera {
 							}
 
 							int en = Integer.parseUnsignedInt(enemy, 2);
-							int[] msk = HashMapGenerator2.getMask((nPawns > 12 ? masksBlack : masksWhite), miaCella, nPawns);
+							int[] msk = HashMapGenerator2.getMask((nPawns > 12 ? masksBlack : masksWhite), miaCella,
+									nPawns);
 							int AV_mask = msk[0];
 							int IN_mask = msk[1];
 
@@ -420,7 +416,7 @@ public class Scacchiera {
 		f.getContentPane().add(panel, BorderLayout.CENTER);
 		f.setVisible(true);
 	} // show
-	
+
 } // scacchiera
 
 class Cella {

@@ -106,7 +106,7 @@ public class BoardMap {
 		mg.init();
 		int bc = mg.createConfig(posToPawn, false);
 		int wc = mg.createConfig(posToPawn, true);
-		Node root = new Node(null, bc, wc, posToPawn);
+		Node root = new Node(null, bc, wc, posToPawn,"");
 	
 //		generateMovesRecursive(mg, root, false, 0, 2);
 		

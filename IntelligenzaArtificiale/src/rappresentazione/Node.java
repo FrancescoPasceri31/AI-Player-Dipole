@@ -20,11 +20,12 @@ public class Node {
 	private HashMap<Byte, Byte> posToPawns;
 	
 
-	public Node(Node parent, int bc, int wc, HashMap<Byte, Byte> posToPawns) {
+	public Node(Node parent, int bc, int wc, HashMap<Byte, Byte> posToPawns, String mossa) {
 		this.parent = parent;
 		this.bc = bc;
 		this.wc = wc;
 		this.posToPawns = posToPawns;
+		this.mossa=mossa;
 		isMax = (parent==null)? true : !parent.isMax();
 		id = gid++;
 		size++;
@@ -34,12 +35,15 @@ public class Node {
 		return size;
 	}
 
+	public void setHasValue(boolean hasValue) {
+		this.hasValue=hasValue;
+	}
+	
 	public double getValue() {
 		return value;
 	}
 
 	public void setValue(double value) {
-		hasValue = true;
 		this.value = value;
 	}
 	
@@ -111,7 +115,6 @@ public class Node {
 
 	
 	public boolean equals(Node n) {		
-		//return this.mc==n.mc && this.ec==n.ec && this.getParent().mc==n.getParent().mc && this.getParent().ec==n.getParent().ec;
 		return id == n.getId();
 	}
 
@@ -120,21 +123,27 @@ public class Node {
 	}
 
 	public LinkedList<Node> siblings() {
-		if(getParent()==null)return null;
+		if(parent==null)return null;
 		LinkedList<Node> ll = (LinkedList<Node>) parent.getSons().clone();
 		ll.remove(this);
+		
+//		System.out.println("siblings di "+ this.getId() +" -> "+ll);
+		
 		return ll;
 		
 	}
 
 	public LinkedList<Node> ancestors() {	
 		LinkedList<Node> ll = new LinkedList<Node>();
-		Node p = this.getParent();
+		Node p = parent;
 		while(p!=null) {
 				if(!(isMax ^ p.isMax)) 
 					ll.add(p);
 				p = p.getParent();
 		}
+		
+//		System.out.println("ancestors di "+ this.getId() +" -> "+ll);
+		
 		return ll;
 	}
 

@@ -14,13 +14,16 @@ public class Search {
 		l.add(t);
 		double alpha = Double.MIN_VALUE, beta = Double.MAX_VALUE;
 		int p_min =0 ,p_max = 0, not_pruned =0;
-		
+		Node best=null;
+		double m; 		// valore del miglior figlio
 		while(!l.isEmpty()) {
 			z++;
 			Node x = l.getFirst(); 
-			if(x.equals(t) && x.hasValue()) {System.out.println("iterazioni: "+z+"\npruned min: "+p_min+"\npruned max: "+p_max+"\nnot pruned: "+not_pruned); return x;} //Perchè lo stiamo ritornando? Se c'è dobbiamo andare avanti, altrimenti passiamo al prossimo
+			if(x.equals(t) && x.hasValue()) {
+//				System.out.println("iterazioni: "+z+"\npruned min: "+p_min+"\npruned max: "+p_max+"\nnot pruned: "+not_pruned); 
+				return best;
+			}
 			if(x.hasValue()) {
-				//System.out.println(x.getId()+" "+x.getValue());
 				Node p = x.getParent();
 				boolean pruned = false;
 				
@@ -44,14 +47,24 @@ public class Search {
 				}
 				if(!pruned) {
 					not_pruned++;
-					if(! p.isMax()) p.setValue(Math.min(x.getValue(),p.getValue()));
-					else p.setValue(Math.max(x.getValue(),p.getValue()));
+					if(! p.isMax()) {
+						p.setValue(Math.min(x.getValue(),p.getValue()));
+					}
+					else {
+						m = Math.max(x.getValue(),p.getValue());
+						p.setValue(m);
+						if( p.equals(t) &&  m==x.getValue()) {
+							best=x;
+						}
+					}
+					p.setHasValue(true);
 					l.remove(x);
 				}
 			}else {
 				if(!x.hasValue() && (x.leaf() || !x.expandable())) {
 					//x.setValue((new Random()).nextDouble());
 					x.setValue(1000-z);
+					x.setHasValue(true);
 				}else {
 					if(x.isMax()) x.setValue(Double.MIN_VALUE);
 					else if(! x.isMax()) x.setValue(Double.MAX_VALUE);
@@ -64,7 +77,6 @@ public class Search {
 				}
 			}
 		}
-		
 		return null; 	// DA CAMBIARE!!
 	}
 
