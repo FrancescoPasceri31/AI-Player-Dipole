@@ -1,13 +1,10 @@
 package testing;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import rappresentazione.Node;
-import ricerca.Search;
 
 public class MovesGenerator {
 
@@ -35,7 +32,6 @@ public class MovesGenerator {
 
 	public void generateMoves(Node root,boolean isWhite) {//(int mc, int ec, HashMap<Byte, Byte> posToPawn, boolean isWhite) {
 
-		//Node root = new Node(null);
 		int mc;
 		int ec;
 		
@@ -104,7 +100,7 @@ public class MovesGenerator {
 					numPedineDaSpostare = (byte) Math.abs(posToCol[miaPosizione] - posToCol[positions[j]]);
 				}
 				
-				byte n = (byte) (miePedine - numPedineDaSpostare);
+				byte numPedineRimanenti = (byte) (miePedine - numPedineDaSpostare);
 
 				if (!merge) { // sto attaccando
 					if (isWhite) {
@@ -112,13 +108,13 @@ public class MovesGenerator {
 					}
 					if (numPedineDaSpostare >= numPedineDestinazione) {
 
-						posFiglio.put(miaPosizione, (byte) (n - (!isWhite && n == 20 ? 20 : 0)));
+						posFiglio.put(miaPosizione, (byte) (numPedineRimanenti - (!isWhite && numPedineRimanenti == 20 ? 20 : 0)));
 						posFiglio.put(positions[j], (byte) (isWhite ? numPedineDaSpostare : numPedineDaSpostare + 20));
 
 						ecr = ecr ^ (1 << positions[j]);
 						mcr = mcr | (1 << positions[j]);
 
-						if (n == 0)
+						if (numPedineRimanenti == 0 || numPedineRimanenti == 20)
 							mcr = mcr ^ (1 << miaPosizione);
 
 						if(isWhite) {
@@ -134,7 +130,7 @@ public class MovesGenerator {
 					}
 				} else {
 					
-					posFiglio.put(miaPosizione, (byte) (n - (!isWhite && n == 20 ? 20 : 0)));
+					posFiglio.put(miaPosizione, (byte) (numPedineRimanenti - (!isWhite && numPedineRimanenti == 20 ? 20 : 0)));
 					posFiglio.put(positions[j],
 							(byte) (numPedineDestinazione + numPedineDaSpostare + (!isWhite && numPedineDestinazione == 0 ? 20 : 0)));
 
@@ -267,7 +263,7 @@ public class MovesGenerator {
 
 	}
 
-	public static void main(String[] args) throws Exception, IOException {
+	public static void main(String[] args) {
 		
 
 		HashMap<Byte, Byte> posToPawn = new HashMap<Byte, Byte>();
@@ -280,19 +276,25 @@ public class MovesGenerator {
 				posToPawn.put((byte) i, (byte) 0);
 		}
 		
-		long t = System.currentTimeMillis();
-
 		MovesGenerator mg = new MovesGenerator();
-		mg.init();
+		try {
+			mg.init();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 
 		int bc = mg.createConfig(posToPawn, false);
 		int wc = mg.createConfig(posToPawn, true);
 
+		long tstart = System.currentTimeMillis();
+		
 		Node root = new Node(null, bc, wc, posToPawn,"");
+		generateMovesRecursive(mg, root, false, 0, 5);
+
+		long tend = System.currentTimeMillis();
+		System.out.println("tempo generazione 3 livelli -> "+ (tend - tstart)/1000.0 + "\n\n");
 		
-		generateMovesRecursive(mg, root, false, 0, 3);
-		
-		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
+//		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
 		
 		/*
 		 ********************************************************************************************************************************* 
@@ -304,38 +306,41 @@ public class MovesGenerator {
 		 *********************************************************************************************************************************
 		 *********************************************************************************************************************************
 		 * */
-		Search s = new Search();
-		Node ret = s.search(root);
 		
-//		System.out.println((System.currentTimeMillis() - t)/1000.0);
-//		System.out.println(ret.getId());
-//		System.out.println(ret.hasValue());
-//		System.out.println(ret.getValue());
-//		System.out.println(ret.getMossa());
+
+//		tstart = System.currentTimeMillis();
+//		Search s = new Search();
+//		Node ret = s.search(root);
+//		tend = System.currentTimeMillis();
+//		System.out.println("tempo search 3 livelli -> "+ (tend - tstart)/1000.0);
 	}
 	
 	private static void generateMovesRecursive(MovesGenerator mg ,Node n, boolean isWhite, int liv, int limite) {
-		if(liv==limite || n == null) return;
-		mg.generateMoves(n, isWhite);
-		
-		//for(int i=0; i<liv; i++) {
-		//	System.out.print("\t");
-		//}
-	    //System.out.println((isWhite? "BLACK" : "WHITE")+"_TURN"+n.toString()+" --> "+ n.getPosToPawns());
-		
-		for(Node son : n.getSons()) {
-			generateMovesRecursive(mg, son, !isWhite, liv+1, limite);
-		}
+			if(liv==limite || n == null) return;
+			mg.generateMoves(n, isWhite);
+			
+/*			for(int i=0; i<liv; i++) {
+				System.out.print("\t");
+			}
+		    System.out.println((isWhite? "BLACK" : "WHITE")+"_TURN"+n.toString()+" --> "+ n.getPosToPawns());
+*/			
+			for(Node son : n.getSons()) {
+				generateMovesRecursive(mg, son, !isWhite, liv+1, limite);
+			}
 	}
 
 	/**
 	 * METODO STAMPA
 	 * */
-//	private void metodoStampaFrancesco() {
+//	private static void metodoStampaTree(Node n, int liv) {
 //		for(int i=0; i<liv; i++) {
 //			System.out.print("\t");
 //		}
-//	    System.out.println((isWhite? "BLACK" : "WHITE")+"_TURN"+n.toString()+" --> "+ n.getPosToPawns());
+//	    System.out.println( "TURN"+n.toString()+" --> "+ n.getPosToPawns() );
+//	    
+//	    for(Node son : n.getSons()) {
+//	    	metodoStampaTree(son, liv+1);
+//	    }
 //	}
 
 }

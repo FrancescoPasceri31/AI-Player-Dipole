@@ -22,6 +22,16 @@ public class Node {
 	private HashMap<Byte, Byte> posToPawns;
 	
 
+	public Node(Node copy) {
+		this.parent = copy.parent;
+		this.bc = copy.bc;
+		this.wc = copy.wc;
+		this.posToPawns = (HashMap<Byte, Byte>) copy.posToPawns.clone();
+		this.mossa=copy.mossa;
+		isMax = copy.isMax();
+		id = copy.id;
+	}
+	
 	public Node(Node parent, int bc, int wc, HashMap<Byte, Byte> posToPawns, String mossa) {
 		this.parent = parent;
 		this.bc = bc;
