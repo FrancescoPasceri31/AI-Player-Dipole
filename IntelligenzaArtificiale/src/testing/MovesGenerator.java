@@ -303,17 +303,34 @@ public class MovesGenerator {
 //		System.out.println(ret.getValue());
 		System.out.println(ret.getMossa());
 //		
+//		printNode(root);
+		
 	}
 	
 	private static void generateMovesRecursive(MovesGenerator mg ,Node n, boolean isWhite, int liv, int limite) {
 		if(liv==limite || n == null) return;
 		mg.generateMoves(n, isWhite);
-		System.out.println((!isWhite? "WHITE_" : "BLACK_")+ "MOSSA= "+n.getMossa()+" -> Generato ["+n.getId()+"] livello "+liv+" CONFIGURAZIONI : bc : "+ Integer.toBinaryString(n.getBc())+" | wc : " + Integer.toBinaryString(n.getWc()) );
-		System.out.println("Pedine "+n.getPosToPawns());
+//		System.out.println((!isWhite? "WHITE_" : "BLACK_")+ "MOSSA= "+n.getMossa()+" -> Generato ["+n.getId()+"] livello "+liv+" CONFIGURAZIONI : bc : "+ Integer.toBinaryString(n.getBc())+" | wc : " + Integer.toBinaryString(n.getWc()) );
+//		System.out.println("Pedine "+n.getPosToPawns());
+		
+		for(int i=0; i<liv; i++) {
+			System.out.print("\t");
+		}
+	    System.out.println((isWhite? "BLACK" : "WHITE")+"_TURN"+n.toString()+" --> "+ n.getPosToPawns());
+		
 		for(Node son : n.getSons()) {
 			generateMovesRecursive(mg, son, !isWhite, liv+1, limite);
 		}
 	}
-	
-	
+
+	/**
+	 * METODO STAMPA @author ciccio
+	 * */
+//	private void metodoStampaFrancesco() {
+//		for(int i=0; i<liv; i++) {
+//			System.out.print("\t");
+//		}
+//	    System.out.println((isWhite? "BLACK" : "WHITE")+"_TURN"+n.toString()+" --> "+ n.getPosToPawns());
+//	}
+
 }

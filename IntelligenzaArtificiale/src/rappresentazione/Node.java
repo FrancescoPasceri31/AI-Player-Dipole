@@ -105,8 +105,15 @@ public class Node {
 
 	@Override
 	public String toString() {
-		//return "(" + value + ", " + sons + ") ";
-		return "(" + id + ") ";
+		return "[ id: " + id +", bc: "+toBinaryString(bc)+", wc: "+toBinaryString(wc)+", mossa: "+ mossa + " ]";
+	}
+
+	private String toBinaryString(int i) {
+		String tmp = Integer.toBinaryString(i);
+		while(tmp.length()<32) {
+			tmp = "0"+tmp;
+		}
+		return tmp;
 	}
 
 	public boolean isMax() {
