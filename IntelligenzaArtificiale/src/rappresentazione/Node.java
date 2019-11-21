@@ -26,7 +26,7 @@ public class Node {
 		this.parent = parent;
 		this.bc = bc;
 		this.wc = wc;
-		this.posToPawns = posToPawns;
+		this.posToPawns = (HashMap<Byte, Byte>) posToPawns.clone();
 		this.mossa=mossa;
 		isMax = (parent==null)? true : !parent.isMax();
 		id = gid++;
@@ -191,7 +191,7 @@ public class Node {
         append(isRightMost && !isLeftMost  ? "┌── " : "").
         append(isLeftMost  && !isRightMost ? "└── " : "").
         append(!isRightMost && !isLeftMost ? "├── " : "").
-        append(node.toString()).
+        append(node.toString()+" - "+node.getPosToPawns()).
         append("\n");
         for (int i = halfSize - 1; i >= 0; i--) {
             Node child = children.get(i);

@@ -100,18 +100,20 @@ public class MovesGenerator {
 				merge = numPedineDestinazione == 0 || !(isWhite ^ (numPedineDestinazione > 0 && numPedineDestinazione <= 12));
 				byte numPedineDaSpostare = (byte) Math.abs(miaRiga - rigaAvversario);
 
-				if (!merge && numPedineDaSpostare == 0) // sono sulla stessa riga
+				if (!merge && numPedineDaSpostare == 0) { // sono sulla stessa riga
 					numPedineDaSpostare = (byte) Math.abs(posToCol[miaPosizione] - posToCol[positions[j]]);
-
+				}
+				
 				byte n = (byte) (miePedine - numPedineDaSpostare);
 
 				if (!merge) { // sto attaccando
-					if (isWhite)
+					if (isWhite) {
 						numPedineDestinazione -= 20;
+					}
 					if (numPedineDaSpostare >= numPedineDestinazione) {
+
 						posFiglio.put(miaPosizione, (byte) (n - (!isWhite && n == 20 ? 20 : 0)));
 						posFiglio.put(positions[j], (byte) (isWhite ? numPedineDaSpostare : numPedineDaSpostare + 20));
-						//System.out.println("attacco: " + posFiglio);
 
 						ecr = ecr ^ (1 << positions[j]);
 						mcr = mcr | (1 << positions[j]);
@@ -129,13 +131,12 @@ public class MovesGenerator {
 						// System.out.println(Integer.toBinaryString(mc));
 						// System.out.println(Integer.toBinaryString(mcr));
 						// System.out.println();
-
 					}
 				} else {
+					
 					posFiglio.put(miaPosizione, (byte) (n - (!isWhite && n == 20 ? 20 : 0)));
 					posFiglio.put(positions[j],
 							(byte) (numPedineDestinazione + numPedineDaSpostare + (!isWhite && numPedineDestinazione == 0 ? 20 : 0)));
-					//System.out.println("merge: " + posFiglio);
 
 					mcr = mcr | (1 << positions[j]);
 
@@ -167,7 +168,7 @@ public class MovesGenerator {
 
 			if (miePedine >= direzioni[0]) { // NW - SE
 
-				byte numMinimoPDT = (byte) (miePedine - direzioni[0]); // numero di Pedine Da Togliere
+				byte numMinimoPDT = (byte) (direzioni[0]); // numero di Pedine Da Togliere
 
 				// genero configurazione in cui tolgo tutto fuori
 				mcr = mcr ^ (1 << miaPosizione);
@@ -184,16 +185,18 @@ public class MovesGenerator {
 				// System.out.println(Integer.toBinaryString(mcr));
 				// System.out.println();
 
-				//System.out.println("tolgo " + miePedine + " NW: " + posFiglio);
 				for ( ; numMinimoPDT<miePedine ; numMinimoPDT++) {	// incremento ogni volta il numero di pedine da togliere
+					
 					posFiglio = (HashMap<Byte, Byte>) posToPawn.clone();
+					
 					// genero mosse fuori numPDT nella mia casella
 					mcr = mc;
+					
 					// System.out.println(Integer.toBinaryString(mc));
 					// System.out.println(Integer.toBinaryString(mcr));
 					// System.out.println();
+					
 					posFiglio.put(miaPosizione, (byte) ( miePedine - numMinimoPDT + (!isWhite ? 20 : 0) ) );
-					//System.out.println("tolgo " + (miePedine - numPDT) + " NW: " + posFiglio);
 					
 					if(isWhite) {
 						root.addSon(new Node(root,ec,mcr,posFiglio, posToCell.get(miaPosizione)+",NW,"+numMinimoPDT));
@@ -209,10 +212,11 @@ public class MovesGenerator {
 
 			if (miePedine >= direzioni[1]) { // NE - SW
 
-				byte numMinimoPDT = (byte) (miePedine - direzioni[1]); // numero di Pedine Da Togliere
+				byte numMinimoPDT = (byte) (direzioni[1]); // numero di Pedine Da Togliere
 
 				// genero configurazione in cui tolgo tutto fuori
 				mcr = mcr ^ (1 << miaPosizione);
+
 				// System.out.println(Integer.toBinaryString(mc));
 				// System.out.println(Integer.toBinaryString(mcr));
 				// System.out.println();
@@ -225,18 +229,19 @@ public class MovesGenerator {
 					root.addSon(new Node(root,mcr,ec,posFiglio, posToCell.get(miaPosizione)+",SW,"+(miePedine)));
 				}
 
-				//System.out.println("tolgo " + miePedine + " NE: " + posFiglio);
-
 				for (; numMinimoPDT<miePedine ; numMinimoPDT++) {
+					
 					posFiglio = (HashMap<Byte, Byte>) posToPawn.clone();
+					
 					// genero mosse fuori numPDT nella mia casella
 					mcr = mc;
+					
 					// System.out.println(Integer.toBinaryString(mc));
 					// System.out.println(Integer.toBinaryString(mcr));
 					// System.out.println();
-					posFiglio.put(miaPosizione, (byte) (miePedine - numMinimoPDT + (!isWhite ? 20 : 0)));
-					//System.out.println("tolgo " + (miePedine - numPDT) + " NE: " + posFiglio);
 					
+					posFiglio.put(miaPosizione, (byte) (miePedine - numMinimoPDT + (!isWhite ? 20 : 0)));
+
 					if(isWhite) {
 						root.addSon(new Node(root,ec,mcr,posFiglio, posToCell.get(miaPosizione)+",NE,"+numMinimoPDT));
 					}else {	// sono nero
@@ -285,39 +290,37 @@ public class MovesGenerator {
 
 		Node root = new Node(null, bc, wc, posToPawn,"");
 		
-		generateMovesRecursive(mg, root, false, 0, 1);
+		generateMovesRecursive(mg, root, false, 0, 3);
 		
 		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
 		
-/*		mg.generateMoves(root, false);
-//		System.out.println(root.getSons().size());
-		
-		for(Node n: root.getSons()) {
-			mg.generateMoves(n, true);
-		}
-*/		
-//		System.out.println("num nodi tot: "+root.getSize());
+		/*
+		 ********************************************************************************************************************************* 
+		 *********************************************************************************************************************************  
+		 *********************************************************************************************************************************
+		 * 											RICERCA MINIMAX CON PRUNING ALPHA-BETA 
+		 *********************************************************************************************************************************
+		 *********************************************************************************************************************************
+		 *********************************************************************************************************************************
+		 *********************************************************************************************************************************
+		 * */
 		Search s = new Search();
 		Node ret = s.search(root);
+		
 //		System.out.println((System.currentTimeMillis() - t)/1000.0);
 //		System.out.println(ret.getId());
 //		System.out.println(ret.hasValue());
 //		System.out.println(ret.getValue());
-		System.out.println(ret.getMossa());
-//		
-//		printNode(root);
-		
+//		System.out.println(ret.getMossa());
 	}
 	
 	private static void generateMovesRecursive(MovesGenerator mg ,Node n, boolean isWhite, int liv, int limite) {
 		if(liv==limite || n == null) return;
 		mg.generateMoves(n, isWhite);
-//		System.out.println((!isWhite? "WHITE_" : "BLACK_")+ "MOSSA= "+n.getMossa()+" -> Generato ["+n.getId()+"] livello "+liv+" CONFIGURAZIONI : bc : "+ Integer.toBinaryString(n.getBc())+" | wc : " + Integer.toBinaryString(n.getWc()) );
-//		System.out.println("Pedine "+n.getPosToPawns());
 		
-		for(int i=0; i<liv; i++) {
-			System.out.print("\t");
-		}
+		//for(int i=0; i<liv; i++) {
+		//	System.out.print("\t");
+		//}
 	    //System.out.println((isWhite? "BLACK" : "WHITE")+"_TURN"+n.toString()+" --> "+ n.getPosToPawns());
 		
 		for(Node son : n.getSons()) {
@@ -326,7 +329,7 @@ public class MovesGenerator {
 	}
 
 	/**
-	 * METODO STAMPA @author ciccio
+	 * METODO STAMPA
 	 * */
 //	private void metodoStampaFrancesco() {
 //		for(int i=0; i<liv; i++) {
