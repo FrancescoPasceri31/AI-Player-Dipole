@@ -2,16 +2,25 @@ package testing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
@@ -25,14 +34,16 @@ public class BoardMap {
 			'B', 'W', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'W', 'B', 'W',
 			'B', 'W', 'B', 'W', 'B', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B',
 			'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W', };
+	private final char[] LETTERE = {'A','B','C','D','E','F','G','H'};
 
+	
 	private static LinkedList<BoardMap> opened = new LinkedList<BoardMap>();
 	private static Node root;
+	private static MovesGenerator mg;
 
-	private boolean[] openedSonsFrames;
-	private int nextToOpen;
 	private Node n;
 	private JFrame f;
+	private JMenu mosse;
 
 	public Node getNode() {
 		return n;
@@ -42,23 +53,10 @@ public class BoardMap {
 		return f;
 	}
 
-	public boolean[] getOpenedSonsFrames() {
-		return openedSonsFrames;
-	}
-
-	public void setOpenedSonsFrames(boolean[] openedSonsFrames) {
-		this.openedSonsFrames = openedSonsFrames;
-	}
-
-	public int getNextToOpen() {
-		return nextToOpen;
-	}
-
-	public void setNextToOpen(int nextToOpen) {
-		this.nextToOpen = nextToOpen;
-	}
-
 	public void createFrameBoard(Node n) {
+		
+		mg.generateMoves(n, true);
+		
 		for (int i = 0; i < opened.size(); i++) {
 			boolean isMyAncestor = false;
 			Node node = opened.get(i).getNode();
@@ -77,15 +75,8 @@ public class BoardMap {
 			}
 		}
 
-		openedSonsFrames = new boolean[n.getSons().size()];
-		for (int i = 0; i < openedSonsFrames.length; i++) {
-			openedSonsFrames[i] = false;
-		}
 		this.n = n;
-		nextToOpen = 0;
 		JFrame frame = new JFrame("Board " + n.getId());
-//		int whiteConf = n.getWc();
-//		int blackConf = n.getBc();
 		HashMap<Byte, Byte> posToPawn = (HashMap<Byte, Byte>) n.getPosToPawns().clone();
 
 		if (n.getId() != root.getId()) {
@@ -102,6 +93,7 @@ public class BoardMap {
 		for (int i = 0; i < COLORE_SCACCHIERA.length; i++) {
 			byte pos = (byte) Math.abs(31 - i / 2);
 			JPanel b = new JPanel();
+			b.setLayout(new GridBagLayout());
 			b.setBorder(new LineBorder(Color.BLACK, 1));
 			if (COLORE_SCACCHIERA[i] == 'B') {
 				int numPawns = posToPawn.get(pos);
@@ -116,19 +108,37 @@ public class BoardMap {
 			}
 			panel.add(b);
 		}
-		frame.getContentPane().add(panel, BorderLayout.CENTER);
 
 		JPanel panNext = new JPanel();
 		JButton next = new JButton("NEXT");
 		JButton back = new JButton("BACK");
+
+		JMenuBar jmb = new JMenuBar();
+		mosse = new JMenu(n.getSons().get(0).getMossa());
+		for (int i = 0; i < n.getSons().size(); i++) {
+			JMenuItem jmi = new JMenuItem(n.getSons().get(i).getMossa());
+			jmi.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					mosse.setText(jmi.getText());
+				}
+			});
+			mosse.add(jmi);
+
+		}
+		jmb.add(mosse);
 
 		next.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (SwingUtilities.isLeftMouseButton(e)) {
-					nextSon();
-					return;
+					for (Node son : n.getSons()) {
+						if (son.getMossa().equals(mosse.getText())) {
+							BoardMap bSon = new BoardMap();
+							bSon.createFrameBoard(son);
+						}
+					}
 				}
 			}
 		});
@@ -140,17 +150,6 @@ public class BoardMap {
 				if (SwingUtilities.isLeftMouseButton(e)) {
 					if (n.getId() != root.getId()) {
 						getFrame().dispose();
-						for (BoardMap boardMap : opened) {
-							if (boardMap.getNode().getId() == n.getParent().getId()) {
-								boardMap.setNextToOpen( boardMap.getNextToOpen()-2 );
-								if (boardMap.getNextToOpen() >= 0) {
-									boardMap.nextSon();
-									return;
-								}else {
-									boardMap.setNextToOpen(0);
-								}
-							}
-						}
 					}
 				}
 			}
@@ -159,38 +158,49 @@ public class BoardMap {
 
 		panNext.add(back);
 		panNext.add(next);
-		frame.getContentPane().add(panNext, BorderLayout.NORTH);
+		panNext.add(jmb);
+		frame.getContentPane().add(panNext, BorderLayout.SOUTH);
 
+		
+		JPanel panColonne = new JPanel();
+		panColonne.setLayout( new FlowLayout(3) );
+		for(int i=1; i<=8; i++) {
+			JPanel pan = new JPanel();
+			pan.setLayout(new GridBagLayout());
+			JLabel l = new JLabel(""+i);
+			l.setForeground(Color.RED);
+			pan.add(l);
+			panColonne.add(Box.createHorizontalStrut(16));
+			panColonne.add(pan);
+		}
+		frame.getContentPane().add(panColonne, BorderLayout.NORTH);
+		
+		JPanel panRighe = new JPanel();
+		panRighe.setLayout( new GridLayout(8,1) );
+		for(int i=0; i<8; i++) {
+			JPanel pan = new JPanel();
+			JLabel l = new JLabel(""+LETTERE[i]);
+			l.setForeground(Color.RED);
+			pan.add(l);
+			panRighe.add(pan);
+		}
+		frame.getContentPane().add(panRighe, BorderLayout.WEST);
+		
+		frame.getContentPane().add(panel, BorderLayout.CENTER);
+		
+		frame.getContentPane().add(new JPanel(), BorderLayout.EAST);
+		
 		frame.setVisible(true);
 
 		this.f = frame;
 		opened.add(this);
 	}
 
-	public void nextSon() {
-
-		if (nextToOpen < n.getSons().size()) {
-			BoardMap bson = new BoardMap();
-			bson.createFrameBoard(n.getSons().get(nextToOpen));
-			nextToOpen += 1;
-		} else {
-
-			for (BoardMap boardMap : opened) {
-				if (boardMap.getNode().getId() == n.getParent().getId()) {
-					boardMap.nextSon();
-					break;
-				}
-			}
-		}
-	}
-
 	public static void main(String[] args) throws Exception {
 
 		/*
 		 ********************************************************************************************************************************* 
-		 *********************************************************************************************************************************
 		 * SETTING UP PARAMETRI INIZIALI
-		 *********************************************************************************************************************************
 		 *********************************************************************************************************************************
 		 */
 
@@ -204,7 +214,7 @@ public class BoardMap {
 				posToPawn.put((byte) i, (byte) 0);
 		}
 
-		MovesGenerator mg = new MovesGenerator();
+		mg = new MovesGenerator();
 		mg.init();
 
 		int bc = mg.createConfig(posToPawn, false);
@@ -212,48 +222,21 @@ public class BoardMap {
 
 		/*
 		 ********************************************************************************************************************************* 
-		 *********************************************************************************************************************************
 		 * GENERAZIONE ALBERO MOSSE
-		 *********************************************************************************************************************************
 		 *********************************************************************************************************************************
 		 */
 
-		boolean isWhite = false;
+		boolean isWhite = true;
 		int livelloMax = 4;
 		root = new Node(null, bc, wc, posToPawn, "");
 
 //		generateMovesRecursive(mg, root, isWhite, 0, livelloMax);
-		generateMovesIterative(mg, root, isWhite, livelloMax);
+//		generateMovesIterative(mg, root, isWhite, livelloMax);
 
 		BoardMap bm = new BoardMap();
 		bm.createFrameBoard(root);
 
 	}
-
-	private void avanzaNodo(Node root) {
-		/* CREO LE VARIE SCACCHIERE CON DEEP FIRST */
-		Scanner sc = new Scanner(System.in);
-		LinkedList<Node> ll = new LinkedList<Node>();
-		ll.add(root);
-		while (ll.size() > 0) {
-			Node r = ll.removeFirst();
-
-			System.out.println(r.getMossa());
-
-			int i = 0;
-			for (Node node : r.getSons()) {
-				ll.add(i, node);
-				i++;
-			}
-			BoardMap bm = new BoardMap();
-			bm.createFrameBoard(r);
-			System.out.print(">");
-			sc.nextLine();
-		}
-		sc.close();
-	}
-
-	/* liv: indica il livello attuale, limite: il livello max di generazione */
 
 	private static void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite, int liv, int limite) {
 		if (liv == limite || n == null) {
