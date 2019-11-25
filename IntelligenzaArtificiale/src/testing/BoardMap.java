@@ -32,9 +32,8 @@ public class BoardMap {
 			'B', 'W', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'W', 'B', 'W',
 			'B', 'W', 'B', 'W', 'B', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B',
 			'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W', };
-	private final char[] LETTERE = {'A','B','C','D','E','F','G','H'};
+	private final char[] LETTERE = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
 
-	
 	private static LinkedList<BoardMap> opened = new LinkedList<BoardMap>();
 	private static Node root;
 	private static MovesGenerator mg;
@@ -51,10 +50,49 @@ public class BoardMap {
 		return f;
 	}
 
+	
+	private void endGame(Node n) {
+		JFrame frame = new JFrame("GAME OVER");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);
+		frame.setSize(300, 400);
+		frame.setLocation(300, 100);
+
+		JLabel jlbWins = new JLabel( (n.getBc()==0? "WHITE" : "BLACK") + " WINS!" );
+		jlbWins.setForeground(Color.RED);
+		frame.getContentPane().add( jlbWins , BorderLayout.CENTER);
+		
+		JButton btnRestart = new JButton("RESTART");
+		btnRestart.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(SwingUtilities.isLeftMouseButton(e)) {
+					BoardMap starter = new BoardMap();
+					for(int i=0; i<opened.size(); i++) {
+						opened.get(i).getFrame().dispose();
+						opened.remove(i);
+					}
+					frame.dispose();
+					starter.createFrameBoard(root, true);
+				}
+			}
+		});
+		frame.getContentPane().add( btnRestart , BorderLayout.SOUTH);
+		frame.setVisible(true);
+		return;
+	}
+	
+	
 	public void createFrameBoard(Node n, boolean isWhite) {
+
+		if (n.getBc() == 0 || n.getWc() == 0) {
+			endGame(n);
+			return;
+		}
+
 		
 		mg.generateMoves(n, isWhite);
-		
+
 		for (int i = 0; i < opened.size(); i++) {
 			boolean isMyAncestor = false;
 			Node node = opened.get(i).getNode();
@@ -159,35 +197,34 @@ public class BoardMap {
 		panNext.add(jmb);
 		frame.getContentPane().add(panNext, BorderLayout.SOUTH);
 
-		
 		JPanel panColonne = new JPanel();
-		panColonne.setLayout( new FlowLayout(3) );
-		for(int i=1; i<=8; i++) {
+		panColonne.setLayout(new FlowLayout(3));
+		for (int i = 1; i <= 8; i++) {
 			JPanel pan = new JPanel();
 			pan.setLayout(new GridBagLayout());
-			JLabel l = new JLabel(""+i);
+			JLabel l = new JLabel("" + i);
 			l.setForeground(Color.RED);
 			pan.add(l);
 			panColonne.add(Box.createHorizontalStrut(16));
 			panColonne.add(pan);
 		}
 		frame.getContentPane().add(panColonne, BorderLayout.NORTH);
-		
+
 		JPanel panRighe = new JPanel();
-		panRighe.setLayout( new GridLayout(8,1) );
-		for(int i=0; i<8; i++) {
+		panRighe.setLayout(new GridLayout(8, 1));
+		for (int i = 0; i < 8; i++) {
 			JPanel pan = new JPanel();
-			JLabel l = new JLabel(""+LETTERE[i]);
+			JLabel l = new JLabel("" + LETTERE[i]);
 			l.setForeground(Color.RED);
 			pan.add(l);
 			panRighe.add(pan);
 		}
 		frame.getContentPane().add(panRighe, BorderLayout.WEST);
-		
+
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
-		
+
 		frame.getContentPane().add(new JPanel(), BorderLayout.EAST);
-		
+
 		frame.setVisible(true);
 
 		this.f = frame;
@@ -205,11 +242,11 @@ public class BoardMap {
 		byte[] posToPawn = new byte[32];
 		for (int i = 0; i < 32; i++) {
 			if (i == 1) // white start position
-				posToPawn[i] = (byte)12;
+				posToPawn[i] = (byte) 12;
 			else if (i == 30) // black start position
-				posToPawn[i] = (byte)32;
+				posToPawn[i] = (byte) 32;
 			else
-				posToPawn[i] = (byte)0;
+				posToPawn[i] = (byte) 0;
 		}
 
 		mg = new MovesGenerator();
@@ -231,9 +268,9 @@ public class BoardMap {
 //		generateMovesRecursive(mg, root, isWhite, 0, livelloMax);
 //		generateMovesIterative(mg, root, isWhite, livelloMax);
 
-		System.out.println("Created tree with depth "+livelloMax);
+		System.out.println("Created tree with depth " + livelloMax);
 		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
-		
+
 		BoardMap bm = new BoardMap();
 		bm.createFrameBoard(root, true);
 
