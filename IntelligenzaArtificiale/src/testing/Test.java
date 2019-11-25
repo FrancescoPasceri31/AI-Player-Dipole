@@ -1,6 +1,7 @@
 package testing;
 
 import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Test {
 
@@ -37,6 +38,10 @@ public class Test {
 		System.out.println();
 		System.out.println("Mosse");
 		stampaScacchiera(zerosPosition(r));
+		
+		System.out.println();
+		String mossa = "H5, NW, 12";
+		System.out.println( (new StringTokenizer(mossa,", ").countTokens() ));
 
 	}
 

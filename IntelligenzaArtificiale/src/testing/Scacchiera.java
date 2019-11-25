@@ -117,7 +117,7 @@ public class Scacchiera {
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[0].length; j++) {
 				int miaCella = pos;
-				int pawns = 0;
+				byte pawns = 0;
 				if (miaCella >= 0 && miaCella <= 31) {
 					pawns = posToPawn.get((byte) miaCella);
 				}
@@ -148,7 +148,7 @@ public class Scacchiera {
 
 						JButton but = new JButton();
 						but.setBackground(pawns == 0 ? null : pawns <= 12 ? Color.cyan : Color.green);
-						pawns = pawns <= 12 ? pawns : pawns - 20;
+						pawns = (byte) (pawns <= 12 ? pawns : pawns - 20);
 						but.setText("" + pawns);
 						but.setBorder(new LineBorder(Color.WHITE, 1, true));
 						b.add(but);
@@ -310,7 +310,7 @@ public class Scacchiera {
 
 					private void primoClick() {
 						Component[] jbuttons = panel.getComponents();
-						int nPawns = posToPawn.get((byte) miaCella);
+						byte nPawns = posToPawn.get((byte) miaCella);
 						if (nPawns > 0) {
 							selected = true;
 							from = (byte) miaCella;

@@ -1,12 +1,8 @@
 package testing;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -16,7 +12,7 @@ import ricerca.Search;
 public class MovesGenerator {
 
 	private HashMap<Byte, String> posToCell = null;
-	private HashMap<Byte, HashMap<Byte,String>> posToDir = null;
+	private HashMap<Byte, HashMap<Byte, String>> posToDir = null;
 	private HashMap<String, Byte> cellToPos = null;
 	private HashMap<Byte, Object[]> masksBlack = null;
 	private HashMap<Byte, Object[]> masksWhite = null;
@@ -24,10 +20,21 @@ public class MovesGenerator {
 	private Byte[] posToCol = { 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8,
 			6, 4, 2 };
 
+	public HashMap<String, Byte> getCellToPos() {
+		return cellToPos;
+	}
+
+	public HashMap<Byte, String> getPosToCell() {
+		return posToCell;
+	}
+	
+	public HashMap<Byte, HashMap<Byte, String>> getPosToDir() {
+		return posToDir;
+	}
+	
 
 	public void init() throws Exception {
 
-		
 		ObjectInputStream i = new ObjectInputStream(new FileInputStream("hashMaps"));
 		posToCell = (HashMap<Byte, String>) i.readObject();
 		cellToPos = (HashMap<String, Byte>) i.readObject();
@@ -38,38 +45,39 @@ public class MovesGenerator {
 
 	}
 
-	public void generateMoves(Node root,boolean isWhite) {//(int mc, int ec, HashMap<Byte, Byte> posToPawn, boolean isWhite) {
+	public void generateMoves(Node root, boolean isWhite) {// (int mc, int ec, HashMap<Byte, Byte> posToPawn, boolean
+															// isWhite) {
 
 		int mc;
 		int ec;
-		
-		if(isWhite) {
+
+		if (isWhite) {
 			mc = root.getWc();
 			ec = root.getBc();
-		}else {
+		} else {
 			mc = root.getBc();
 			ec = root.getWc();
 		}
-		
+
 		byte[] posToPawn = root.getPosToPawns();
 //		System.out.println(isWhite+" -> mc : "+ Integer.toBinaryString(mc)+" | ec : " + Integer.toBinaryString(ec)  );
 //		System.out.println(posToPawn);
 		byte[] myP = HashMapGenerator2.onesPosition(mc);
 
 		HashMap<Byte, Object[]> masks = null;
-		masks = isWhite? masksWhite : masksBlack;
-		
+		masks = isWhite ? masksWhite : masksBlack;
+
 //		System.out.println(isWhite);
 //		HashMapGenerator2.printHash(masks);
-	
+
 		/* INIZIO CALCOLO MOSSA */
 		for (int k = 0; k < myP.length; k++) {
-			
+
 			byte miaPosizione = myP[k];
 			byte miaRiga = (byte) (miaPosizione / (byte) 4);
 
 			byte miePedine = posToPawn[miaPosizione];
-			
+
 //			System.out.println();
 //			System.out.println("Mia posizione: " + myP[k]+" num pedine: "+miePedine+" "+Integer.toBinaryString(mc) );
 //			System.out.println();
@@ -100,14 +108,16 @@ public class MovesGenerator {
 
 				rigaAvversario = (byte) (positions[j] / 4);
 				numPedineDestinazione = posFiglio[positions[j]];
-				//System.out.println("posizione: " + positions[j] + ", numero pedine: " + numPedine);
-				merge = numPedineDestinazione == 0 || !(isWhite ^ (numPedineDestinazione > 0 && numPedineDestinazione <= 12));
+				// System.out.println("posizione: " + positions[j] + ", numero pedine: " +
+				// numPedine);
+				merge = numPedineDestinazione == 0
+						|| !(isWhite ^ (numPedineDestinazione > 0 && numPedineDestinazione <= 12));
 				byte numPedineDaSpostare = (byte) Math.abs(miaRiga - rigaAvversario);
 
 				if (!merge && numPedineDaSpostare == 0) { // sono sulla stessa riga
 					numPedineDaSpostare = (byte) Math.abs(posToCol[miaPosizione] - posToCol[positions[j]]);
 				}
-				
+
 				byte numPedineRimanenti = (byte) (miePedine - numPedineDaSpostare);
 
 				if (!merge) { // sto attaccando
@@ -116,7 +126,8 @@ public class MovesGenerator {
 					}
 					if (numPedineDaSpostare >= numPedineDestinazione) {
 
-						posFiglio[miaPosizione] = (byte) (numPedineRimanenti - (!isWhite && numPedineRimanenti == 20 ? 20 : 0));
+						posFiglio[miaPosizione] = (byte) (numPedineRimanenti
+								- (!isWhite && numPedineRimanenti == 20 ? 20 : 0));
 						posFiglio[positions[j]] = (byte) (isWhite ? numPedineDaSpostare : numPedineDaSpostare + 20);
 
 						ecr = ecr ^ (1 << positions[j]);
@@ -125,31 +136,36 @@ public class MovesGenerator {
 						if (numPedineRimanenti == 0 || numPedineRimanenti == 20)
 							mcr = mcr ^ (1 << miaPosizione);
 
-						if(isWhite) {
-							root.addSon(new Node(root,ecr,mcr,posFiglio, posToCell.get(miaPosizione)+","+(posToDir.get(miaPosizione)).get(positions[j])+","+numPedineDaSpostare));
-						}else {	// sono nero
-							root.addSon(new Node(root,mcr,ecr,posFiglio, posToCell.get(miaPosizione)+","+(posToDir.get(miaPosizione)).get(positions[j])+","+numPedineDaSpostare));
+						if (isWhite) {
+							root.addSon(new Node(root, ecr, mcr, posFiglio, posToCell.get(miaPosizione) + ","
+									+ (posToDir.get(miaPosizione)).get(positions[j]) + "," + numPedineDaSpostare));
+						} else { // sono nero
+							root.addSon(new Node(root, mcr, ecr, posFiglio, posToCell.get(miaPosizione) + ","
+									+ (posToDir.get(miaPosizione)).get(positions[j]) + "," + numPedineDaSpostare));
 						}
-						
 
 						// System.out.println(Integer.toBinaryString(mc));
 						// System.out.println(Integer.toBinaryString(mcr));
 						// System.out.println();
 					}
 				} else {
-					
-					posFiglio[miaPosizione] = (byte) (numPedineRimanenti - (!isWhite && numPedineRimanenti == 20 ? 20 : 0));
-					posFiglio[positions[j]]=(byte) (numPedineDestinazione + numPedineDaSpostare + (!isWhite && numPedineDestinazione == 0 ? 20 : 0));
+
+					posFiglio[miaPosizione] = (byte) (numPedineRimanenti
+							- (!isWhite && numPedineRimanenti == 20 ? 20 : 0));
+					posFiglio[positions[j]] = (byte) (numPedineDestinazione + numPedineDaSpostare
+							+ (!isWhite && numPedineDestinazione == 0 ? 20 : 0));
 
 					mcr = mcr | (1 << positions[j]);
 
 					if (posFiglio[miaPosizione] == 0)
 						mcr = mcr ^ (1 << miaPosizione);
 
-					if(isWhite) {
-						root.addSon(new Node(root,ecr,mcr,posFiglio, posToCell.get(miaPosizione)+","+(posToDir.get(miaPosizione)).get(positions[j])+","+numPedineDaSpostare));
-					}else {	// sono nero
-						root.addSon(new Node(root,mcr,ecr,posFiglio,posToCell.get(miaPosizione)+","+(posToDir.get(miaPosizione)).get(positions[j])+","+numPedineDaSpostare));
+					if (isWhite) {
+						root.addSon(new Node(root, ecr, mcr, posFiglio, posToCell.get(miaPosizione) + ","
+								+ (posToDir.get(miaPosizione)).get(positions[j]) + "," + numPedineDaSpostare));
+					} else { // sono nero
+						root.addSon(new Node(root, mcr, ecr, posFiglio, posToCell.get(miaPosizione) + ","
+								+ (posToDir.get(miaPosizione)).get(positions[j]) + "," + numPedineDaSpostare));
 					}
 
 					// System.out.println(Integer.toBinaryString(mc));
@@ -162,7 +178,7 @@ public class MovesGenerator {
 
 			posFiglio = posToPawn.clone();
 
-			//System.out.println("mie pedine: " + miePedine);
+			// System.out.println("mie pedine: " + miePedine);
 
 			mcr = mc;
 
@@ -177,36 +193,39 @@ public class MovesGenerator {
 				mcr = mcr ^ (1 << miaPosizione);
 
 				posFiglio[miaPosizione] = (byte) 0;
-				
-				if(isWhite) {
-					root.addSon(new Node(root,ec,mcr,posFiglio, posToCell.get(miaPosizione)+",NW,"+(miePedine)));
-				}else {	// sono nero
-					root.addSon(new Node(root,mcr,ec,posFiglio, posToCell.get(miaPosizione)+",SE,"+(miePedine)));
+
+				if (isWhite) {
+					root.addSon(new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione) + ",NW," + (miePedine)));
+				} else { // sono nero
+					root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione) + ",SE," + (miePedine)));
 				}
-				
+
 				// System.out.println(Integer.toBinaryString(mc));
 				// System.out.println(Integer.toBinaryString(mcr));
 				// System.out.println();
 
-				for ( ; numMinimoPDT<miePedine ; numMinimoPDT++) {	// incremento ogni volta il numero di pedine da togliere
-					
-					posFiglio =posToPawn.clone();
-					
+				for (; numMinimoPDT < miePedine; numMinimoPDT++) { // incremento ogni volta il numero di pedine da
+																	// togliere
+
+					posFiglio = posToPawn.clone();
+
 					// genero mosse fuori numPDT nella mia casella
 					mcr = mc;
-					
+
 					// System.out.println(Integer.toBinaryString(mc));
 					// System.out.println(Integer.toBinaryString(mcr));
 					// System.out.println();
-					
-					posFiglio[miaPosizione] = (byte) ( miePedine - numMinimoPDT + (!isWhite ? 20 : 0) ) ;
-					
-					if(isWhite) {
-						root.addSon(new Node(root,ec,mcr,posFiglio, posToCell.get(miaPosizione)+",NW,"+numMinimoPDT));
-					}else {	// sono nero
-						root.addSon(new Node(root,mcr,ec,posFiglio, posToCell.get(miaPosizione)+",SE,"+numMinimoPDT));
+
+					posFiglio[miaPosizione] = (byte) (miePedine - numMinimoPDT + (!isWhite ? 20 : 0));
+
+					if (isWhite) {
+						root.addSon(new Node(root, ec, mcr, posFiglio,
+								posToCell.get(miaPosizione) + ",NW," + numMinimoPDT));
+					} else { // sono nero
+						root.addSon(new Node(root, mcr, ec, posFiglio,
+								posToCell.get(miaPosizione) + ",SE," + numMinimoPDT));
 					}
-					
+
 				}
 
 			}
@@ -224,31 +243,33 @@ public class MovesGenerator {
 				// System.out.println(Integer.toBinaryString(mcr));
 				// System.out.println();
 
-				posFiglio[miaPosizione]= (byte) 0;
-				
-				if(isWhite) {
-					root.addSon(new Node(root,ec,mcr,posFiglio, posToCell.get(miaPosizione)+",NE,"+(miePedine)));
-				}else {	// sono nero
-					root.addSon(new Node(root,mcr,ec,posFiglio, posToCell.get(miaPosizione)+",SW,"+(miePedine)));
+				posFiglio[miaPosizione] = (byte) 0;
+
+				if (isWhite) {
+					root.addSon(new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione) + ",NE," + (miePedine)));
+				} else { // sono nero
+					root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione) + ",SW," + (miePedine)));
 				}
 
-				for (; numMinimoPDT<miePedine ; numMinimoPDT++) {
-					
+				for (; numMinimoPDT < miePedine; numMinimoPDT++) {
+
 					posFiglio = posToPawn.clone();
-					
+
 					// genero mosse fuori numPDT nella mia casella
 					mcr = mc;
-					
+
 					// System.out.println(Integer.toBinaryString(mc));
 					// System.out.println(Integer.toBinaryString(mcr));
 					// System.out.println();
-					
+
 					posFiglio[miaPosizione] = (byte) (miePedine - numMinimoPDT + (!isWhite ? 20 : 0));
 
-					if(isWhite) {
-						root.addSon(new Node(root,ec,mcr,posFiglio, posToCell.get(miaPosizione)+",NE,"+numMinimoPDT));
-					}else {	// sono nero
-						root.addSon(new Node(root,mcr,ec,posFiglio, posToCell.get(miaPosizione)+",SW,"+numMinimoPDT));
+					if (isWhite) {
+						root.addSon(new Node(root, ec, mcr, posFiglio,
+								posToCell.get(miaPosizione) + ",NE," + numMinimoPDT));
+					} else { // sono nero
+						root.addSon(new Node(root, mcr, ec, posFiglio,
+								posToCell.get(miaPosizione) + ",SW," + numMinimoPDT));
 					}
 				}
 			}
@@ -270,14 +291,13 @@ public class MovesGenerator {
 	}
 
 	public static void main(String[] args) throws Exception {
-		
+
 		/*
 		 ********************************************************************************************************************************* 
-		 * 											SETTING UP PARAMETRI INIZIALI
+		 * SETTING UP PARAMETRI INIZIALI
 		 *********************************************************************************************************************************
-		 * */
-		
-		
+		 */
+
 		HashMap<Byte, Byte> posToPawn = new HashMap<Byte, Byte>();
 		for (int i = 0; i < 32; i++) {
 			if (i == 1) // white start position
@@ -287,70 +307,65 @@ public class MovesGenerator {
 			else
 				posToPawn.put((byte) i, (byte) 0);
 		}
-		
+
 		byte[] posToPawn2 = new byte[32];
 		for (int i = 0; i < 32; i++) {
 			if (i == 1) // white start position
-				posToPawn2[i] = (byte)12;
+				posToPawn2[i] = (byte) 12;
 			else if (i == 30) // black start position
-				posToPawn2[i] = (byte)32;
+				posToPawn2[i] = (byte) 32;
 			else
-				posToPawn2[i] = (byte)0;
+				posToPawn2[i] = (byte) 0;
 		}
-		
+
 		MovesGenerator mg = new MovesGenerator();
 		mg.init();
 
 		int bc = mg.createConfig(posToPawn2, false);
 		int wc = mg.createConfig(posToPawn2, true);
 
-
-		
 		/*
 		 ********************************************************************************************************************************* 
-		 * 											GENERAZIONE ALBERO MOSSE
+		 * GENERAZIONE ALBERO MOSSE
 		 *********************************************************************************************************************************
-		 * */
-		
-		int livelloMax =3;
+		 */
+
+		int livelloMax = 3;
 //		int livelloMax =Integer.parseInt(args[0]);
 //		long tstart = System.currentTimeMillis();
-		Node root = new Node(null, bc, wc, posToPawn2,"");
+		Node root = new Node(null, bc, wc, posToPawn2, "");
 		generateMovesRecursive(mg, root, true, 0, livelloMax);
 //		generateMovesIterative(mg,root,true,livelloMax);
 //		long tend = System.currentTimeMillis();
-		
+
 		/*
 		 ********************************************************************************************************************************* 
-		 * 											RICERCA MINIMAX CON PRUNING ALPHA-BETA 
+		 * RICERCA MINIMAX CON PRUNING ALPHA-BETA
 		 *********************************************************************************************************************************
-		 * */
+		 */
 
-		
 		Search s = new Search();
-		
+
 //		long tstart = System.currentTimeMillis();
 //		Node ret = s.search(root);
 //		long tend = System.currentTimeMillis();
 //		
 //		System.out.println("tempo search iterativa "+livelloMax+" livelli -> "+ ((tend - tstart)/1000.0)+", res: "+ret.getValue());
-		
+
 		long tstart = System.currentTimeMillis();
 		Node ret1 = s.recursiveSearch(root);
-		long tend= System.currentTimeMillis();
-		
-		System.out.println("tempo search ricorsiva "+livelloMax+" livelli -> "+ ((tend - tstart)/1000.0)+", res: "+ret1.getValue());
-		
+		long tend = System.currentTimeMillis();
 
-		
-		
+		System.out.println("tempo search ricorsiva " + livelloMax + " livelli -> " + ((tend - tstart) / 1000.0)
+				+ ", res: " + ret1.getValue());
+
 		/*
 		 *********************************************************************************************************************************
-		 * 											RISULTATI GENERAZIONE E RICERCA
+		 * RISULTATI GENERAZIONE E RICERCA
 		 *********************************************************************************************************************************
-		 * */
+		 */
 //		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
-		
+
 //		File f = new File("tree");
 //		ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(f));
 //		f.createNewFile();
@@ -374,51 +389,50 @@ public class MovesGenerator {
 ////		
 //		System.out.println("hash: "+((double)f1.length() / (1024 * 1024) + " mb"));
 //		System.out.println("array: "+((double)f2.length() / (1024 * 1024) + " mb"));
-		
 
 	}
-	
-	
+
 	private static void generateMovesIterative(MovesGenerator mg, Node root, boolean isWhite, int limite) {
-			HashMap<Integer,Object[]> nodeLev = new HashMap<Integer, Object[]>();
-			LinkedList<Node> ll = new LinkedList<Node>();
-			nodeLev.put(root.getId(), new Object[]{0,isWhite} );
-			
-			ll.add(root);
-			while(!ll.isEmpty()) {
-				Node n = ll.removeFirst();
-				if( ((int)nodeLev.get(n.getId())[0]) < limite) {
-					boolean myColor = (boolean)nodeLev.get(n.getId())[1] ;
-					mg.generateMoves(n, myColor);
-					ll.addAll(0,n.getSons());
-					for (Node node : n.getSons()) {
-						nodeLev.put(node.getId(), new Object[] {1 + ((int)nodeLev.get(node.getParent().getId())[0]) , !myColor } );
-					}
+		HashMap<Integer, Object[]> nodeLev = new HashMap<Integer, Object[]>();
+		LinkedList<Node> ll = new LinkedList<Node>();
+		nodeLev.put(root.getId(), new Object[] { 0, isWhite });
+
+		ll.add(root);
+		while (!ll.isEmpty()) {
+			Node n = ll.removeFirst();
+			if (((int) nodeLev.get(n.getId())[0]) < limite) {
+				boolean myColor = (boolean) nodeLev.get(n.getId())[1];
+				mg.generateMoves(n, myColor);
+				ll.addAll(0, n.getSons());
+				for (Node node : n.getSons()) {
+					nodeLev.put(node.getId(),
+							new Object[] { 1 + ((int) nodeLev.get(node.getParent().getId())[0]), !myColor });
 				}
 			}
+		}
 	}
-	
-	
-	private static void generateMovesRecursive(MovesGenerator mg ,Node n, boolean isWhite, int liv, int limite) throws IOException {
-			if(liv==limite || n == null) {
-				return;
-			}
-			mg.generateMoves(n, isWhite);
-			for(Node son : n.getSons()) {
-				generateMovesRecursive(mg, son, !isWhite, liv+1, limite);
-			}
+
+	private static void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite, int liv, int limite)
+			throws IOException {
+		if (liv == limite || n == null) {
+			return;
+		}
+		mg.generateMoves(n, isWhite);
+		for (Node son : n.getSons()) {
+			generateMovesRecursive(mg, son, !isWhite, liv + 1, limite);
+		}
 	}
 
 	/**
 	 * METODO STAMPA
-	 * */
+	 */
 	private static void metodoStampaTree(Node n, int liv) {
-		for(int i=0; i<liv; i++) {
+		for (int i = 0; i < liv; i++) {
 			System.out.print("\t");
 		}
-	    System.out.println( n.toString());
-	    for(Node son : n.getSons()) {
-	    	metodoStampaTree(son, liv+1);
-	    }
+		System.out.println(n.toString());
+		for (Node son : n.getSons()) {
+			metodoStampaTree(son, liv + 1);
+		}
 	}
 }

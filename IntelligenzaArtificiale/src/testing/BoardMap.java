@@ -3,6 +3,7 @@ package testing;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -13,13 +14,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
@@ -50,7 +55,6 @@ public class BoardMap {
 		return f;
 	}
 
-	
 	private void endGame(Node n) {
 		JFrame frame = new JFrame("GAME OVER");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -58,17 +62,17 @@ public class BoardMap {
 		frame.setSize(300, 400);
 		frame.setLocation(300, 100);
 
-		JLabel jlbWins = new JLabel( (n.getBc()==0? "WHITE" : "BLACK") + " WINS!" );
+		JLabel jlbWins = new JLabel((n.getBc() == 0 ? "WHITE" : "BLACK") + " WINS!");
 		jlbWins.setForeground(Color.RED);
-		frame.getContentPane().add( jlbWins , BorderLayout.CENTER);
-		
+		frame.getContentPane().add(jlbWins, BorderLayout.CENTER);
+
 		JButton btnRestart = new JButton("RESTART");
 		btnRestart.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(SwingUtilities.isLeftMouseButton(e)) {
+				if (SwingUtilities.isLeftMouseButton(e)) {
 					BoardMap starter = new BoardMap();
-					for(int i=0; i<opened.size(); i++) {
+					for (int i = 0; i < opened.size(); i++) {
 						opened.get(i).getFrame().dispose();
 						opened.remove(i);
 					}
@@ -77,12 +81,11 @@ public class BoardMap {
 				}
 			}
 		});
-		frame.getContentPane().add( btnRestart , BorderLayout.SOUTH);
+		frame.getContentPane().add(btnRestart, BorderLayout.SOUTH);
 		frame.setVisible(true);
 		return;
 	}
-	
-	
+
 	public void createFrameBoard(Node n, boolean isWhite) {
 
 		if (n.getBc() == 0 || n.getWc() == 0) {
@@ -90,7 +93,6 @@ public class BoardMap {
 			return;
 		}
 
-		
 		mg.generateMoves(n, isWhite);
 
 		for (int i = 0; i < opened.size(); i++) {
@@ -208,7 +210,6 @@ public class BoardMap {
 			panColonne.add(Box.createHorizontalStrut(16));
 			panColonne.add(pan);
 		}
-		frame.getContentPane().add(panColonne, BorderLayout.NORTH);
 
 		JPanel panRighe = new JPanel();
 		panRighe.setLayout(new GridLayout(8, 1));
@@ -219,12 +220,11 @@ public class BoardMap {
 			pan.add(l);
 			panRighe.add(pan);
 		}
+
+		frame.getContentPane().add(panColonne, BorderLayout.NORTH);
 		frame.getContentPane().add(panRighe, BorderLayout.WEST);
-
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
-
 		frame.getContentPane().add(new JPanel(), BorderLayout.EAST);
-
 		frame.setVisible(true);
 
 		this.f = frame;
@@ -268,12 +268,11 @@ public class BoardMap {
 //		generateMovesRecursive(mg, root, isWhite, 0, livelloMax);
 //		generateMovesIterative(mg, root, isWhite, livelloMax);
 
-		System.out.println("Created tree with depth " + livelloMax);
-		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
+//		System.out.println("Created tree with depth " + livelloMax);
+//		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
 
 		BoardMap bm = new BoardMap();
 		bm.createFrameBoard(root, true);
-
 	}
 
 	private static void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite, int liv, int limite) {
