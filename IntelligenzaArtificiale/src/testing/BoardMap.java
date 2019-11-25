@@ -77,7 +77,7 @@ public class BoardMap {
 
 		this.n = n;
 		JFrame frame = new JFrame("Board " + n.getId());
-		HashMap<Byte, Byte> posToPawn = (HashMap<Byte, Byte>) n.getPosToPawns().clone();
+		byte[] posToPawn = n.getPosToPawns().clone();
 
 		if (n.getId() != root.getId()) {
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -96,7 +96,7 @@ public class BoardMap {
 			b.setLayout(new GridBagLayout());
 			b.setBorder(new LineBorder(Color.BLACK, 1));
 			if (COLORE_SCACCHIERA[i] == 'B') {
-				int numPawns = posToPawn.get(pos);
+				int numPawns = posToPawn[pos];
 				JLabel l = new JLabel();
 				l.setForeground(numPawns > 12 ? Color.GREEN : Color.CYAN);
 				numPawns = (numPawns > 12 ? numPawns - 20 : numPawns);
@@ -204,14 +204,14 @@ public class BoardMap {
 		 *********************************************************************************************************************************
 		 */
 
-		HashMap<Byte, Byte> posToPawn = new HashMap<Byte, Byte>();
+		byte[] posToPawn = new byte[32];
 		for (int i = 0; i < 32; i++) {
 			if (i == 1) // white start position
-				posToPawn.put((byte) i, (byte) 12);
+				posToPawn[i] = (byte)12;
 			else if (i == 30) // black start position
-				posToPawn.put((byte) i, (byte) 32);
+				posToPawn[i] = (byte)32;
 			else
-				posToPawn.put((byte) i, (byte) 0);
+				posToPawn[i] = (byte)0;
 		}
 
 		mg = new MovesGenerator();

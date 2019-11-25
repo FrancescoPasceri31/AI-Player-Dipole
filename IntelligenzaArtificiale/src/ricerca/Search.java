@@ -62,8 +62,8 @@ public class Search {
 				}
 			}else {
 				if(!x.hasValue() && (x.leaf() || !x.expandable())) {
-					//x.setValue((new Random()).nextDouble());
-					x.setValue(1000-z);
+					x.setValue((new Random()).nextDouble());
+//					x.setValue(z);
 					x.setHasValue(true);
 				}else {
 					if(x.isMax()) x.setValue(Double.MIN_VALUE);
@@ -80,6 +80,50 @@ public class Search {
 		return null; 	// DA CAMBIARE!!
 	}
 
+	
+	public Node recursiveSearch(Node n) {
+		return maxVal(n,Double.MIN_VALUE,Double.MAX_VALUE);
+	}
+	
+	public Node maxVal(Node n, double alpha, double beta) {
+//		System.out.println(n.getId());
+		Node ret = null;
+		if(testTerminazione(n)) { n.setValue((new Random()).nextDouble()); return n;} //da cambiare
+		double v = Double.MIN_VALUE;
+		for(Node f: n.getSons()) {
+			double min = (minVal(f,alpha,beta)).getValue();
+			v = Math.max(v, min);
+			if(v==min) ret=f;
+			if(v >= beta) return n;
+			alpha = Math.max(alpha, v);
+		}
+		if(ret!=null)
+			return ret;
+		return n;
+	}
+	
+	public Node minVal(Node n, double alpha,double beta) {
+//		System.out.println(n.getId());
+		Node ret = null;
+		if(testTerminazione(n)) { n.setValue((new Random()).nextDouble()); return n;} //da cambiare
+		double v = Double.MAX_VALUE;
+		for(Node f: n.getSons()) {
+			double max = (maxVal(f,alpha,beta)).getValue();
+			v = Math.min(v, max);
+			if(v==max) ret=f;
+			if(v <= alpha) return n;
+			beta = Math.max(beta, v);
+		}
+		if(ret!=null)
+			return ret;
+		return n;
+		
+	}
+	
+	public boolean testTerminazione(Node n) {
+		return n.leaf() || !n.expandable();
+	}
+	
 	private double max(LinkedList<Node> siblings, LinkedList<Node> ancestors) {
 		double max = Double.MIN_VALUE;
 		for (Node node : ancestors) {

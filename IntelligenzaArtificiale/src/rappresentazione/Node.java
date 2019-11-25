@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class Node implements Serializable{
+	
 
+	private static final long serialVersionUID = 7164838078008152527L;
+	
 	private static int gid = 0;
 	private int id;
 	private double value;
@@ -17,13 +21,14 @@ public class Node implements Serializable{
 
 	private int bc, wc; // mia configurazione e avversaria
 	private String mossa;
-	private HashMap<Byte, Byte> posToPawns;
+//	private HashMap<Byte, Byte> posToPawns;
+	private byte[] posToPawns;
 
-	public Node(Node parent, int bc, int wc, HashMap<Byte, Byte> posToPawns, String mossa) {
+	public Node(Node parent, int bc, int wc, byte[] posToPawns, String mossa) {
 		this.parent = parent;
 		this.bc = bc;
 		this.wc = wc;
-		this.posToPawns = (HashMap<Byte, Byte>) posToPawns.clone();
+		this.posToPawns = posToPawns.clone(); 
 		this.mossa = mossa;
 		isMax = (parent == null) ? true : !parent.isMax();
 		id = gid++;
@@ -73,8 +78,8 @@ public class Node implements Serializable{
 		this.parent = parent;
 	}
 
-	public void setPosToPawns(HashMap<Byte, Byte> posToPawns) {
-		this.posToPawns = (HashMap<Byte, Byte>) posToPawns.clone();
+	public void setPosToPawns(byte[] posToPawns) {
+		this.posToPawns = posToPawns.clone();
 	}
 
 	public int getWc() {
@@ -93,14 +98,18 @@ public class Node implements Serializable{
 		return parent;
 	}
 
-	public HashMap<Byte, Byte> getPosToPawns() {
+	public byte[] getPosToPawns() {
 		return posToPawns;
 	}
 
-	@Override
+//	@Override
+//	public String toString() {
+//		return "[ id: " + id + ", bc: " + toBinaryString(bc) + ", wc: " + toBinaryString(wc) + ", mossa: " + mossa
+//				+ " ]";
+//	}
+	
 	public String toString() {
-		return "[ id: " + id + ", bc: " + toBinaryString(bc) + ", wc: " + toBinaryString(wc) + ", mossa: " + mossa
-				+ " ]";
+		return "[ id: " + id + ", mossa: "+mossa+" ]";
 	}
 
 	private String toBinaryString(int i) {
@@ -166,6 +175,7 @@ public class Node implements Serializable{
 	 */
 	public boolean expandable() {
 		return bc != 0 && wc != 0;
+//		return true;
 	}
 
 	public static String generateGenericVerbose(Node node, String prefix, boolean isRightMost, boolean isLeftMost,
@@ -181,7 +191,7 @@ public class Node implements Serializable{
 		sb.append(prefix).append(isRightMost && isLeftMost ? "└── " : "")
 				.append(isRightMost && !isLeftMost ? "┌── " : "").append(isLeftMost && !isRightMost ? "└── " : "")
 				.append(!isRightMost && !isLeftMost ? "├── " : "")
-				.append(node.toString() + " - " + node.getPosToPawns()).append("\n");
+				.append(node.toString()).append("\n");
 		for (int i = halfSize - 1; i >= 0; i--) {
 			Node child = children.get(i);
 			generateGenericVerbose(children.get(i), prefix + (isLeftMost ? "    " : "│   "),
