@@ -11,10 +11,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Scanner;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -53,9 +51,9 @@ public class BoardMap {
 		return f;
 	}
 
-	public void createFrameBoard(Node n) {
+	public void createFrameBoard(Node n, boolean isWhite) {
 		
-		mg.generateMoves(n, true);
+		mg.generateMoves(n, isWhite);
 		
 		for (int i = 0; i < opened.size(); i++) {
 			boolean isMyAncestor = false;
@@ -136,7 +134,7 @@ public class BoardMap {
 					for (Node son : n.getSons()) {
 						if (son.getMossa().equals(mosse.getText())) {
 							BoardMap bSon = new BoardMap();
-							bSon.createFrameBoard(son);
+							bSon.createFrameBoard(son, !isWhite);
 						}
 					}
 				}
@@ -227,14 +225,17 @@ public class BoardMap {
 		 */
 
 		boolean isWhite = true;
-		int livelloMax = 4;
+		int livelloMax = 3;
 		root = new Node(null, bc, wc, posToPawn, "");
 
 //		generateMovesRecursive(mg, root, isWhite, 0, livelloMax);
 //		generateMovesIterative(mg, root, isWhite, livelloMax);
 
+		System.out.println("Created tree with depth "+livelloMax);
+		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
+		
 		BoardMap bm = new BoardMap();
-		bm.createFrameBoard(root);
+		bm.createFrameBoard(root, true);
 
 	}
 
