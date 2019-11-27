@@ -45,8 +45,7 @@ public class MovesGenerator {
 
 	}
 
-	public void generateMoves(Node root, boolean isWhite) {// (int mc, int ec, HashMap<Byte, Byte> posToPawn, boolean
-															// isWhite) {
+	public void generateMoves(Node root, boolean isWhite) {
 
 		int mc;
 		int ec;
@@ -58,6 +57,10 @@ public class MovesGenerator {
 			mc = root.getBc();
 			ec = root.getWc();
 		}
+		
+		
+		
+		if(mc==0 || ec==0) return;
 
 		byte[] posToPawn = root.getPosToPawns();
 //		System.out.println(isWhite+" -> mc : "+ Integer.toBinaryString(mc)+" | ec : " + Integer.toBinaryString(ec)  );
@@ -278,7 +281,7 @@ public class MovesGenerator {
 
 	}
 
-	public int createConfig(byte[] posToPawn, boolean isWhite) {
+	public static int createConfig(byte[] posToPawn, boolean isWhite) {
 		int conf = 0;
 		for (int i = 0; i < posToPawn.length; i++) {
 			byte p = posToPawn[i];
@@ -290,109 +293,9 @@ public class MovesGenerator {
 
 	}
 
-	public static void main(String[] args) throws Exception {
 
-		/*
-		 ********************************************************************************************************************************* 
-		 * SETTING UP PARAMETRI INIZIALI
-		 *********************************************************************************************************************************
-		 */
 
-		HashMap<Byte, Byte> posToPawn = new HashMap<Byte, Byte>();
-		for (int i = 0; i < 32; i++) {
-			if (i == 1) // white start position
-				posToPawn.put((byte) i, (byte) 12);
-			else if (i == 30) // black start position
-				posToPawn.put((byte) i, (byte) 32);
-			else
-				posToPawn.put((byte) i, (byte) 0);
-		}
-
-		byte[] posToPawn2 = new byte[32];
-		for (int i = 0; i < 32; i++) {
-			if (i == 1) // white start position
-				posToPawn2[i] = (byte) 12;
-			else if (i == 30) // black start position
-				posToPawn2[i] = (byte) 32;
-			else
-				posToPawn2[i] = (byte) 0;
-		}
-
-		MovesGenerator mg = new MovesGenerator();
-		mg.init();
-
-		int bc = mg.createConfig(posToPawn2, false);
-		int wc = mg.createConfig(posToPawn2, true);
-
-		/*
-		 ********************************************************************************************************************************* 
-		 * GENERAZIONE ALBERO MOSSE
-		 *********************************************************************************************************************************
-		 */
-
-		int livelloMax = 3;
-//		int livelloMax =Integer.parseInt(args[0]);
-//		long tstart = System.currentTimeMillis();
-		Node root = new Node(null, bc, wc, posToPawn2, "");
-		generateMovesRecursive(mg, root, true, 0, livelloMax);
-//		generateMovesIterative(mg,root,true,livelloMax);
-//		long tend = System.currentTimeMillis();
-
-		/*
-		 ********************************************************************************************************************************* 
-		 * RICERCA MINIMAX CON PRUNING ALPHA-BETA
-		 *********************************************************************************************************************************
-		 */
-
-		Search s = new Search();
-
-//		long tstart = System.currentTimeMillis();
-//		Node ret = s.search(root);
-//		long tend = System.currentTimeMillis();
-//		
-//		System.out.println("tempo search iterativa "+livelloMax+" livelli -> "+ ((tend - tstart)/1000.0)+", res: "+ret.getValue());
-
-		long tstart = System.currentTimeMillis();
-		Node ret1 = s.recursiveSearch(root);
-		long tend = System.currentTimeMillis();
-
-		System.out.println("tempo search ricorsiva " + livelloMax + " livelli -> " + ((tend - tstart) / 1000.0)
-				+ ", res: " + ret1.getValue());
-
-		/*
-		 *********************************************************************************************************************************
-		 * RISULTATI GENERAZIONE E RICERCA
-		 *********************************************************************************************************************************
-		 */
-//		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
-
-//		File f = new File("tree");
-//		ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(f));
-//		f.createNewFile();
-//		tstart = System.currentTimeMillis();
-//		o.writeObject(root);
-//		tend = System.currentTimeMillis();
-//		o.close();
-//		
-//		System.out.println("Scrittura effettuata in "+((tend-tstart)/1000.0)+" secondi, dimensione "+((double)f.length() / (1024 * 1024) + " mb"));
-//		
-//		File f1 = new File("posToPawn");
-//		File f2 = new File("posToPawn2");
-//		f1.createNewFile();
-//		f2.createNewFile();
-//		ObjectOutputStream o1 = new ObjectOutputStream(new FileOutputStream(f1));
-//		ObjectOutputStream o2 = new ObjectOutputStream(new FileOutputStream(f2));
-//		o1.writeObject(posToPawn);
-//		o2.writeObject(posToPawn2);
-//		o1.close();
-//		o2.close();
-////		
-//		System.out.println("hash: "+((double)f1.length() / (1024 * 1024) + " mb"));
-//		System.out.println("array: "+((double)f2.length() / (1024 * 1024) + " mb"));
-
-	}
-
-	private static void generateMovesIterative(MovesGenerator mg, Node root, boolean isWhite, int limite) {
+	public void generateMovesIterative(MovesGenerator mg, Node root, boolean isWhite, int limite) {
 		HashMap<Integer, Object[]> nodeLev = new HashMap<Integer, Object[]>();
 		LinkedList<Node> ll = new LinkedList<Node>();
 		nodeLev.put(root.getId(), new Object[] { 0, isWhite });
@@ -412,7 +315,7 @@ public class MovesGenerator {
 		}
 	}
 
-	private static void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite, int liv, int limite)
+	public void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite, int liv, int limite)
 			throws IOException {
 		if (liv == limite || n == null) {
 			return;
@@ -426,7 +329,7 @@ public class MovesGenerator {
 	/**
 	 * METODO STAMPA
 	 */
-	private static void metodoStampaTree(Node n, int liv) {
+	public void metodoStampaTree(Node n, int liv) {
 		for (int i = 0; i < liv; i++) {
 			System.out.print("\t");
 		}
@@ -435,4 +338,5 @@ public class MovesGenerator {
 			metodoStampaTree(son, liv + 1);
 		}
 	}
+
 }

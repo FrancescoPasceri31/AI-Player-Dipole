@@ -153,7 +153,7 @@ public class BoardMap {
 
 		JMenuBar jmb = new JMenuBar();
 		mosse = new JMenu(n.getSons().get(0).getMossa());
-		for (int i = 0; i < n.getSons().size(); i++) {
+		for (int i = 0; i < n.numSons(); i++) {
 			JMenuItem jmi = new JMenuItem(n.getSons().get(i).getMossa());
 			jmi.addActionListener(new ActionListener() {
 				@Override

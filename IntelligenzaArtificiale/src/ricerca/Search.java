@@ -8,6 +8,8 @@ import rappresentazione.Node;
 
 public class Search {
 	
+	private Random r = new Random();
+	
 	public Node search(Node t) {
 		int z = 0;
 		LinkedList<Node> l = new LinkedList();  //va settata più grande
@@ -20,7 +22,7 @@ public class Search {
 			z++;
 			Node x = l.getFirst(); 
 			if(x.equals(t) && x.hasValue()) {
-//				System.out.println("iterazioni: "+z+"\npruned min: "+p_min+"\npruned max: "+p_max+"\nnot pruned: "+not_pruned); 
+				System.out.println("iterazioni: "+z+"\npruned min: "+p_min+"\npruned max: "+p_max+"\nnot pruned: "+not_pruned); 
 				return best;
 			}
 			if(x.hasValue()) {
@@ -53,6 +55,7 @@ public class Search {
 					else {
 						m = Math.max(x.getValue(),p.getValue());
 						p.setValue(m);
+						System.out.println(x.getValue());
 						if( p.equals(t) &&  m==x.getValue()) {
 							best=x;
 						}
@@ -62,8 +65,10 @@ public class Search {
 				}
 			}else {
 				if(!x.hasValue() && (x.leaf() || !x.expandable())) {
-					x.setValue((new Random()).nextDouble());
-//					x.setValue(z);
+//					x.setValue((new Random()).nextDouble());
+					int b = x.getBc();
+					int w = x.getWc();
+					x.setValue((double)(w-b)/(w+b));
 					x.setHasValue(true);
 				}else {
 					if(x.isMax()) x.setValue(Double.MIN_VALUE);
@@ -82,43 +87,58 @@ public class Search {
 
 	
 	public Node recursiveSearch(Node n) {
+		r.setSeed(30L);
 		return maxVal(n,Double.MIN_VALUE,Double.MAX_VALUE);
 	}
 	
 	public Node maxVal(Node n, double alpha, double beta) {
 //		System.out.println(n.getId());
 		Node ret = null;
-		if(testTerminazione(n)) { n.setValue((new Random()).nextDouble()); return n;} //da cambiare
+		if(testTerminazione(n)) { 
+			n.setValue(fun(n.getWc(),n.getBc()));
+			return n;
+			} //da cambiare
 		double v = Double.MIN_VALUE;
 		for(Node f: n.getSons()) {
-			double min = (minVal(f,alpha,beta)).getValue();
+			double min = (minVal(f,alpha,beta)).getValue(); //valore del figlio
 			v = Math.max(v, min);
-			if(v==min) ret=f;
-			if(v >= beta) return n;
+			if(v==min) ret=f;  //se non entra mai in questo if, allora ritornerà null
+//			if(v >= beta) {n.setValue(v);return n;};
+			if(v >= beta) {return n;};
 			alpha = Math.max(alpha, v);
 		}
-		if(ret!=null)
-			return ret;
-		return n;
+		//n.setValue(v);
+		return ret;
 	}
 	
 	public Node minVal(Node n, double alpha,double beta) {
 //		System.out.println(n.getId());
 		Node ret = null;
-		if(testTerminazione(n)) { n.setValue((new Random()).nextDouble()); return n;} //da cambiare
+		if(testTerminazione(n)) { 
+			n.setValue(fun(n.getWc(),n.getWc()));
+			return n;
+			} //da cambiare
 		double v = Double.MAX_VALUE;
 		for(Node f: n.getSons()) {
-			double max = (maxVal(f,alpha,beta)).getValue();
+			double max = (maxVal(f,alpha,beta)).getValue(); //valore del figlio
 			v = Math.min(v, max);
 			if(v==max) ret=f;
-			if(v <= alpha) return n;
+//			if(v <= alpha) {n.setValue(v);return ret;};
+			if(v <= alpha) {return n;};
 			beta = Math.max(beta, v);
 		}
-		if(ret!=null)
-			return ret;
-		return n;
+		//n.setValue(v);
+		return ret;
 		
 	}
+	
+	public int fun(int w, int b) {
+//		if(w==0 || b==0) return 0;
+//		else return r.nextInt(24)+1;
+		return r.nextInt(24)+1;
+	}
+	
+	
 	
 	public boolean testTerminazione(Node n) {
 		return n.leaf() || !n.expandable();

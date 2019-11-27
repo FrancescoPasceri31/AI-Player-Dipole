@@ -109,7 +109,7 @@ public class Node implements Serializable{
 //	}
 	
 	public String toString() {
-		return "[ id: " + id + ", mossa: "+mossa+" ]";
+		return "[ id: " + id + ", mossa: "+mossa+" , value: "+value+" ]";
 	}
 
 	private String toBinaryString(int i) {
@@ -174,8 +174,8 @@ public class Node implements Serializable{
 	 * DA CAMBIARE!!
 	 */
 	public boolean expandable() {
-		return bc != 0 && wc != 0;
-//		return true;
+//		return bc != 0 && wc != 0;
+		return true;
 	}
 
 	public static String generateGenericVerbose(Node node, String prefix, boolean isRightMost, boolean isLeftMost,
