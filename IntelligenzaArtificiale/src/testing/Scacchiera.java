@@ -131,11 +131,11 @@ public class Scacchiera {
 
 					if (pawns > 0) {
 						if (pawns > 12) {
-							int[] msk = HashMapGenerator2.getMask(masksBlack, miaCella, pawns);
+							int[] msk = HashMapGenerator.getMask(masksBlack, miaCella, pawns);
 							AV_bmask = Integer.toBinaryString(msk[0]);
 							IN_bmask = Integer.toBinaryString(msk[1]);
 						} else {
-							int[] msk = HashMapGenerator2.getMask(masksWhite, miaCella, pawns);
+							int[] msk = HashMapGenerator.getMask(masksWhite, miaCella, pawns);
 							AV_wmask = Integer.toBinaryString(msk[0]);
 							IN_wmask = Integer.toBinaryString(msk[1]);
 						}
@@ -208,7 +208,7 @@ public class Scacchiera {
 							/* TOLGO FUORI */
 							if (SwingUtilities.isRightMouseButton(e)) {
 								int nPawns = posToPawn.get((byte) miaCella);
-								byte[] direzioni = HashMapGenerator2
+								byte[] direzioni = HashMapGenerator
 										.getOutLeastPawns(nPawns <= 12 ? masksWhite : masksBlack, (byte) miaCella);
 								String[] coord = null;
 
@@ -328,7 +328,7 @@ public class Scacchiera {
 							}
 
 							int en = Integer.parseUnsignedInt(enemy, 2);
-							int[] msk = HashMapGenerator2.getMask((nPawns > 12 ? masksBlack : masksWhite), miaCella,
+							int[] msk = HashMapGenerator.getMask((nPawns > 12 ? masksBlack : masksWhite), miaCella,
 									nPawns);
 							int AV_mask = msk[0];
 							int IN_mask = msk[1];

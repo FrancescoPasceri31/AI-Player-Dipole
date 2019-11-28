@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-public class HashMapGenerator2 {
+public class HashMapGenerator {
 
 	public static void main(String[] args) throws Exception {
 

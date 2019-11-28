@@ -64,7 +64,7 @@ public class MovesGenerator {
 		byte[] posToPawn = root.getPosToPawns();
 //		System.out.println(isWhite+" -> mc : "+ Integer.toBinaryString(mc)+" | ec : " + Integer.toBinaryString(ec)  );
 //		System.out.println(posToPawn);
-		byte[] myP = HashMapGenerator2.onesPosition(mc);
+		byte[] myP = HashMapGenerator.onesPosition(mc);
 
 		HashMap<Byte, Object[]> masks = null;
 		masks = isWhite ? masksWhite : masksBlack;
@@ -84,13 +84,13 @@ public class MovesGenerator {
 //			System.out.println("Mia posizione: " + myP[k]+" num pedine: "+miePedine+" "+Integer.toBinaryString(mc) );
 //			System.out.println();
 
-			int[] msk = HashMapGenerator2.getMask(masks, miaPosizione, miePedine);
+			int[] msk = HashMapGenerator.getMask(masks, miaPosizione, miePedine);
 			int m = msk[0];
 			// avanti
 			int p = msk[1];
 			int r = m & (p | (~ec));
 
-			byte[] positions = HashMapGenerator2.zerosPosition(r);
+			byte[] positions = HashMapGenerator.zerosPosition(r);
 
 			// System.out.println(Arrays.toString(positions));
 			// System.out.println(posToPawn.get((byte)9));
@@ -176,7 +176,7 @@ public class MovesGenerator {
 				}
 			}
 
-			byte[] direzioni = HashMapGenerator2.getOutLeastPawns(masks, miaPosizione);
+			byte[] direzioni = HashMapGenerator.getOutLeastPawns(masks, miaPosizione);
 
 			posFiglio = posToPawn.clone();
 

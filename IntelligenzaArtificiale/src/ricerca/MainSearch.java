@@ -47,7 +47,7 @@ public class MainSearch {
 		 * GENERAZIONE ALBERO MOSSE
 		 *********************************************************************************************************************************
 		 */
-
+		boolean isWhite = false;
 		int livelloMax = 2;
 //		int livelloMax =Integer.parseInt(args[0]);
 		
@@ -60,7 +60,7 @@ public class MainSearch {
 			System.out.println("iterazione: "+(i+1));
 			tstart = System.currentTimeMillis();
 			root = new Node(null, bc, wc, posToPawn2, "");
-			mg.generateMovesRecursive(mg, root, true, 0, livelloMax);
+			mg.generateMovesRecursive(mg, root, isWhite, 0, livelloMax);
 //			generateMovesIterative(mg,root,true,livelloMax);
 			tend = System.currentTimeMillis();
 			sum += (tend - tstart)/1000.0;
@@ -83,7 +83,7 @@ public class MainSearch {
 //		System.out.println("tempo search iterativa "+livelloMax+" livelli -> "+ ((tend - tstart)/1000.0)+", res: "+ret.getValue());
 
 		tstart = System.currentTimeMillis();
-		Node ret1 = s.recursiveSearch(root);
+		Node ret1 = s.recursiveSearch(root,isWhite);
 		tend = System.currentTimeMillis();
 		
 		System.out.println(ret1);

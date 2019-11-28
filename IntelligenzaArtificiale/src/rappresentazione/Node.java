@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import euristica.Euristica;
+
 public class Node implements Serializable{
 	
 
@@ -109,7 +111,7 @@ public class Node implements Serializable{
 //	}
 	
 	public String toString() {
-		return "[ id: " + id + ", mossa: "+mossa+" ]";
+		return "[ id: " + id + ", mossa: "+mossa+", value: "+value+" ]";
 	}
 
 	private String toBinaryString(int i) {

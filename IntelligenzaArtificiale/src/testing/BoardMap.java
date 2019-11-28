@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -94,6 +95,12 @@ public class BoardMap {
 		}
 
 		mg.generateMoves(n, isWhite);
+		
+//		System.out.println(Arrays.toString(n.getPosToPawns()));
+		if(n.getParent()!=null)
+			System.out.println("paren --> wc: "+Integer.toBinaryString(n.getParent().getWc())+" bc: "+Integer.toBinaryString(n.getParent().getBc()));
+		System.out.println("child --> wc: "+Integer.toBinaryString(n.getWc())+" bc: "+Integer.toBinaryString(n.getBc()));
+		System.out.println();
 
 		for (int i = 0; i < opened.size(); i++) {
 			boolean isMyAncestor = false;
