@@ -1,7 +1,9 @@
-package testing;
+package generators;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import testing.Scacchiera;
 
 public class MaskGenerator {
 

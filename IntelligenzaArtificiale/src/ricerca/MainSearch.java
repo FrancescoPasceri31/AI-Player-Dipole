@@ -2,8 +2,8 @@ package ricerca;
 
 import java.util.HashMap;
 
+import generators.MovesGenerator;
 import rappresentazione.Node;
-import testing.MovesGenerator;
 
 public class MainSearch {
 	

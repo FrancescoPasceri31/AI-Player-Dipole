@@ -1,4 +1,4 @@
-package testing;
+package generators;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+
+import testing.Scacchiera;
 
 public class HashMapGenerator {
 

@@ -3,8 +3,8 @@ package euristica;
 import java.util.Arrays;
 import java.util.Random;
 
+import generators.HashMapGenerator;
 import rappresentazione.Node;
-import testing.HashMapGenerator;
 
 public class Euristica {
 	

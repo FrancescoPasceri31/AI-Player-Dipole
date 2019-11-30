@@ -29,6 +29,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
+import generators.MovesGenerator;
 import rappresentazione.Node;
 
 public class BoardMap {

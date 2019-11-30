@@ -1,4 +1,4 @@
-package testing;
+package generators;
 
 import java.io.FileInputStream;
 import java.io.IOException;

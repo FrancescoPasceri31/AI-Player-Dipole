@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
+import generators.HashMapGenerator;
+
 public class Scacchiera {
 
 	private final Color BROWN = new Color(102, 51, 0);
@@ -418,18 +420,3 @@ public class Scacchiera {
 	} // show
 
 } // scacchiera
-
-class Cella {
-	public int info;
-	public String colore;
-
-	public Cella() {
-		info = -1;
-		colore = "";
-	}
-
-	@Override
-	public String toString() {
-		return "Cella [" + colore + "]";
-	}
-}
