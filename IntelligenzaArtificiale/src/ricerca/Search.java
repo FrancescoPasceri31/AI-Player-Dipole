@@ -8,6 +8,8 @@ import euristica.Euristica;
 import rappresentazione.Node;
 
 public class Search {
+	
+	private Random r = new Random();
 
 	
 	public Node search(Node t) {
@@ -83,6 +85,7 @@ public class Search {
 	}
 	
 	public Node recursiveSearch(Node n,boolean isWhite) {
+		r.setSeed(42);
 		return maxVal(n,Double.MIN_VALUE,Double.MAX_VALUE,isWhite);
 	}
 	
@@ -90,7 +93,8 @@ public class Search {
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
-			n.setValue(Euristica.getEuristica(n, isWhite));
+//			n.setValue(Euristica.getEuristica(n, isWhite));
+			n.setValue(r.nextInt(42)+1);
 			return n;
 			} //da cambiare
 		double v = -Double.MAX_VALUE;
@@ -111,7 +115,8 @@ public class Search {
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
-			n.setValue(Euristica.getEuristica(n, isWhite));
+//			n.setValue(Euristica.getEuristica(n, isWhite));
+			n.setValue(r.nextInt(42)+1);
 			return n;
 			} //da cambiare
 		double v = Double.MAX_VALUE;
