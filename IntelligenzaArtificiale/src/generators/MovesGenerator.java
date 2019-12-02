@@ -315,7 +315,7 @@ public class MovesGenerator {
 
 	public  static void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite, int liv, int limite)
 			throws IOException {
-		if (liv == limite || n == null) {
+		if (liv == limite - 1|| n == null) {
 			return;
 		}
 		mg.generateMoves(n, isWhite);

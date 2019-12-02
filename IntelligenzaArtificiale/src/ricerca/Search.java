@@ -93,8 +93,8 @@ public class Search {
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
-//			n.setValue(Euristica.getEuristica(n, isWhite));
-			n.setValue(r.nextInt(42)+1);
+			n.setValue(Euristica.getEuristica(n, isWhite));
+//			n.setValue(r.nextInt(42)+1);
 			return n;
 			} //da cambiare
 		double v = -Double.MAX_VALUE;
@@ -115,8 +115,8 @@ public class Search {
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
-//			n.setValue(Euristica.getEuristica(n, isWhite));
-			n.setValue(r.nextInt(42)+1);
+			n.setValue(Euristica.getEuristica(n, isWhite));
+//			n.setValue(r.nextInt(42)+1);
 			return n;
 			} //da cambiare
 		double v = Double.MAX_VALUE;

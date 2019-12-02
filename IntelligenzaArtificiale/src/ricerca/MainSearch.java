@@ -47,8 +47,8 @@ public class MainSearch {
 		 * GENERAZIONE ALBERO MOSSE
 		 *********************************************************************************************************************************
 		 */
-		boolean isWhite = true;
-		int livelloMax = 5;
+		boolean isWhite = false;
+		int livelloMax = 3;
 //		int livelloMax =Integer.parseInt(args[0]);
 		
 		long tstart,tend;
@@ -59,7 +59,7 @@ public class MainSearch {
 		for(int i =0;i<iterations; i++) {
 			System.out.println("iterazione: "+(i+1));
 			tstart = System.currentTimeMillis();
-			root = new Node(null, bc, wc, posToPawn2, "");
+			root = new Node(null, bc, wc, posToPawn2, ",0");
 			mg.generateMovesRecursive(mg, root, isWhite, 0, livelloMax);
 //			generateMovesIterative(mg,root,true,livelloMax);
 			tend = System.currentTimeMillis();
@@ -74,7 +74,7 @@ public class MainSearch {
 		 *********************************************************************************************************************************
 		 */
 
-//		Search s = new Search();
+		Search s = new Search();
 
 //		tstart = System.currentTimeMillis();
 //		Node ret = s.search(root);
@@ -82,11 +82,11 @@ public class MainSearch {
 //		
 //		System.out.println("tempo search iterativa "+livelloMax+" livelli -> "+ ((tend - tstart)/1000.0)+", res: "+ret.getValue());
 
-//		tstart = System.currentTimeMillis();
-//		Node ret1 = s.recursiveSearch(root,isWhite);
-//		tend = System.currentTimeMillis();
-//		
-//		System.out.println(ret1);
+		tstart = System.currentTimeMillis();
+		Node ret1 = s.recursiveSearch(root,isWhite);
+		tend = System.currentTimeMillis();
+		
+		System.out.println(ret1);
 //		ret1 = s.minVal(root.getSons().get(ret1.getId()-1), Double.MIN_VALUE, Double.MAX_VALUE);
 //		System.out.println(ret1);
 
@@ -96,7 +96,7 @@ public class MainSearch {
 //		System.out.println("tempo search ricorsiva " + livelloMax + " livelli -> " + ((tend - tstart) / 1000.0)+ ", res: " + ret1);
 		
 //		System.out.println(Node.generateGenericVerbose(root.getSons().get(ret1.getId()-1), "", false, false, new StringBuilder()));
-//		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
+		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
 		
 		/*
 		 *********************************************************************************************************************************

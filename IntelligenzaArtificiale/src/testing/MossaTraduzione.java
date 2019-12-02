@@ -61,7 +61,8 @@ public class MossaTraduzione {
 		for (Node son : root.getSons()) {
 			sons.put(son.getMossa(), new NodeM(root2, son.getBc(), son.getWc(), son.getPosToPawns(), son.getMossa()));
 		}
-
+		
+		root2.setSons(sons);
 		// ricerca strana
 //		LocalDateTime rsStart = LocalDateTime.now();
 		long rsStart = System.nanoTime();
