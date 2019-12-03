@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import rappresentazione.Node;
@@ -315,7 +316,7 @@ public class MovesGenerator {
 
 	public  static void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite, int liv, int limite)
 			throws IOException {
-		if (liv == limite - 1|| n == null) {
+		if (liv == limite-1 || n == null ) {
 			return;
 		}
 		mg.generateMoves(n, isWhite);
@@ -323,7 +324,7 @@ public class MovesGenerator {
 			generateMovesRecursive(mg, son, !isWhite, liv + 1, limite);
 		}
 	}
-
+	
 	/**
 	 * METODO STAMPA
 	 */
