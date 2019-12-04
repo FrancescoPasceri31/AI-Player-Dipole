@@ -47,8 +47,8 @@ public class MainSearch {
 		 * GENERAZIONE ALBERO MOSSE
 		 *********************************************************************************************************************************
 		 */
-		boolean isWhite = false;
-		int livelloMax = 3;
+		boolean isWhite = true;
+		int livelloMax = 6;
 //		int livelloMax =Integer.parseInt(args[0]);
 		
 		long tstart,tend;
