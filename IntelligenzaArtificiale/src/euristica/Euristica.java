@@ -57,13 +57,15 @@ public class Euristica {
 //		if(n == null) return 0;
 		int x = n.getMossa().lastIndexOf(",");
 		byte numPedine= Byte.parseByte(n.getMossa().substring(x+1));
+		//System.out.println("numPedine "+numPedine);
 //		System.out.println("id: "+n.getId()+" "+numPedine);
 		switch(numPedine) {
-		case 1: return 1;
-		case 2: return 5;
-		case 3: return 4;
-		case 4: return 3;
-		case 5: return 2;
+		//case 0: return -200;
+		case 1: return 2;
+		case 2: return 7;
+		case 3: return 5;
+		case 4: return 4;
+		case 5: return 3;
 		case 6: return 1;
 		default: return 0; 
 		}
@@ -75,7 +77,7 @@ public class Euristica {
 	}
 	
 	public static double getEuristica(Node n, boolean isWhite) {
-		return strategy_2(n)+2*strategy_1(n, isWhite)+3*strategy_0(n, isWhite);
+		return strategy_2(n)+5*strategy_1(n, isWhite)+2*strategy_0(n, isWhite);
 	}
 
 }

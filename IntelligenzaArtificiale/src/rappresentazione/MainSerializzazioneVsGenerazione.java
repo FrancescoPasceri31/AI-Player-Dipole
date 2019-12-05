@@ -163,7 +163,7 @@ public class MainSerializzazioneVsGenerazione {
 		}
 	}
 
-	private static LinkedList<Node> getLeaves(Node n) {
+	public static LinkedList<Node> getLeaves(Node n) {
 		LinkedList<Node> ll = new LinkedList<Node>();
 		LinkedList<Node> open = new LinkedList<Node>();
 		open.add(n);

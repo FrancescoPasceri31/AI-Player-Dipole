@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 import generators.MovesGenerator;
@@ -28,12 +30,16 @@ public class Run {
 		Node root = null;
 		String opponent_move = null;
 		Search s = null;
+		LinkedList<Node> leaves = null;
+		
+		
 		try {
 			soc = new Socket(address,port);
 			in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
 			out = new PrintWriter(soc.getOutputStream(),true);
 			
 			while(true) {
+				//if(root!=null) System.out.println(root.getMossa());
 				ret = in.readLine();
 				//if(ret==null) continue;
 				st = new StringTokenizer(ret," ");
@@ -44,6 +50,7 @@ public class Run {
 					break;
 				case "MESSAGE":
 					if(st.nextToken().equals("All")) {
+						
 						byte[] posToPawn = new byte[32];
 						for (int i = 0; i < 32; i++) {
 							if (i == 1) // white start position
@@ -61,11 +68,14 @@ public class Run {
 						int wc = mg.createConfig(posToPawn, true);
 						
 					    root = new Node(null, bc, wc, posToPawn, ",0");
-						mg.generateMovesRecursive(mg, root, isWhite, 0,6);
+						if(isWhite)
+							mg.generateMovesRecursive(mg, root, true, 0,3);
+						else
+							mg.generateMovesRecursive(mg, root, true, 0,4);
 						
 						s = new Search();
-						System.out.println(ret);
 					}
+					System.out.println(ret);
 					break;
 				case "OPPONENT_MOVE":
 					System.out.println(ret);
@@ -73,17 +83,32 @@ public class Run {
 					for(Node f: root.getSons())
 						if(f.getMossa().equals(opponent_move)) {
 							root = f;
+							root.setParent(null);
+							leaves = mg.getLeaves(root);
+							System.out.println("root to opponent");
+							for(Node n: leaves)
+								mg.generateMovesRecursive(mg, n, isWhite, 0, 2);
 							break;
 						}
 					break;
 				case "YOUR_TURN":
-//					if(isWhite)
-//						out.println("MOVE H5,NE,1");
-//					else
-//						out.println("MOVE A4,SE,1");
 					root = s.recursiveSearch(root, isWhite);
+					System.out.println("valore mossa: "+root.getValue());
 					out.println("MOVE "+root.getMossa());
+					root.setParent(null);
+					//System.out.println("isWhite: "+isWhite+"mossa: "+root.getMossa()+" \nposToPawn: "+Arrays.toString(root.getPosToPawns()));
 					System.out.println("Mossa inviata: "+root.getMossa());
+					
+					leaves = mg.getLeaves(root);
+//					if(isWhite) {
+//						for(Node n: leaves)
+//							mg.generateMovesRecursive(mg, n, isWhite, 0, 3);
+//					}else {
+//						for(Node n: leaves)
+//							mg.generateMovesRecursive(mg, n, isWhite, 0, 2);
+//					}
+					for(Node n: leaves)
+						mg.generateMovesRecursive(mg, n, isWhite, 0, 3);
 					break;
 				case "VALID_MOVE":
 					System.out.println(ret);

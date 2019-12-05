@@ -3,6 +3,7 @@ package generators;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -18,8 +19,7 @@ public class MovesGenerator {
 	private HashMap<Byte, Object[]> masksBlack = null;
 	private HashMap<Byte, Object[]> masksWhite = null;
 
-	private Byte[] posToCol = { 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8,
-			6, 4, 2 };
+	private Byte[] posToCol = { 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2 };
 
 	public HashMap<String, Byte> getCellToPos() {
 		return cellToPos;
@@ -59,7 +59,7 @@ public class MovesGenerator {
 			mc = root.getBc();
 			ec = root.getWc();
 		}
-		
+		//if(Byte.parseByte(root.getMossa().substring(root.getMossa().lastIndexOf(",")+1))=='0') return;
 		if(mc==0 || ec == 0) return;
 
 		byte[] posToPawn = root.getPosToPawns();
@@ -80,6 +80,7 @@ public class MovesGenerator {
 			byte miaRiga = (byte) (miaPosizione / (byte) 4);
 
 			byte miePedine = posToPawn[miaPosizione];
+			
 
 //			System.out.println();
 //			System.out.println("Mia posizione: " + myP[k]+" num pedine: "+miePedine+" "+Integer.toBinaryString(mc) );
@@ -101,6 +102,8 @@ public class MovesGenerator {
 			byte numPedineDestinazione;
 			boolean merge;
 			int mcr, ecr;
+			
+			//if(!isWhite) miePedine-=20;
 
 			for (int j = 0; j < positions.length; j++) {
 
@@ -153,10 +156,8 @@ public class MovesGenerator {
 					}
 				} else {
 
-					posFiglio[miaPosizione] = (byte) (numPedineRimanenti
-							- (!isWhite && numPedineRimanenti == 20 ? 20 : 0));
-					posFiglio[positions[j]] = (byte) (numPedineDestinazione + numPedineDaSpostare
-							+ (!isWhite && numPedineDestinazione == 0 ? 20 : 0));
+					posFiglio[miaPosizione] = (byte) (numPedineRimanenti - (!isWhite && numPedineRimanenti == 20 ? 20 : 0));
+					posFiglio[positions[j]] = (byte) (numPedineDestinazione + numPedineDaSpostare + (!isWhite && numPedineDestinazione == 0 ? 20 : 0));
 
 					mcr = mcr | (1 << positions[j]);
 
@@ -314,15 +315,34 @@ public class MovesGenerator {
 		}
 	}
 
-	public  static void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite, int liv, int limite)
+	public  void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite, int liv, int limite)
 			throws IOException {
 		if (liv == limite-1 || n == null ) {
 			return;
 		}
+		//System.out.println("id: "+n.getId());
 		mg.generateMoves(n, isWhite);
+//		if(/*n.getSons().size()==0 &&*/ n.getBc()!=0 && n.getWc()!=0) {
+//			n.addSon(new Node(n,n.getBc(),n.getWc(),n.getPosToPawns(),""+posToCell.get(HashMapGenerator.onesPosition(isWhite?n.getWc():n.getBc())[0])+",N,0"));
+//			//return;
+//		}
 		for (Node son : n.getSons()) {
 			generateMovesRecursive(mg, son, !isWhite, liv + 1, limite);
 		}
+	}
+	
+	public LinkedList<Node> getLeaves(Node n) {
+		LinkedList<Node> ll = new LinkedList<Node>();
+		LinkedList<Node> open = new LinkedList<Node>();
+		open.add(n);
+		while (!open.isEmpty()) {
+			Node f = open.removeFirst();
+			if (f.getSons().size() > 0)
+				open.addAll(f.getSons());
+			else
+				ll.add(f);
+		}
+		return ll;
 	}
 	
 	/**

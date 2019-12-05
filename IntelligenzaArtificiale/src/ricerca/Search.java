@@ -9,83 +9,36 @@ import rappresentazione.Node;
 
 public class Search {
 	
-	private Random r = new Random();
-
-	
-	public Node search(Node t) {
-		int z = 0;
-		LinkedList<Node> l = new LinkedList();  //va settata più grande
-		l.add(t);
-		double alpha = Double.MIN_VALUE, beta = Double.MAX_VALUE;
-		int p_min =0 ,p_max = 0, not_pruned =0;
-		Node best=null;
-		double m; 		// valore del miglior figlio
-		while(!l.isEmpty()) {
-			z++;
-			Node x = l.getFirst(); 
-			if(x.equals(t) && x.hasValue()) {
-//				System.out.println("iterazioni: "+z+"\npruned min: "+p_min+"\npruned max: "+p_max+"\nnot pruned: "+not_pruned); 
-				return best;
-			}
-			if(x.hasValue()) {
-				Node p = x.getParent();
-				boolean pruned = false;
-				
-				if(! p.isMax()) { //se nodo min
-					alpha = max(p.siblings(), p.ancestors()); // false = cerco minimizzatori
-					if(x.getValue()<=alpha) {
-						for(Node n: p.getSons()) l.remove(n);
-						l.remove(p);
-						pruned = true;
-						p_min++;
-					}
-					
-				}else if( p.isMax()) {
-					beta = min(p.siblings(),p.ancestors()); // true = cerco massimizzatori
-					if(x.getValue()>=beta) {
-						for(Node n: p.getSons()) l.remove(n);
-						l.remove(p);
-						pruned = true;
-						p_max++;
-					}
-				}
-				if(!pruned) {
-					not_pruned++;
-					if(! p.isMax()) {
-						p.setValue(Math.min(x.getValue(),p.getValue()));
-					}
-					else {
-						m = Math.max(x.getValue(),p.getValue());
-						p.setValue(m);
-						if( p.equals(t) &&  m==x.getValue()) {
-							best=x;
-						}
-					}
-					p.setHasValue(true);
-					l.remove(x);
-				}
-			}else {
-				if(!x.hasValue() && (x.leaf() || !x.expandable())) {
-					x.setValue((new Random()).nextDouble());
-//					x.setValue(z);
-					x.setHasValue(true);
-				}else {
-					if(x.isMax()) x.setValue(Double.MIN_VALUE);
-					else if(! x.isMax()) x.setValue(Double.MAX_VALUE);
-					int i = 0;
-					for(Node n: x.getSons()) {
-						l.add(i, n);
-						i++;
-					}
-					//System.out.println(l);
-				}
-			}
-		}
-		return null; 	// DA CAMBIARE!!
-	}
+	/*
+	 * public Node search(Node t) { int z = 0; LinkedList<Node> l = new
+	 * LinkedList(); //va settata più grande l.add(t); double alpha =
+	 * Double.MIN_VALUE, beta = Double.MAX_VALUE; int p_min =0 ,p_max = 0,
+	 * not_pruned =0; Node best=null; double m; // valore del miglior figlio
+	 * while(!l.isEmpty()) { z++; Node x = l.getFirst(); if(x.equals(t) &&
+	 * x.hasValue()) { //
+	 * System.out.println("iterazioni: "+z+"\npruned min: "+p_min+"\npruned max: "
+	 * +p_max+"\nnot pruned: "+not_pruned); return best; } if(x.hasValue()) { Node p
+	 * = x.getParent(); boolean pruned = false;
+	 * 
+	 * if(! p.isMax()) { //se nodo min alpha = max(p.siblings(), p.ancestors()); //
+	 * false = cerco minimizzatori if(x.getValue()<=alpha) { for(Node n:
+	 * p.getSons()) l.remove(n); l.remove(p); pruned = true; p_min++; }
+	 * 
+	 * }else if( p.isMax()) { beta = min(p.siblings(),p.ancestors()); // true =
+	 * cerco massimizzatori if(x.getValue()>=beta) { for(Node n: p.getSons())
+	 * l.remove(n); l.remove(p); pruned = true; p_max++; } } if(!pruned) {
+	 * not_pruned++; if(! p.isMax()) {
+	 * p.setValue(Math.min(x.getValue(),p.getValue())); } else { m =
+	 * Math.max(x.getValue(),p.getValue()); p.setValue(m); if( p.equals(t) &&
+	 * m==x.getValue()) { best=x; } } p.setHasValue(true); l.remove(x); } }else {
+	 * if(!x.hasValue() && (x.leaf() || !x.expandable())) { x.setValue((new
+	 * Random()).nextDouble()); // x.setValue(z); x.setHasValue(true); }else {
+	 * if(x.isMax()) x.setValue(Double.MIN_VALUE); else if(! x.isMax())
+	 * x.setValue(Double.MAX_VALUE); int i = 0; for(Node n: x.getSons()) { l.add(i,
+	 * n); i++; } //System.out.println(l); } } } return null; // DA CAMBIARE!! }
+	 */
 	
 	public Node recursiveSearch(Node n,boolean isWhite) {
-		r.setSeed(42);
 		return maxVal(n,Double.MIN_VALUE,Double.MAX_VALUE,isWhite);
 	}
 	
@@ -103,7 +56,7 @@ public class Search {
 			v = Math.max(v, min);
 			if(v==min) ret=f;  //se non entra mai in questo if, allora ritornerà null
 			n.setValue(v);
-			if(v >= beta) return n;;
+			if(v >= beta) return n;
 //			if(v >= beta) {return n;};
 			alpha = Math.max(alpha, v);
 		}

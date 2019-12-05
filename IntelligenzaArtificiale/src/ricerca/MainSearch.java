@@ -48,7 +48,7 @@ public class MainSearch {
 		 *********************************************************************************************************************************
 		 */
 		boolean isWhite = true;
-		int livelloMax = 6;
+		int livelloMax = 5;
 //		int livelloMax =Integer.parseInt(args[0]);
 		
 		long tstart,tend;
@@ -73,8 +73,40 @@ public class MainSearch {
 		 * RICERCA MINIMAX CON PRUNING ALPHA-BETA
 		 *********************************************************************************************************************************
 		 */
+		
+//		for(Node f: root.getSons()) {
+//			if(f.getMossa().equals("H5,NE,1")) {
+//				root = f;
+//				break;
+//			}
+//		}
+//		
+//
+//		for(Node f: root.getSons()) {
+//			if(f.getMossa().equals("A4,S,6")) {
+//				root = f;
+//				break;
+//			}
+//		}
+//		
+//		for(Node f: root.getSons()) {
+//			if(f.getMossa().equals("H5,NE,1")) {
+//				root = f;
+//				break;
+//			}
+//		}
+//		
+//		for(Node f: root.getSons()) {
+//			if(f.getMossa().equals("G4,SW,1")) {
+//				root = f;
+//				break;
+//			}
+//		}
+//		
+//		System.out.println(root.getSons());
+		
 
-		Search s = new Search();
+//		Search s = new Search();
 
 //		tstart = System.currentTimeMillis();
 //		Node ret = s.search(root);
@@ -82,11 +114,11 @@ public class MainSearch {
 //		
 //		System.out.println("tempo search iterativa "+livelloMax+" livelli -> "+ ((tend - tstart)/1000.0)+", res: "+ret.getValue());
 
-		tstart = System.currentTimeMillis();
-		Node ret1 = s.recursiveSearch(root,isWhite);
-		tend = System.currentTimeMillis();
-		
-		System.out.println(ret1);
+//		tstart = System.currentTimeMillis();
+//		Node ret1 = s.recursiveSearch(root,isWhite);
+//		tend = System.currentTimeMillis();
+//		
+//		System.out.println(ret1);
 //		ret1 = s.minVal(root.getSons().get(ret1.getId()-1), Double.MIN_VALUE, Double.MAX_VALUE);
 //		System.out.println(ret1);
 
