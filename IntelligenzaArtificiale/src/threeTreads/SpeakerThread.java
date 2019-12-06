@@ -16,6 +16,7 @@ public class SpeakerThread extends Thread {
 	public SpeakerThread(int port, String address) {
 		this.port = port;
 		this.address = address;
+//		System.out.println("Speaker ready");
 	}
 
 	public void setPlayer(DecisionThread player) {
@@ -24,6 +25,7 @@ public class SpeakerThread extends Thread {
 
 	public void setMemory(MemoryThread memory) {
 		this.memory = memory;
+		System.out.println("ST : @" + memory.getId());
 	}
 
 	public void setPort(int port) {
@@ -42,7 +44,7 @@ public class SpeakerThread extends Thread {
 		PrintWriter out = null;
 		String ret = null;
 		StringTokenizer st = null;
-		
+
 		try {
 			soc = new Socket(address, port);
 			in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
@@ -56,7 +58,7 @@ public class SpeakerThread extends Thread {
 				case "WELCOME":
 					if (st.nextToken().equals("White")) {
 						player.setCol(true);
-					}else {
+					} else {
 						player.setCol(false);
 					}
 					break;
@@ -65,30 +67,28 @@ public class SpeakerThread extends Thread {
 					if (st.nextToken().equals("All")) {
 						memory.start();
 					}
+					System.out.println(ret);
 					break;
 				case "OPPONENT_MOVE":
 					memory.opponentMove = st.nextToken();
 					break;
 				case "YOUR_TURN":
 					long time = System.currentTimeMillis();
-					try {	
-						// attendo per 900 millisecondi e con i restanti 100 vedo se l'euristica ha trovato il migliore altrimenti mi accontento del migliore attuale
-						while( time+System.currentTimeMillis()<=time+900 && memory.myMove==null ) {
-							;
-						}
-						String s;
-//						if(memory.myMove==null) {
-//							player.interrupt();
-//							s = player.best;
-//						}else {
-							s = memory.myMove;
-//						}
-						out.println("MOVE "+ s );
-						memory.myMove = null;
-						memory.opponentMove = null;
-					}catch(Exception e) {
-						e.printStackTrace();
+					memory.search = true;
+					// attendo per 900 millisecondi e con i restanti 100 vedo se l'euristica ha
+					// trovato il migliore altrimenti mi accontento del migliore attuale
+					while (time + System.currentTimeMillis() <= time + 900 && memory.myMove == null) {
+						;
 					}
+					if (memory.myMove == null) {
+						player.interrupt();
+						System.out.println("MOVE "+memory.myMove);
+					}
+					
+					System.out.println(memory.myMove);
+					out.println("MOVE " + memory.myMove);
+					memory.myMove = null;
+					memory.opponentMove = null;
 					break;
 				case "VALID_MOVE":
 					System.out.println(ret);

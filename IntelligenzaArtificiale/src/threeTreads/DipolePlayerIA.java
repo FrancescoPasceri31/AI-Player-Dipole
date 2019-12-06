@@ -12,7 +12,7 @@ public class DipolePlayerIA {
 		
 		st.setPlayer(dt); st.setMemory(mt);
 		mt.setPlayer(dt);
-		dt.setSpeaker(st); dt.setMemory(mt);
+		dt.setMemory(mt);
 		
 		st.start();
 	}
