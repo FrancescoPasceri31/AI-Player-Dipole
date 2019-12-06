@@ -38,11 +38,11 @@ public class Search {
 	 * n); i++; } //System.out.println(l); } } } return null; // DA CAMBIARE!! }
 	 */
 	
-	public Node recursiveSearch(Node n,boolean isWhite) {
+	public static Node recursiveSearch(Node n,boolean isWhite) {
 		return maxVal(n,Double.MIN_VALUE,Double.MAX_VALUE,isWhite);
 	}
 	
-	public Node maxVal(Node n, double alpha, double beta,boolean isWhite) {
+	public static Node maxVal(Node n, double alpha, double beta,boolean isWhite) {
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
@@ -64,7 +64,7 @@ public class Search {
 		return ret;
 	}
 	
-	public Node minVal(Node n, double alpha,double beta,boolean isWhite) {
+	public static Node minVal(Node n, double alpha,double beta,boolean isWhite) {
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
@@ -88,11 +88,11 @@ public class Search {
 	}
 
 	
-	public boolean testTerminazione(Node n) {
+	public static boolean testTerminazione(Node n) {
 		return n.leaf() || !n.expandable();
 	}
 	
-	private double max(LinkedList<Node> siblings, LinkedList<Node> ancestors) {
+	private static double max(LinkedList<Node> siblings, LinkedList<Node> ancestors) {
 		double max = Double.MIN_VALUE;
 		for (Node node : ancestors) {
 			if(node.getValue()>max) {
@@ -110,7 +110,7 @@ public class Search {
 		return max;
 	}
 
-	private double min(LinkedList<Node> siblings, LinkedList<Node> ancestors) {
+	private static double min(LinkedList<Node> siblings, LinkedList<Node> ancestors) {
 		double min = Double.MAX_VALUE;
 		for (Node node : ancestors) {
 			if(node.getValue()<min) {

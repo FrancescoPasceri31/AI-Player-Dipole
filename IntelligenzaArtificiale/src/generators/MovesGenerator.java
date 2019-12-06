@@ -282,7 +282,7 @@ public class MovesGenerator {
 
 	}
 
-	public int createConfig(byte[] posToPawn, boolean isWhite) {
+	public static int createConfig(byte[] posToPawn, boolean isWhite) {
 		int conf = 0;
 		for (int i = 0; i < posToPawn.length; i++) {
 			byte p = posToPawn[i];
@@ -315,8 +315,7 @@ public class MovesGenerator {
 		}
 	}
 
-	public  void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite, int liv, int limite)
-			throws IOException {
+	public static  void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite, int liv, int limite){
 		if (liv == limite-1 || n == null ) {
 			return;
 		}
