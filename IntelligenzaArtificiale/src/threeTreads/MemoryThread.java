@@ -40,14 +40,14 @@ public class MemoryThread extends Thread {
 						posToPawn[i] = (byte) 0;
 				}
 
-				int bc = MovesGenerator.createConfig(posToPawn, false);
-				int wc = MovesGenerator.createConfig(posToPawn, true);
+				int bc = mg.createConfig(posToPawn, false);
+				int wc = mg.createConfig(posToPawn, true);
 
 				root = new Node(null, bc, wc, posToPawn, ",0");
 				if (player.isWhite) {
-					MovesGenerator.generateMovesRecursive(mg, root, player.isWhite, 0, 3);
+					mg.generateMovesRecursive(root, player.isWhite, 0, 3);
 				} else {
-					MovesGenerator.generateMovesRecursive(mg, root, player.isWhite, 0, 4);
+					mg.generateMovesRecursive(root, player.isWhite, 0, 4);
 				}
 				player.root = root;
 				isInizialized = true;
@@ -79,7 +79,7 @@ public class MemoryThread extends Thread {
 					newRoot.setParent(null);
 					// se espando di numero dispari allora è il colore del giocatore altrimenti devo
 					// fare l'opposto (not)
-					MovesGenerator.generateMovesRecursive(mg, newRoot, player.isWhite, 0, 3);
+					mg.generateMovesRecursive(newRoot, player.isWhite, 0, 3);
 					player.root = newRoot;
 
 					// scendo in depth first ed elimino tutti i nodi foglia
@@ -107,7 +107,7 @@ public class MemoryThread extends Thread {
 					newRoot.setParent(null);
 					// se espando di numero dispari allora è il colore del giocatore altrimenti devo
 					// fare l'opposto (not)
-					MovesGenerator.generateMovesRecursive(mg, newRoot, player.isWhite, 0, 3);
+					mg.generateMovesRecursive(newRoot, player.isWhite, 0, 3);
 					player.root = newRoot;
 
 					// scendo in depth first ed elimino tutti i nodi foglia

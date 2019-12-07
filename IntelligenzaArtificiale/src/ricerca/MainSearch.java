@@ -60,8 +60,7 @@ public class MainSearch {
 			System.out.println("iterazione: "+(i+1));
 			tstart = System.currentTimeMillis();
 			root = new Node(null, bc, wc, posToPawn2, ",0");
-			mg.generateMovesRecursive(mg, root, isWhite, 0, livelloMax);
-//			generateMovesIterative(mg,root,true,livelloMax);
+			mg.generateMovesRecursive(root, isWhite, 0, livelloMax);
 			tend = System.currentTimeMillis();
 			sum += (tend - tstart)/1000.0;
 		}
@@ -106,7 +105,7 @@ public class MainSearch {
 //		System.out.println(root.getSons());
 		
 
-//		Search s = new Search();
+		Search s = new Search();
 
 //		tstart = System.currentTimeMillis();
 //		Node ret = s.search(root);
@@ -114,9 +113,9 @@ public class MainSearch {
 //		
 //		System.out.println("tempo search iterativa "+livelloMax+" livelli -> "+ ((tend - tstart)/1000.0)+", res: "+ret.getValue());
 
-//		tstart = System.currentTimeMillis();
-//		Node ret1 = s.recursiveSearch(root,isWhite);
-//		tend = System.currentTimeMillis();
+		tstart = System.currentTimeMillis();
+		Node ret1 = s.recursiveSearch(root,isWhite);
+		tend = System.currentTimeMillis();
 //		
 //		System.out.println(ret1);
 //		ret1 = s.minVal(root.getSons().get(ret1.getId()-1), Double.MIN_VALUE, Double.MAX_VALUE);
@@ -125,10 +124,10 @@ public class MainSearch {
 		
 		
 		
-//		System.out.println("tempo search ricorsiva " + livelloMax + " livelli -> " + ((tend - tstart) / 1000.0)+ ", res: " + ret1);
+		System.out.println("tempo search ricorsiva " + livelloMax + " livelli -> " + ((tend - tstart) / 1000.0)+ "\nres: " + ret1);
 		
 //		System.out.println(Node.generateGenericVerbose(root.getSons().get(ret1.getId()-1), "", false, false, new StringBuilder()));
-		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
+//		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
 		
 		/*
 		 *********************************************************************************************************************************
