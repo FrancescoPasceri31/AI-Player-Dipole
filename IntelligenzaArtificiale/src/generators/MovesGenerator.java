@@ -233,12 +233,51 @@ public class MovesGenerator {
 				}
 
 			}
+			
+			mcr = mc;
+			
+			if (miePedine >= direzioni[1]) { // N - S
+
+				byte numMinimoPDT = (byte) (direzioni[1]); // numero di Pedine Da Togliere
+
+				// genero configurazione in cui tolgo tutto fuori
+				mcr = mcr ^ (1 << miaPosizione);
+
+				posFiglio[miaPosizione] = (byte) 0;
+
+				if (isWhite) {
+					root.addSon(new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione) + ",N," + (miePedine)));
+				} else { // sono nero
+					root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione) + ",S," + (miePedine)));
+				}
+
+				for (; numMinimoPDT < miePedine; numMinimoPDT++) {
+
+					posFiglio = posToPawn.clone();
+
+					// genero mosse fuori numPDT nella mia casella
+					mcr = mc;
+
+					posFiglio[miaPosizione] = (byte) (miePedine - numMinimoPDT + (!isWhite ? 20 : 0));
+
+					if (isWhite) {
+						root.addSon(new Node(root, ec, mcr, posFiglio,
+								posToCell.get(miaPosizione) + ",N," + numMinimoPDT));
+					} else { // sono nero
+						root.addSon(new Node(root, mcr, ec, posFiglio,
+								posToCell.get(miaPosizione) + ",S," + numMinimoPDT));
+					}
+				}
+			}
+			
+			
+			
 
 			mcr = mc;
 
-			if (miePedine >= direzioni[1]) { // NE - SW
+			if (miePedine >= direzioni[2]) { // NE - SW
 
-				byte numMinimoPDT = (byte) (direzioni[1]); // numero di Pedine Da Togliere
+				byte numMinimoPDT = (byte) (direzioni[2]); // numero di Pedine Da Togliere
 
 				// genero configurazione in cui tolgo tutto fuori
 				mcr = mcr ^ (1 << miaPosizione);

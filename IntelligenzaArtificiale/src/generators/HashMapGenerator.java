@@ -68,8 +68,8 @@ public class HashMapGenerator {
 //		HashMap<Byte, Object[]> masksBlack = new HashMap();
 //		HashMap<Byte, Object[]> masksWhite = new HashMap();
 //		HashMap<Byte, Byte> posToPawn = new HashMap<Byte,Byte>(); /* 1-> 12 white, 21->32 black */
-//		byte[] dirWhite = {7,2,5,4,3,6,1,8,7,1,6,3,4,5,2,7,6,2,5,4,3,6,1,6,5,1,5,3,4,5,2,5,4,2,4,4,3,4,1,4,3,1,3,3,3,3,2,3,2,2,2,2,2,2,1,2,1,1,1,1,1,1,1,1};
-//		byte[] dirBlack = {1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,3,3,3,3,3,3,1,1,4,3,4,4,4,4,2,2,5,4,5,5,3,5,1,1,6,3,6,5,4,6,2,2,7,4,5,6,3,7,1,1,8,3,6,5,4,7,2};
+//		byte[] dirWhite = {7,8,2, 5,8,4, 3,8,6, 1,8,8, 7,8,1, 6,8,3, 4,8,5, 2,8,7, 6,6,2, 5,6,4, 3,6,6, 1,6,6, 5,6,1, 5,6,3, 4,6,5, 2,6,5, 4,4,2, 4,4,4, 3,4,4, 1,4,4, 3,4,1, 3,4,3, 3,4,3, 2,4,3, 2,2,2, 2,2,2, 2,2,2, 1,2,2, 1,2,1 ,1,2,1, 1,2,1, 1,2,1};
+//		byte[] dirBlack = {1,2,1, 1,2,1, 1,2,1, 1,2,1, 1,2,2, 2,2,2, 2,2,2, 2,2,2, 2,4,3, 3,4,3, 3,4,3, 3,4,1, 1,4,4, 3,4,4, 4,4,4, 4,4,2, 2,6,5, 4,6,5, 5,6,3, 5,6,1, 1,6,6, 3,6,6, 5,6,4, 6,6,2, 2,8,7, 4,8,5, 6,8,3, 7,8,1, 1,8,8, 3,8,6, 5,8,4, 7,8,2};
 //		
 //
 //		// BLACK
@@ -85,7 +85,7 @@ public class HashMapGenerator {
 //									charToString(editMask(Indietro_BLACK_MASK.get(31 - k).toCharArray(), z, 31 - k)),
 //									2) });
 //				}
-//				masksBlack.put((byte) (k), new Object[] { dirBlack[k*2],dirBlack[(k*2)+1], m }); // new Object { #pedine, hashMap<numPedine,Maschere>
+//				masksBlack.put((byte) (k), new Object[] { dirBlack[k*3],dirBlack[(k*3)+1],dirBlack[(k*3)+2], m }); // new Object { #pedine, hashMap<numPedine,Maschere>
 //																	// }
 //			}
 //		}
@@ -103,7 +103,7 @@ public class HashMapGenerator {
 //									charToString(editMask(Indietro_WHITE_MASK.get(31 - k).toCharArray(), z, 31 - k)),
 //									2) });
 //				}
-//				masksWhite.put((byte) (k), new Object[] { dirWhite[k*2],dirWhite[(k*2)+1], n }); // new Object { #pedine, hashMap<numPedine,Maschere>
+//				masksWhite.put((byte) (k), new Object[] { dirWhite[k*3],dirWhite[(k*3)+1],dirWhite[(k*3)+2], n }); // new Object { #pedine, hashMap<numPedine,Maschere>
 //																	// }
 //			}
 //		}
@@ -256,14 +256,16 @@ public class HashMapGenerator {
 		masksBlack = (HashMap<Byte, Object[]>) i.readObject();
 		masksWhite = (HashMap<Byte, Object[]>) i.readObject();
 		i.close();
+		
+		System.out.println(""+Arrays.toString(getOutLeastPawns(masksWhite,(byte)17)));
 //
 ////		System.out.println(tempi / run);
 //		System.out.println();
 //		System.out.println(posToPawn.toString());
 //		System.out.println();
-		System.out.println(posToCell.toString());
+//		System.out.println(posToCell.toString());
 //		System.out.println();
-		System.out.println(cellToPos.toString());
+//		System.out.println(cellToPos.toString());
 //		System.out.println();
 //		printHash(masksBlack);
 //		printHash(masksWhite);
@@ -343,7 +345,7 @@ public class HashMapGenerator {
 	static public int[] getMask(HashMap<Byte, Object[]> map, int pos, byte pawns) {
 //		System.out.println("Accedo alla maschera in posizione "+pos+" con "+pawns+" pedine.");
 //		HashMapGenerator.printHash(map);
-		Integer[] ret=((Integer[]) ((HashMap<Byte, Integer[]>) (((Object[]) (map.get((byte) pos)))[2]))
+		Integer[] ret=((Integer[]) ((HashMap<Byte, Integer[]>) (((Object[]) (map.get((byte) pos)))[3]))
 				.get((byte) pawns));
 		//System.out.println(ret);
 		return new int[] {ret[0],ret[1]};
@@ -352,6 +354,6 @@ public class HashMapGenerator {
 	// restituisce data la mappa(map) e la posizione(pos), il minimo numero di
 	// pedine che servono per uscire fuori dalla scacchiera
 	static public byte[] getOutLeastPawns(HashMap<Byte, Object[]> map, byte pos) {
-		return new byte[] { (byte) ((Object[]) map.get((byte) pos))[0], (byte) ((Object[]) map.get(pos))[1] };
+		return new byte[] { (byte) ((Object[]) map.get((byte) pos))[0], (byte) ((Object[]) map.get(pos))[1] ,(byte) ((Object[]) map.get(pos))[2]};
 	}
 }
