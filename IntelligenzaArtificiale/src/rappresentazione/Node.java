@@ -180,24 +180,24 @@ public class Node implements Serializable{
 //		return true;
 	}
 
-	public static String generateGenericVerbose(Node node, String prefix, boolean isRightMost, boolean isLeftMost,
+	public String generateGenericVerbose(String prefix, boolean isRightMost, boolean isLeftMost,
 			StringBuilder sb) {
-		int halfSize = (node.getSons().size() + 1) / 2;
-		List<Node> children = new ArrayList<>(node.getSons());
+		int halfSize = (sons.size() + 1) / 2;
+		List<Node> children = new ArrayList<>(sons);
 		for (int i = children.size() - 1; i >= halfSize; i--) {
 			Node child = children.get(i);
-			generateGenericVerbose(child, prefix + (isRightMost && !isLeftMost ? "    " : "│   "),
-					child.equals(children.get(node.getSons().size() - 1)) ? true : false,
+			child.generateGenericVerbose(prefix + (isRightMost && !isLeftMost ? "    " : "│   "),
+					child.equals(children.get(sons.size() - 1)) ? true : false,
 					child.equals(children.get(0)) ? true : false, sb);
 		}
 		sb.append(prefix).append(isRightMost && isLeftMost ? "└── " : "")
 				.append(isRightMost && !isLeftMost ? "┌── " : "").append(isLeftMost && !isRightMost ? "└── " : "")
 				.append(!isRightMost && !isLeftMost ? "├── " : "")
-				.append(node.toString()).append("\n");
+				.append(toString()).append("\n");
 		for (int i = halfSize - 1; i >= 0; i--) {
 			Node child = children.get(i);
-			generateGenericVerbose(children.get(i), prefix + (isLeftMost ? "    " : "│   "),
-					child.equals(children.get(node.getSons().size() - 1)) ? true : false,
+			children.get(i).generateGenericVerbose( prefix + (isLeftMost ? "    " : "│   "),
+					child.equals(children.get(sons.size() - 1)) ? true : false,
 					child.equals(children.get(0)) ? true : false, sb);
 		}
 		return sb.toString();

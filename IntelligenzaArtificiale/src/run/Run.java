@@ -68,10 +68,11 @@ public class Run {
 						int wc = mg.createConfig(posToPawn, true);
 						
 					    root = new Node(null, bc, wc, posToPawn, ",0");
-						if(isWhite)
-							mg.generateMovesRecursive(mg, root, true, 0,3);
-						else
-							mg.generateMovesRecursive(mg, root, true, 0,4);
+//						if(isWhite)
+//							mg.generateMovesRecursive(root, true, 0,5);
+//						else
+//							mg.generateMovesRecursive(root, true, 0,5);
+					    mg.generateMovesRecursive(root, true, 0,5);
 						
 						s = new Search();
 					}
@@ -87,7 +88,7 @@ public class Run {
 							leaves = mg.getLeaves(root);
 							System.out.println("root to opponent");
 							for(Node n: leaves)
-								mg.generateMovesRecursive(mg, n, isWhite, 0, 2);
+								mg.generateMovesRecursive(n, isWhite, 0, 2);
 							break;
 						}
 					break;
@@ -108,7 +109,7 @@ public class Run {
 //							mg.generateMovesRecursive(mg, n, isWhite, 0, 2);
 //					}
 					for(Node n: leaves)
-						mg.generateMovesRecursive(mg, n, isWhite, 0, 3);
+						mg.generateMovesRecursive(n, isWhite, 0, 2);
 					break;
 				case "VALID_MOVE":
 					System.out.println(ret);
