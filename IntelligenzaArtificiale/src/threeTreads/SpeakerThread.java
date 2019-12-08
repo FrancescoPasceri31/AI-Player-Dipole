@@ -1,6 +1,7 @@
 package threeTreads;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -8,37 +9,22 @@ import java.util.StringTokenizer;
 
 public class SpeakerThread extends Thread {
 
-	private DecisionThread player;
-	private MemoryThread memory;
+	private DecisionThread dt;
 	private String address;
 	private int port;
 
 	public SpeakerThread(int port, String address) {
 		this.port = port;
 		this.address = address;
-//		System.out.println("Speaker ready");
+		System.out.println("ST created @" + this.getId());
 	}
 
-	public void setPlayer(DecisionThread player) {
-		this.player = player;
-	}
-
-	public void setMemory(MemoryThread memory) {
-		this.memory = memory;
-		System.out.println("ST : @" + memory.getId());
-	}
-
-	public void setPort(int port) {
-		this.port = port;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
+	public void setDt(DecisionThread dt) {
+		this.dt = dt;
 	}
 
 	@Override
 	public void run() {
-
 		Socket soc = null;
 		BufferedReader in = null;
 		PrintWriter out = null;
@@ -46,6 +32,7 @@ public class SpeakerThread extends Thread {
 		StringTokenizer st = null;
 
 		try {
+
 			soc = new Socket(address, port);
 			in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
 			out = new PrintWriter(soc.getOutputStream(), true);
@@ -53,44 +40,32 @@ public class SpeakerThread extends Thread {
 			while (true) {
 				ret = in.readLine();
 				st = new StringTokenizer(ret, " ");
-
 				switch (st.nextToken()) {
 				case "WELCOME":
-					if (st.nextToken().equals("White")) {
-						player.setCol(true);
-					} else {
-						player.setCol(false);
-					}
+					System.out.println(ret);
+					dt.setColor(st.nextToken().equals("White"));
 					break;
 				case "MESSAGE":
-					// devo far avviare il thread gestore della memoria
-					if (st.nextToken().equals("All")) {
-						memory.start();
-						player.start();
-					}
 					System.out.println(ret);
+					dt.start();
 					break;
 				case "OPPONENT_MOVE":
-					memory.opponentMove = st.nextToken();
+					System.out.println(ret);
+					dt.opponentMove = st.nextToken();
 					break;
 				case "YOUR_TURN":
+					System.out.println(ret);
 					long time = System.currentTimeMillis();
-					
-					memory.search = true;
-					
-					// attendo per 900 millisecondi e con i restanti 100 vedo se l'euristica ha
-					// trovato il migliore altrimenti mi accontento del migliore attuale
-					while (/* time + System.currentTimeMillis() <= time + 900 && */ memory.myMove == null) {
+					dt.startSearch = true;
+					while (time + System.currentTimeMillis() < time + 900 && dt.myMove == null) {
 						;
 					}
-					if (memory.myMove == null) {
-						player.interrupt();
-						System.out.println("MOVE " + "bang"); // da cambiare con il get del best nodo trovato fino ad
-																// ora
-					}
-
-					out.println("MOVE " + memory.myMove);
-					memory.myMove = null;
+//					dt.startSearch = false;
+					if (dt.myMove == null)
+						out.println("MOVE " + dt.bestMove);
+					else
+						out.println("MOVE " + dt.myMove);
+					dt.myMove = null;
 					break;
 				case "VALID_MOVE":
 					System.out.println(ret);
@@ -114,7 +89,6 @@ public class SpeakerThread extends Thread {
 					System.out.println("Exit");
 					System.exit(0);
 				}
-
 			}
 
 		} catch (Exception e) {
@@ -124,10 +98,10 @@ public class SpeakerThread extends Thread {
 				out.close();
 				in.close();
 				soc.close();
-			} catch (Exception e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
 		}
 	}
-
 }

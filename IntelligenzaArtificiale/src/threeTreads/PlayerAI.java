@@ -1,10 +1,12 @@
 package threeTreads;
 
-public class DipolePlayerIA {
-
+public class PlayerAI {
 	public static void main(String[] args) {
-		String address = args[0];
-		int port = Integer.parseInt(args[1]);
+//		String address = args[0];
+//		int port = Integer.valueOf(args[1]);
+
+		String address = "localhost";
+		int port = 8901;
 
 		SpeakerThread st = new SpeakerThread(port, address);
 		DecisionThread dt = new DecisionThread();
@@ -15,5 +17,4 @@ public class DipolePlayerIA {
 
 		st.start();
 	}
-
 }

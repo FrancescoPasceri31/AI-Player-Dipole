@@ -1,15 +1,11 @@
 package generators;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import rappresentazione.Node;
-import ricerca.Search;
 
 public class MovesGenerator {
 
@@ -35,21 +31,24 @@ public class MovesGenerator {
 	}
 
 	private byte[] posToPawn, myP, positions, posFiglio, direzioni;
-	private byte miaPosizione, miaRiga, miePedine, rigaAvversario, numPedineDestinazione, numPedineDaSpostare,numPedineRimanenti,numMinimoPDT;
+	private byte miaPosizione, miaRiga, miePedine, rigaAvversario, numPedineDestinazione, numPedineDaSpostare,
+			numPedineRimanenti, numMinimoPDT;
 	private int[] msk;
 	private int mc, ec, m, p, r, mcr, ecr;
 	boolean merge;
 
-	public void init() throws Exception {
-
-		ObjectInputStream i = new ObjectInputStream(new FileInputStream("hashMaps"));
-		posToCell = (HashMap<Byte, String>) i.readObject();
-		cellToPos = (HashMap<String, Byte>) i.readObject();
-		masksBlack = (HashMap<Byte, Object[]>) i.readObject();
-		masksWhite = (HashMap<Byte, Object[]>) i.readObject();
-		posToDir = (HashMap<Byte, HashMap<Byte, String>>) i.readObject();
-		i.close();
-
+	public void init() {
+		try {
+			ObjectInputStream i = new ObjectInputStream(new FileInputStream("hashMaps"));
+			posToCell = (HashMap<Byte, String>) i.readObject();
+			cellToPos = (HashMap<String, Byte>) i.readObject();
+			masksBlack = (HashMap<Byte, Object[]>) i.readObject();
+			masksWhite = (HashMap<Byte, Object[]>) i.readObject();
+			posToDir = (HashMap<Byte, HashMap<Byte, String>>) i.readObject();
+			i.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void generateMoves(Node root, boolean isWhite) {// (int mc, int ec, HashMap<Byte, Byte> posToPawn, boolean
