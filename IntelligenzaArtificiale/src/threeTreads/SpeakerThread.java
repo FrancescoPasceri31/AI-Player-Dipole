@@ -66,6 +66,7 @@ public class SpeakerThread extends Thread {
 					// devo far avviare il thread gestore della memoria
 					if (st.nextToken().equals("All")) {
 						memory.start();
+						player.start();
 					}
 					System.out.println(ret);
 					break;
@@ -74,21 +75,22 @@ public class SpeakerThread extends Thread {
 					break;
 				case "YOUR_TURN":
 					long time = System.currentTimeMillis();
+					
 					memory.search = true;
+					
 					// attendo per 900 millisecondi e con i restanti 100 vedo se l'euristica ha
 					// trovato il migliore altrimenti mi accontento del migliore attuale
-					while (time + System.currentTimeMillis() <= time + 900 && memory.myMove == null) {
+					while (/* time + System.currentTimeMillis() <= time + 900 && */ memory.myMove == null) {
 						;
 					}
 					if (memory.myMove == null) {
 						player.interrupt();
-						System.out.println("MOVE "+memory.myMove);
+						System.out.println("MOVE " + "bang"); // da cambiare con il get del best nodo trovato fino ad
+																// ora
 					}
-					
-					System.out.println(memory.myMove);
+
 					out.println("MOVE " + memory.myMove);
 					memory.myMove = null;
-					memory.opponentMove = null;
 					break;
 				case "VALID_MOVE":
 					System.out.println(ret);

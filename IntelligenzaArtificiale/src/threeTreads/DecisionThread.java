@@ -38,10 +38,11 @@ public class DecisionThread extends Thread {
 	@Override
 	public void run() {
 		while (true) {
-			if (!memory.search) {
+			if (memory.search) {
 				Search s = new Search();
 				Node ret = s.recursiveSearch(root, isWhite);
-				memory.myMove = ret.getMossa();
+				memory.myMove = ret.getMossa() ;
+				memory.search = false;
 				root = null;
 			}
 		}

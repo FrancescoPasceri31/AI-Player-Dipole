@@ -8,10 +8,10 @@ import rappresentazione.Node;
 public class MemoryThread extends Thread {
 
 	private DecisionThread player;
-	public String opponentMove, myMove;
+	public volatile String opponentMove, myMove;
 	private Node root;
 	private boolean isInizialized;
-	public boolean search;
+	public volatile boolean search;
 	private static LinkedList<Node> toBeDeleted = new LinkedList<Node>();
 	
 	public MemoryThread() {
@@ -71,7 +71,7 @@ public class MemoryThread extends Thread {
 	}
 
 	private void controllaMossaMia(MovesGenerator mg) {
-		while (!(myMove != null)) {
+		if ((myMove != null)) {
 			for (int i = 0; i < root.getSons().size(); i++) {
 				if (root.getSons().get(i).getMossa().equals(myMove)) {
 					root.getSons().get(i).setParent(null);
@@ -81,7 +81,7 @@ public class MemoryThread extends Thread {
 					// fare l'opposto (not)
 					MovesGenerator.generateMovesRecursive(mg, newRoot, player.isWhite, 0, 3);
 					player.root = newRoot;
-
+					System.out.println("Expanded after myMove");
 					// scendo in depth first ed elimino tutti i nodi foglia
 					toBeDeleted.add(root);
 					while (!toBeDeleted.isEmpty()) {
@@ -99,7 +99,7 @@ public class MemoryThread extends Thread {
 	}
 
 	private void controllaMossaAvversaria(MovesGenerator mg) {
-		while (!(opponentMove != null)) {
+		if ((opponentMove != null)) {
 			for (int i = 0; i < root.getSons().size(); i++) {
 				if (root.getSons().get(i).getMossa().equals(opponentMove)) {
 					root.getSons().get(i).setParent(null);
@@ -109,7 +109,7 @@ public class MemoryThread extends Thread {
 					// fare l'opposto (not)
 					MovesGenerator.generateMovesRecursive(mg, newRoot, player.isWhite, 0, 3);
 					player.root = newRoot;
-
+					System.out.println("Expanded after opponentMove");
 					// scendo in depth first ed elimino tutti i nodi foglia
 					toBeDeleted.add(root);
 					while (!toBeDeleted.isEmpty()) {
@@ -123,6 +123,7 @@ public class MemoryThread extends Thread {
 					break;
 				}
 			}
+			opponentMove = null;
 		}
 	}
 }
