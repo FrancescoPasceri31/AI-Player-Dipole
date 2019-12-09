@@ -1,5 +1,110 @@
-First tree depth 5 from radix ok.
-All leaves are expanded by other 2 levels.
-All expanded leaves are serialized
-Deserializzato root (20.255961000 -> 25.240552000) e foglie (25.240552000 -> 40.285424000)
-Deserializzato root (40.285619000 -> 40.329318000) e foglie (40.329318000 -> 41.732580000)
+MESSAGE Group 1, please wait for the opponent
+MESSAGE All players connected
+OPPONENT_MOVE H5,NE,1
+H5,NE,1
+
+[ p_id: 0, p_mossa: ,,0, è_value: 0.0 ]
+[ id: 10, mossa: H5,NE,1, value: 0.0 ]
+
+root to opponent
+
+[ p_id: 10, p_mossa: H5,NE,1, è_value: 0.0 ]
+[ id: 136133, mossa: A4,SE,4, value: 0.0 ]
+
+Mossa inviata: A4,SE,4
+VALID_MOVE
+OPPONENT_MOVE H5,NE,1
+H5,NE,1
+
+[ p_id: 136133, p_mossa: A4,SE,4, è_value: 0.0 ]
+[ id: 143976, mossa: H5,NE,1, value: 0.0 ]
+
+root to opponent
+
+[ p_id: 143976, p_mossa: H5,NE,1, è_value: 0.0 ]
+[ id: 144305, mossa: E8,S,2, value: 0.0 ]
+
+Mossa inviata: E8,S,2
+VALID_MOVE
+OPPONENT_MOVE H5,NE,1
+H5,NE,1
+
+[ p_id: 144305, p_mossa: E8,S,2, è_value: 0.0 ]
+[ id: 392469, mossa: G8,SW,1, value: 0.0 ]
+
+Mossa inviata: G8,SW,1
+VALID_MOVE
+OPPONENT_MOVE H5,NE,1
+H5,NE,1
+
+[ p_id: 392469, p_mossa: G8,SW,1, è_value: 0.0 ]
+[ id: 607794, mossa: G8,SW,1, value: 0.0 ]
+
+Mossa inviata: G8,SW,1
+VALID_MOVE
+OPPONENT_MOVE H5,NW,1
+H5,NW,1
+
+[ p_id: 607794, p_mossa: G8,SW,1, è_value: 0.0 ]
+[ id: 1067697, mossa: E8,S,2, value: 0.0 ]
+
+Mossa inviata: E8,S,2
+VALID_MOVE
+OPPONENT_MOVE H5,NE,1
+H5,NE,1
+
+[ p_id: 1067697, p_mossa: E8,S,2, è_value: 0.0 ]
+[ id: 1409242, mossa: G8,SW,1, value: 0.0 ]
+
+Mossa inviata: G8,SW,1
+VALID_MOVE
+OPPONENT_MOVE H5,NE,1
+H5,NE,1
+
+[ p_id: 1409242, p_mossa: G8,SW,1, è_value: 0.0 ]
+[ id: 1699762, mossa: G8,SW,1, value: 0.0 ]
+
+Mossa inviata: G8,SW,1
+VALID_MOVE
+OPPONENT_MOVE H5,NE,1
+H5,NE,1
+
+[ p_id: 1699762, p_mossa: G8,SW,1, è_value: 0.0 ]
+[ id: 1969731, mossa: A4,SE,1, value: 0.0 ]
+
+Mossa inviata: A4,SE,1
+VALID_MOVE
+OPPONENT_MOVE H5,NE,1
+H5,NE,1
+
+[ p_id: 1969731, p_mossa: A4,SE,1, è_value: 0.0 ]
+[ id: 2272001, mossa: B5,SE,1, value: 0.0 ]
+
+Mossa inviata: B5,SE,1
+VALID_MOVE
+OPPONENT_MOVE H5,NE,1
+H5,NE,1
+
+[ p_id: 2272001, p_mossa: B5,SE,1, è_value: 0.0 ]
+[ id: 2542092, mossa: C6,SE,1, value: 0.0 ]
+
+Mossa inviata: C6,SE,1
+VALID_MOVE
+OPPONENT_MOVE H5,NE,1
+H5,NE,1
+
+[ p_id: 2542092, p_mossa: C6,SE,1, è_value: 0.0 ]
+[ id: 2644061, mossa: D7,SE,1, value: 0.0 ]
+
+Mossa inviata: D7,SE,1
+VALID_MOVE
+OPPONENT_MOVE H5,NE,1
+H5,NE,1
+
+[ p_id: 2644061, p_mossa: D7,SE,1, è_value: 0.0 ]
+[ id: 3080628, mossa: E8,SW,1, value: 0.0 ]
+
+Mossa inviata: E8,SW,1
+VALID_MOVE
+MESSAGE Your opponent has sent an invalid move
+Hai vinto

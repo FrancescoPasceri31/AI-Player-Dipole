@@ -130,7 +130,8 @@ public class Node implements Serializable{
 //	}
 	
 	public String toString() {
-		return "[ id: " + id + ", value: "+value+" ]";
+//		return "\n[ p_id: " + parent.id +", p_mossa: "+parent.getMossa() +", p_value: "+parent.value+" ]"+"\n[ id: " + id +", mossa: "+getMossa() +", value: "+value+" ]\n";
+		return "[ id: " + id +", mossa: "+getMossa() +", value: "+value+" ]\n";
 	}
 
 	private String toBinaryString(int i) {

@@ -68,11 +68,11 @@ public class Run {
 						int wc = mg.createConfig(posToPawn, true);
 						
 					    root = new Node(null, bc, wc, posToPawn,"","", "0");
-						if(isWhite)
-							mg.generateMovesRecursive(root, true, 0,5);
-						else
-							mg.generateMovesRecursive(root, true, 0,6);
-//					    mg.generateMovesRecursive(root, true, 0,5);
+//						if(isWhite)
+//							mg.generateMovesRecursive(root, true, 0,5);
+//						else
+//							mg.generateMovesRecursive(root, true, 0,6);
+					    mg.generateMovesRecursive(root, true, 0,5);
 						
 						s = new Search();
 					}
@@ -81,21 +81,27 @@ public class Run {
 				case "OPPONENT_MOVE":
 					System.out.println(ret);
 					opponent_move = st.nextToken();
+					System.out.println(opponent_move);
+					System.out.println("root prima: "+root);
 					for(Node f: root.getSons())
 						if(f.getMossa().equals(opponent_move)) {
 							root = f;
+							System.out.println(root);
 							root.setParent(null);
 							leaves = mg.getLeaves(root);
 							System.out.println("root to opponent");
 							for(Node n: leaves)
-								mg.generateMovesRecursive(n, isWhite, 0, 2);
+								mg.generateMoves(n,!isWhite);
 							break;
 						}
+					System.out.println("root dopo: "+root);
 					break;
 				case "YOUR_TURN":
+					System.out.println("root prima: "+root);
 					root = s.recursiveSearch(root, isWhite);
-					System.out.println("valore mossa: "+root.getValue());
+					System.out.println("root dopo: "+root);
 					out.println("MOVE "+root.getMossa());
+					System.out.println(root);
 					root.setParent(null);
 					//System.out.println("isWhite: "+isWhite+"mossa: "+root.getMossa()+" \nposToPawn: "+Arrays.toString(root.getPosToPawns()));
 					System.out.println("Mossa inviata: "+root.getMossa());
@@ -109,7 +115,7 @@ public class Run {
 //							mg.generateMovesRecursive(mg, n, isWhite, 0, 2);
 //					}
 					for(Node n: leaves)
-						mg.generateMovesRecursive(n, isWhite, 0, 2);
+						mg.generateMoves(n,isWhite);
 					break;
 				case "VALID_MOVE":
 					System.out.println(ret);

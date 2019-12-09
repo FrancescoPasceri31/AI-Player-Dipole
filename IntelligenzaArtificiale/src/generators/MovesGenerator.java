@@ -35,7 +35,8 @@ public class MovesGenerator {
 			numPedineRimanenti, numMinimoPDT;
 	private int[] msk;
 	private int mc, ec, m, p, r, mcr, ecr;
-	boolean merge;
+	private boolean merge;
+	private HashMap<Byte, Object[]> masks;
 
 	public void init() {
 		try {
@@ -70,7 +71,6 @@ public class MovesGenerator {
 //		System.out.println(posToPawn);
 		myP = HashMapGenerator.onesPosition(mc);
 
-		HashMap<Byte, Object[]> masks = null;
 		masks = isWhite ? masksWhite : masksBlack;
 
 //		System.out.println(isWhite);
@@ -367,7 +367,7 @@ public class MovesGenerator {
 		open.add(n);
 		while (!open.isEmpty()) {
 			Node f = open.removeFirst();
-			if (f.getSons().size() > 0)
+			if (!f.leaf() && f.expandable())
 				open.addAll(f.getSons());
 			else
 				ll.add(f);
