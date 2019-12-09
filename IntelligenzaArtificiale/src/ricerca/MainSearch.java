@@ -59,7 +59,7 @@ public class MainSearch {
 		for(int i =0;i<iterations; i++) {
 			System.out.println("iterazione: "+(i+1));
 			tstart = System.currentTimeMillis();
-			root = new Node(null, bc, wc, posToPawn2, ",0");
+			root = new Node(null, bc, wc, posToPawn2,"","","0");
 			mg.generateMovesRecursive(root, isWhite, 0, livelloMax);
 			tend = System.currentTimeMillis();
 			sum += (tend - tstart)/1000.0;

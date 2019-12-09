@@ -58,7 +58,7 @@ public class DecisionThread extends Thread {
 		int bc = mg.createConfig(posToPawn, false);
 		int wc = mg.createConfig(posToPawn, true);
 
-		root = new Node(null, bc, wc, posToPawn, ",0");
+		root = new Node(null, bc, wc, posToPawn,"","", "0");
 		mg.generateMovesRecursive(root, isWhite, START_LEVEL, MAX_FIRST_LEVEL);
 
 		while (true) {

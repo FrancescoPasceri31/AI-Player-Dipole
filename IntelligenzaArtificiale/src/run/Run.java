@@ -67,7 +67,7 @@ public class Run {
 						int bc = mg.createConfig(posToPawn, false);
 						int wc = mg.createConfig(posToPawn, true);
 						
-					    root = new Node(null, bc, wc, posToPawn, ",0");
+					    root = new Node(null, bc, wc, posToPawn,"","", "0");
 //						if(isWhite)
 //							mg.generateMovesRecursive(root, true, 0,5);
 //						else

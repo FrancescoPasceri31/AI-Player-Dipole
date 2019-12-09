@@ -271,7 +271,7 @@ public class BoardMap {
 
 		boolean isWhite = true;
 		int livelloMax = 3;
-		root = new Node(null, bc, wc, posToPawn, "");
+		root = new Node(null, bc, wc, posToPawn, "","","0");
 
 //		generateMovesRecursive(mg, root, isWhite, 0, livelloMax);
 //		generateMovesIterative(mg, root, isWhite, livelloMax);

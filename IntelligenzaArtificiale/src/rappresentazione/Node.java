@@ -22,18 +22,44 @@ public class Node implements Serializable{
 	private boolean isMax, hasValue = false;
 
 	private int bc, wc; // mia configurazione e avversaria
-	private String mossa;
+	private String cella,direzione,pedine;
 //	private HashMap<Byte, Byte> posToPawns;
 	private byte[] posToPawns;
 
-	public Node(Node parent, int bc, int wc, byte[] posToPawns, String mossa) {
+	public Node(Node parent, int bc, int wc, byte[] posToPawns, String cella, String direzione, String pedine) {
 		this.parent = parent;
 		this.bc = bc;
 		this.wc = wc;
 		this.posToPawns = posToPawns.clone(); 
-		this.mossa = mossa;
+		this.cella = cella;
+		this.direzione = direzione;
+		this.pedine = pedine;
 		isMax = (parent == null) ? true : !parent.isMax();
 		id = gid++;
+	}
+
+	public String getCella() {
+		return cella;
+	}
+
+	public void setCella(String cella) {
+		this.cella = cella;
+	}
+
+	public String getDirezione() {
+		return direzione;
+	}
+
+	public void setDirezione(String direzione) {
+		this.direzione = direzione;
+	}
+
+	public String getPedine() {
+		return pedine;
+	}
+
+	public void setPedine(String pedine) {
+		this.pedine = pedine;
 	}
 
 	public void setHasValue(boolean hasValue) {
@@ -72,10 +98,6 @@ public class Node implements Serializable{
 		this.bc = bc;
 	}
 
-	public void setMossa(String mossa) {
-		this.mossa = mossa;
-	}
-
 	public void setParent(Node parent) {
 		this.parent = parent;
 	}
@@ -93,7 +115,7 @@ public class Node implements Serializable{
 	}
 
 	public String getMossa() {
-		return mossa;
+		return cella+","+direzione+","+pedine;
 	}
 
 	public Node getParent() {
@@ -111,7 +133,7 @@ public class Node implements Serializable{
 //	}
 	
 	public String toString() {
-		return "[ id: " + id + ", mossa: "+mossa+", value: "+value+" ]";
+		return "[ id: " + id + ", value: "+value+" ]";
 	}
 
 	private String toBinaryString(int i) {

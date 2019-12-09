@@ -35,7 +35,7 @@ public class MossaTraduzione {
 		mg.init();
 		bc = mg.createConfig(posToPawn2, false);
 		wc = mg.createConfig(posToPawn2, true);
-		root = new Node(null, bc, wc, posToPawn2, "");
+		root = new Node(null, bc, wc, posToPawn2, "","","");
 		root2 = new NodeM(null, bc, wc, posToPawn2, "");
 		mg.generateMoves(root, true);
 

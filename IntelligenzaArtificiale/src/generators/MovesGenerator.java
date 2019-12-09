@@ -139,11 +139,11 @@ public class MovesGenerator {
 							mcr = mcr ^ (1 << miaPosizione);
 
 						if (isWhite) {
-							root.addSon(new Node(root, ecr, mcr, posFiglio, posToCell.get(miaPosizione) + ","
-									+ (posToDir.get(miaPosizione)).get(positions[j]) + "," + numPedineDaSpostare));
+							root.addSon(new Node(root, ecr, mcr, posFiglio, posToCell.get(miaPosizione),
+									(posToDir.get(miaPosizione)).get(positions[j]), "" + numPedineDaSpostare));
 						} else { // sono nero
-							root.addSon(new Node(root, mcr, ecr, posFiglio, posToCell.get(miaPosizione) + ","
-									+ (posToDir.get(miaPosizione)).get(positions[j]) + "," + numPedineDaSpostare));
+							root.addSon(new Node(root, mcr, ecr, posFiglio, posToCell.get(miaPosizione),
+									(posToDir.get(miaPosizione)).get(positions[j]), "" + numPedineDaSpostare));
 						}
 
 						// System.out.println(Integer.toBinaryString(mc));
@@ -163,11 +163,11 @@ public class MovesGenerator {
 						mcr = mcr ^ (1 << miaPosizione);
 
 					if (isWhite) {
-						root.addSon(new Node(root, ecr, mcr, posFiglio, posToCell.get(miaPosizione) + ","
-								+ (posToDir.get(miaPosizione)).get(positions[j]) + "," + numPedineDaSpostare));
+						root.addSon(new Node(root, ecr, mcr, posFiglio, posToCell.get(miaPosizione),
+								(posToDir.get(miaPosizione)).get(positions[j]), "" + numPedineDaSpostare));
 					} else { // sono nero
-						root.addSon(new Node(root, mcr, ecr, posFiglio, posToCell.get(miaPosizione) + ","
-								+ (posToDir.get(miaPosizione)).get(positions[j]) + "," + numPedineDaSpostare));
+						root.addSon(new Node(root, mcr, ecr, posFiglio, posToCell.get(miaPosizione),
+								(posToDir.get(miaPosizione)).get(positions[j]), "" + numPedineDaSpostare));
 					}
 
 					// System.out.println(Integer.toBinaryString(mc));
@@ -197,9 +197,11 @@ public class MovesGenerator {
 				posFiglio[miaPosizione] = (byte) 0;
 
 				if (isWhite) {
-					root.addSon(new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione) + ",NW," + (miePedine)));
+					root.addSon(
+							new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NW", "" + (miePedine)));
 				} else { // sono nero
-					root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione) + ",SE," + (miePedine)));
+					root.addSon(
+							new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SE", "" + (miePedine)));
 				}
 
 				// System.out.println(Integer.toBinaryString(mc));
@@ -221,11 +223,11 @@ public class MovesGenerator {
 					posFiglio[miaPosizione] = (byte) (miePedine - numMinimoPDT + (!isWhite ? 20 : 0));
 
 					if (isWhite) {
-						root.addSon(new Node(root, ec, mcr, posFiglio,
-								posToCell.get(miaPosizione) + ",NW," + numMinimoPDT));
+						root.addSon(new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NW",
+								"" + numMinimoPDT));
 					} else { // sono nero
-						root.addSon(new Node(root, mcr, ec, posFiglio,
-								posToCell.get(miaPosizione) + ",SE," + numMinimoPDT));
+						root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SE",
+								"" + numMinimoPDT));
 					}
 
 				}
@@ -244,9 +246,9 @@ public class MovesGenerator {
 				posFiglio[miaPosizione] = (byte) 0;
 
 				if (isWhite) {
-					root.addSon(new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione) + ",N," + (miePedine)));
+					root.addSon(new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "N", "" + (miePedine)));
 				} else { // sono nero
-					root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione) + ",S," + (miePedine)));
+					root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "S", "" + (miePedine)));
 				}
 
 				for (; numMinimoPDT < miePedine; numMinimoPDT++) {
@@ -259,11 +261,11 @@ public class MovesGenerator {
 					posFiglio[miaPosizione] = (byte) (miePedine - numMinimoPDT + (!isWhite ? 20 : 0));
 
 					if (isWhite) {
-						root.addSon(
-								new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione) + ",N," + numMinimoPDT));
+						root.addSon(new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "N",
+								"" + numMinimoPDT));
 					} else { // sono nero
-						root.addSon(
-								new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione) + ",S," + numMinimoPDT));
+						root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "S",
+								"" + numMinimoPDT));
 					}
 				}
 			}
@@ -284,9 +286,11 @@ public class MovesGenerator {
 				posFiglio[miaPosizione] = (byte) 0;
 
 				if (isWhite) {
-					root.addSon(new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione) + ",NE," + (miePedine)));
+					root.addSon(
+							new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NE", "" + (miePedine)));
 				} else { // sono nero
-					root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione) + ",SW," + (miePedine)));
+					root.addSon(
+							new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SW", "" + (miePedine)));
 				}
 
 				for (; numMinimoPDT < miePedine; numMinimoPDT++) {
@@ -303,11 +307,11 @@ public class MovesGenerator {
 					posFiglio[miaPosizione] = (byte) (miePedine - numMinimoPDT + (!isWhite ? 20 : 0));
 
 					if (isWhite) {
-						root.addSon(new Node(root, ec, mcr, posFiglio,
-								posToCell.get(miaPosizione) + ",NE," + numMinimoPDT));
+						root.addSon(new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NE",
+								"" + numMinimoPDT));
 					} else { // sono nero
-						root.addSon(new Node(root, mcr, ec, posFiglio,
-								posToCell.get(miaPosizione) + ",SW," + numMinimoPDT));
+						root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SW",
+								"" + numMinimoPDT));
 					}
 				}
 			}
