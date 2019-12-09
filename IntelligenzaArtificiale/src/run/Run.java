@@ -68,11 +68,11 @@ public class Run {
 						int wc = mg.createConfig(posToPawn, true);
 						
 					    root = new Node(null, bc, wc, posToPawn,"","", "0");
-//						if(isWhite)
-//							mg.generateMovesRecursive(root, true, 0,5);
-//						else
-//							mg.generateMovesRecursive(root, true, 0,5);
-					    mg.generateMovesRecursive(root, true, 0,5);
+						if(isWhite)
+							mg.generateMovesRecursive(root, true, 0,5);
+						else
+							mg.generateMovesRecursive(root, true, 0,6);
+//					    mg.generateMovesRecursive(root, true, 0,5);
 						
 						s = new Search();
 					}

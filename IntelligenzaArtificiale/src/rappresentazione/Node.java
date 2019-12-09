@@ -86,9 +86,6 @@ public class Node implements Serializable{
 		this.sons = sons;
 	}
 
-	public int numSons() {
-		return sons.size();
-	}
 
 	public void setWc(int wc) {
 		this.wc = wc;
@@ -153,7 +150,7 @@ public class Node implements Serializable{
 	}
 
 	public boolean leaf() {
-		return this.numSons() == 0;
+		return this.sons.size() == 0;
 	}
 
 	public LinkedList<Node> siblings() {
