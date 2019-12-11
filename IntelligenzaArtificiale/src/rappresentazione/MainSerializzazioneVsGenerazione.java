@@ -140,12 +140,12 @@ public class MainSerializzazioneVsGenerazione {
 		// GENERO AL MOMENTO
 		LinkedList<Node> ll = null;
 		t1 = LocalDateTime.now();
-		root = new Node(null, bc, wc, posToPawn2, ",0");
-		mg.generateMovesRecursive(mg, root, isWhite, 0, livelloMax);
+		root = new Node(null, bc, wc, posToPawn2, "","","0");
+		mg.generateMovesRecursive(root, isWhite, 0, livelloMax);
 		t2 = LocalDateTime.now();
 		ll = getLeaves(root);
 		for (Node l : ll) {
-			mg.generateMovesRecursive(mg, l, livelloMax % 2 != 0, 0, 2);
+			mg.generateMovesRecursive(l, livelloMax % 2 != 0, 0, 2);
 		}
 		t3 = LocalDateTime.now();
 		System.out.println("Deserializzato root (" + t1.getSecond() + "." + t1.getNano() + " -> " + t2.getSecond() + "."
@@ -159,7 +159,7 @@ public class MainSerializzazioneVsGenerazione {
 		boolean asWhite = depthPrev % 2 != 0;
 		for (int i = 0; i < leaves.size(); i++) {
 			Node tmp = leaves.get(i);
-			mg.generateMovesRecursive(mg, tmp, asWhite, 0, depth);
+			mg.generateMovesRecursive(tmp, asWhite, 0, depth);
 		}
 	}
 

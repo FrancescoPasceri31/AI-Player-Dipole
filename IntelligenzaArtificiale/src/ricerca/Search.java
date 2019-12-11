@@ -39,20 +39,22 @@ public class Search {
 	 */
 	
 	public Node recursiveSearch(Node n,boolean isWhite) {
-		return maxVal(n,Double.MIN_VALUE,Double.MAX_VALUE,isWhite);
+		double c = 0;
+		return maxVal(n,Double.MIN_VALUE,Double.MAX_VALUE,isWhite,c);
 	}
 	
-	public Node maxVal(Node n, double alpha, double beta,boolean isWhite) {
+	public Node maxVal(Node n, double alpha, double beta,boolean isWhite,double c) {
+		c += Euristica.strategy_1(n, isWhite)+Euristica.strategy_2(n, isWhite);
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
-			n.setValue(Euristica.getEuristica(n, isWhite));
-//			n.setValue(r.nextInt(42)+1);
+			//n.setValue(Euristica.getEuristica(n, isWhite));
+			n.setValue(c);
 			return n;
 			} //da cambiare
 		double v = -Double.MAX_VALUE;
 		for(Node f: n.getSons()) {
-			double min = (minVal(f,alpha,beta,isWhite)).getValue(); //valore del figlio
+			double min = (minVal(f,alpha,beta,isWhite,c)).getValue(); //valore del figlio
 			v = Math.max(v, min);
 			if(v==min) ret=f;  //se non entra mai in questo if, allora ritornerà null
 			n.setValue(v);
@@ -64,17 +66,18 @@ public class Search {
 		return ret;
 	}
 	
-	public Node minVal(Node n, double alpha,double beta,boolean isWhite) {
+	public Node minVal(Node n, double alpha,double beta,boolean isWhite,double c) {
+		c += Euristica.strategy_1(n, isWhite)+Euristica.strategy_2(n, isWhite);
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
-			n.setValue(Euristica.getEuristica(n, isWhite));
-//			n.setValue(r.nextInt(42)+1);
+//			n.setValue(Euristica.getEuristica(n, isWhite));
+			n.setValue(c);
 			return n;
 			} //da cambiare
 		double v = Double.MAX_VALUE;
 		for(Node f: n.getSons()) {
-			double max = (maxVal(f,alpha,beta,isWhite)).getValue(); //valore del figlio
+			double max = (maxVal(f,alpha,beta,isWhite,c)).getValue(); //valore del figlio
 			v = Math.min(v, max);
 			if(v==max) ret=f;
 			n.setValue(v);
