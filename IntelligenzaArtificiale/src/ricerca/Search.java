@@ -1,6 +1,7 @@
 package ricerca;
 
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -38,23 +39,26 @@ public class Search {
 	 * n); i++; } //System.out.println(l); } } } return null; // DA CAMBIARE!! }
 	 */
 	
-	public Node recursiveSearch(Node n,boolean isWhite) {
+	public Node recursiveSearch(Node n,boolean isWhite,HashMap<String, Byte> cp) {
 		double c = 0;
-		return maxVal(n,Double.MIN_VALUE,Double.MAX_VALUE,isWhite,c);
+		return maxVal(n,Double.MIN_VALUE,Double.MAX_VALUE,isWhite,c,cp);
 	}
 	
-	public Node maxVal(Node n, double alpha, double beta,boolean isWhite,double c) {
-		c += Euristica.strategy_1(n, isWhite)+Euristica.strategy_2(n, isWhite);
+	public Node maxVal(Node n, double alpha, double beta,boolean isWhite,double c,HashMap<String, Byte> cp) {
+		c += Euristica.strategy_1(n, isWhite)+Euristica.strategy_2(n, isWhite)+Euristica.strategy_3(n, isWhite)+Euristica.strategy_4(n, isWhite, cp);
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
-			//n.setValue(Euristica.getEuristica(n, isWhite));
-			n.setValue(c);
+			if(isWhite && n.getBc()==0) n.setValue(120037.0);
+			else if(isWhite && n.getWc()==0) n.setValue(-151237.0);
+			else if(!isWhite && n.getWc()==0) n.setValue(120037.0);
+			else if(!isWhite && n.getBc()==0) n.setValue(-151237.0);
+			else n.setValue(c);
 			return n;
 			} //da cambiare
 		double v = -Double.MAX_VALUE;
 		for(Node f: n.getSons()) {
-			double min = (minVal(f,alpha,beta,isWhite,c)).getValue(); //valore del figlio
+			double min = (minVal(f,alpha,beta,isWhite,c,cp)).getValue(); //valore del figlio
 			v = Math.max(v, min);
 			if(v==min) ret=f;  //se non entra mai in questo if, allora ritornerà null
 			n.setValue(v);
@@ -66,18 +70,21 @@ public class Search {
 		return ret;
 	}
 	
-	public Node minVal(Node n, double alpha,double beta,boolean isWhite,double c) {
-		c += Euristica.strategy_1(n, isWhite)+Euristica.strategy_2(n, isWhite);
+	public Node minVal(Node n, double alpha,double beta,boolean isWhite,double c,HashMap<String, Byte> cp) {
+		c += Euristica.strategy_1(n, isWhite)+Euristica.strategy_2(n, isWhite)+Euristica.strategy_3(n, isWhite)+Euristica.strategy_4(n, isWhite, cp);
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
-//			n.setValue(Euristica.getEuristica(n, isWhite));
-			n.setValue(c);
+			if(isWhite && n.getBc()==0) n.setValue(120037.0);
+			else if(isWhite && n.getWc()==0) n.setValue(-151237.0);
+			else if(!isWhite && n.getWc()==0) n.setValue(120037.0);
+			else if(!isWhite && n.getBc()==0) n.setValue(-151237.0);
+			else n.setValue(c);
 			return n;
 			} //da cambiare
 		double v = Double.MAX_VALUE;
 		for(Node f: n.getSons()) {
-			double max = (maxVal(f,alpha,beta,isWhite,c)).getValue(); //valore del figlio
+			double max = (maxVal(f,alpha,beta,isWhite,c,cp)).getValue(); //valore del figlio
 			v = Math.min(v, max);
 			if(v==max) ret=f;
 			n.setValue(v);

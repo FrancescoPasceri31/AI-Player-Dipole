@@ -3,29 +3,29 @@ package testing;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.StringTokenizer;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
@@ -48,6 +48,12 @@ public class BoardMap {
 	private Node n;
 	private JFrame f;
 	private JMenu mosse;
+
+	private static String address = "localhost";
+	private static int port = 8901;
+	private static Socket soc;
+	private static BufferedReader in;
+	private static PrintWriter out;
 
 	public Node getNode() {
 		return n;
@@ -95,12 +101,15 @@ public class BoardMap {
 			return;
 		}
 
+
 		mg.generateMoves(n, isWhite);
-		
+
 //		System.out.println(Arrays.toString(n.getPosToPawns()));
-		if(n.getParent()!=null)
-			System.out.println("paren --> wc: "+Integer.toBinaryString(n.getParent().getWc())+" bc: "+Integer.toBinaryString(n.getParent().getBc()));
-		System.out.println("child --> wc: "+Integer.toBinaryString(n.getWc())+" bc: "+Integer.toBinaryString(n.getBc()));
+		if (n.getParent() != null)
+			System.out.println("paren --> wc: " + Integer.toBinaryString(n.getParent().getWc()) + " bc: "
+					+ Integer.toBinaryString(n.getParent().getBc()));
+		System.out.println(
+				"child --> wc: " + Integer.toBinaryString(n.getWc()) + " bc: " + Integer.toBinaryString(n.getBc()));
 		System.out.println();
 
 		for (int i = 0; i < opened.size(); i++) {
@@ -132,7 +141,7 @@ public class BoardMap {
 		}
 		frame.setResizable(false);
 		frame.setSize(300, 400);
-		frame.setLocation(300, 100);
+		frame.setLocation(900, 100);
 
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(8, 8));
@@ -181,8 +190,12 @@ public class BoardMap {
 				if (SwingUtilities.isLeftMouseButton(e)) {
 					for (Node son : n.getSons()) {
 						if (son.getMossa().equals(mosse.getText())) {
+							getFrame().dispose();
 							BoardMap bSon = new BoardMap();
 							bSon.createFrameBoard(son, !isWhite);
+							if (!isWhite) {
+								out.println("MOVE " + son.getMossa());
+								}
 						}
 					}
 				}
@@ -241,6 +254,15 @@ public class BoardMap {
 
 	public static void main(String[] args) throws Exception {
 
+		try {
+			soc = new Socket(address, port);
+			in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
+			out = new PrintWriter(soc.getOutputStream(), true);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		/*
 		 ********************************************************************************************************************************* 
 		 * SETTING UP PARAMETRI INIZIALI
@@ -271,7 +293,7 @@ public class BoardMap {
 
 		boolean isWhite = true;
 		int livelloMax = 3;
-		root = new Node(null, bc, wc, posToPawn, "","","0");
+		root = new Node(null, bc, wc, posToPawn, "", "", "0");
 
 //		generateMovesRecursive(mg, root, isWhite, 0, livelloMax);
 //		generateMovesIterative(mg, root, isWhite, livelloMax);

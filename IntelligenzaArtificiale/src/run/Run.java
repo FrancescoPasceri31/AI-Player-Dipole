@@ -98,7 +98,9 @@ public class Run {
 					break;
 				case "YOUR_TURN":
 					System.out.println("root prima: "+root);
-					root = s.recursiveSearch(root, isWhite);
+					
+					root = s.recursiveSearch(root, isWhite,mg.getCellToPos());
+					
 					System.out.println("root dopo: "+root);
 					out.println("MOVE "+root.getMossa());
 					System.out.println(root);
