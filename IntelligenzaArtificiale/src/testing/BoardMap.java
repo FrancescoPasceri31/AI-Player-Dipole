@@ -31,6 +31,7 @@ import javax.swing.border.LineBorder;
 
 import generators.MovesGenerator;
 import rappresentazione.Node;
+import ricerca.Search;
 
 public class BoardMap {
 
@@ -54,6 +55,9 @@ public class BoardMap {
 	private static Socket soc;
 	private static BufferedReader in;
 	private static PrintWriter out;
+	
+	
+	private static boolean mossa= false;
 
 	public Node getNode() {
 		return n;
@@ -188,14 +192,14 @@ public class BoardMap {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (SwingUtilities.isLeftMouseButton(e)) {
-					for (Node son : n.getSons()) {
+					for (Node son : root.getSons()) {
 						if (son.getMossa().equals(mosse.getText())) {
+							root = son;
+							root.setParent(null);
 							getFrame().dispose();
-							BoardMap bSon = new BoardMap();
-							bSon.createFrameBoard(son, !isWhite);
-							if (!isWhite) {
-								out.println("MOVE " + son.getMossa());
-								}
+							createFrameBoard(son, !isWhite);
+							out.println("MOVE " + son.getMossa());
+							mossa = true;
 						}
 					}
 				}
@@ -250,6 +254,8 @@ public class BoardMap {
 
 		this.f = frame;
 		opened.add(this);
+		
+		System.out.println("fine creazione board");
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -303,6 +309,66 @@ public class BoardMap {
 
 		BoardMap bm = new BoardMap();
 		bm.createFrameBoard(root, true);
+		
+		String ret;
+		StringTokenizer st;
+		String opponent_move;
+		
+		while(true) {
+			//if(root!=null) System.out.println(root.getMossa());
+			ret = in.readLine();
+			//if(ret==null) continue;
+			st = new StringTokenizer(ret," ");
+			switch(st.nextToken()){
+			case "WELCOME":
+				if(st.nextToken().equals("White"))
+					isWhite = true;
+				break;
+			case "MESSAGE":
+				System.out.println(ret);
+				break;
+			case "OPPONENT_MOVE":
+				System.out.println(ret);
+				opponent_move = st.nextToken();
+				for(Node f: root.getSons())
+					if(f.getMossa().equals(opponent_move)) {
+						root = f;
+						System.out.println(root);
+						root.setParent(null);
+						bm.createFrameBoard(root, !isWhite);
+						System.out.println("root to opponent");
+						break;
+					}
+				break;
+			case "YOUR_TURN":
+				System.out.println(ret);
+				while(!mossa) {System.out.println();}
+				mossa = false;
+				System.out.println("break");
+				break;
+			case "VALID_MOVE":
+				System.out.println(ret);
+				break;
+			case "ILLEGAL_MOVE":
+				System.out.println(ret);
+				break;
+			case "TIMEOUT":
+				System.out.println("Timer scaduto");
+				break;
+			case "VICTORY":
+				System.out.println("Hai vinto");
+				System.exit(0);
+			case "TIE":
+				System.out.println("Hai pareggiato");
+				System.exit(0);
+			case "DEFEAT":
+				System.out.println("Hai perso");
+				System.exit(0);
+			default:
+				System.out.println("Exit");
+				System.exit(0);
+			}
+		}
 	}
 
 	private static void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite, int liv, int limite) {

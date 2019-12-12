@@ -114,7 +114,7 @@ public class MainSearch {
 //		System.out.println("tempo search iterativa "+livelloMax+" livelli -> "+ ((tend - tstart)/1000.0)+", res: "+ret.getValue());
 
 		tstart = System.currentTimeMillis();
-		Node ret1 = s.recursiveSearch(root,isWhite);
+		Node ret1 = s.recursiveSearch(root,isWhite,mg.getCellToPos());
 		tend = System.currentTimeMillis();
 //		
 //		System.out.println(ret1);
