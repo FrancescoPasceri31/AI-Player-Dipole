@@ -45,13 +45,13 @@ public class Search {
 	}
 	
 	public Node maxVal(Node n, double alpha, double beta,boolean isWhite,double c,HashMap<String, Byte> cp) {
-		c += Euristica.strategy_1(n, isWhite)+Euristica.strategy_2(n, isWhite)+Euristica.strategy_3(n, isWhite)+Euristica.strategy_4(n, isWhite, cp);
+		c += Euristica.getEuristica(n, isWhite, cp);
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
-			if(isWhite && n.getBc()==0) n.setValue(120037.0);
+			if(isWhite && n.getBc()==0) n.setValue(121037.0);
 			else if(isWhite && n.getWc()==0) n.setValue(-151237.0);
-			else if(!isWhite && n.getWc()==0) n.setValue(120037.0);
+			else if(!isWhite && n.getWc()==0) n.setValue(121037.0);
 			else if(!isWhite && n.getBc()==0) n.setValue(-151237.0);
 			else n.setValue(c);
 			return n;
@@ -71,7 +71,7 @@ public class Search {
 	}
 	
 	public Node minVal(Node n, double alpha,double beta,boolean isWhite,double c,HashMap<String, Byte> cp) {
-		c += Euristica.strategy_1(n, isWhite)+Euristica.strategy_2(n, isWhite)+Euristica.strategy_3(n, isWhite)+Euristica.strategy_4(n, isWhite, cp);
+		c += Euristica.getEuristica(n, isWhite, cp);
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
