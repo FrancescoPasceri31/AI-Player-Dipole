@@ -21,7 +21,7 @@ public class MemoryThread extends Thread {
 	public void run() {
 		while (true) {
 			if (!toBeDelete.isEmpty()) {
-				free(toBeDelete.getFirst());
+				free(toBeDelete.removeFirst());
 			}
 		}
 	}

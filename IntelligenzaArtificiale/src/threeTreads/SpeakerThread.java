@@ -46,8 +46,9 @@ public class SpeakerThread extends Thread {
 					dt.setColor(st.nextToken().equals("White"));
 					break;
 				case "MESSAGE":
+					if(st.nextToken().equals("All"))
+						dt.start();
 					System.out.println(ret);
-					dt.start();
 					break;
 				case "OPPONENT_MOVE":
 					System.out.println(ret);
@@ -57,10 +58,10 @@ public class SpeakerThread extends Thread {
 					System.out.println(ret);
 					long time = System.currentTimeMillis();
 					dt.startSearch = true;
-					while (time + System.currentTimeMillis() < time + 900 && dt.myMove == null) {
+					while (System.currentTimeMillis() < time + 900 && dt.myMove == null) {
 						;
 					}
-//					dt.startSearch = false;
+					dt.startSearch = false;
 					if (dt.myMove == null)
 						out.println("MOVE " + dt.bestMove);
 					else

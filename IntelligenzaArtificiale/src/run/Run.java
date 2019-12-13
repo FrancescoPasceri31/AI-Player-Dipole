@@ -86,6 +86,7 @@ public class Run {
 					for(Node f: root.getSons())
 						if(f.getMossa().equals(opponent_move)) {
 							root = f;
+							
 							System.out.println(root);
 							root.setParent(null);
 							leaves = mg.getLeaves(root);

@@ -19,7 +19,7 @@ public class DecisionThread extends Thread {
 	private MovesGenerator mg;
 	private Search searcher;
 	private Node root, best;
-	private MemoryThread mt;
+	//private MemoryThread mt;
 
 	public DecisionThread() {
 		super();
@@ -30,9 +30,9 @@ public class DecisionThread extends Thread {
 		System.out.println("DT created @" + this.getId());
 	}
 
-	public void setMt(MemoryThread mt) {
-		this.mt = mt;
-	}
+//	public void setMt(MemoryThread mt) {
+//		this.mt = mt;
+//	}
 
 	public void setColor(boolean isWhite) {
 		this.isWhite = isWhite;
@@ -40,7 +40,7 @@ public class DecisionThread extends Thread {
 
 	@Override
 	public void run() {
-		mt.start();
+		//mt.start();
 		System.out.println("Player " + (isWhite ? "white" : "black") + " started. @" + this.getId());
 		byte[] posToPawn = new byte[32];
 		for (int i = 0; i < 32; i++) {
@@ -63,13 +63,14 @@ public class DecisionThread extends Thread {
 
 		while (true) {
 			if (startSearch) {
-				best = searcher.recursiveSearch(root, isWhite); // cerco il best per la scelta -> CODIFICARE QUI
+				best = searcher.recursiveSearch(root, isWhite,mg.getCellToPos()); // cerco il best per la scelta -> CODIFICARE QUI
 																// L'ALGORITMO DI RICERCA PER SETTARE IL BEST TEMPORANEO
 				myMove = best.getMossa(); // lo dichiaro allo speaker per farlo comunicare al server
 				best.setParent(null); // best diventa root perche scelto
 				root.getSons().remove(best);
-				mt.addToDelete(root); // elimino il resto dell'albero per liberare memoria
+				//mt.addToDelete(root); // elimino il resto dell'albero per liberare memoria
 				root = best;
+				System.gc();
 				best = null;
 				espandi();
 				startSearch=false;	// da togliere e mettere nello speaker e riuscire ad espandere il root best
@@ -80,8 +81,9 @@ public class DecisionThread extends Thread {
 						best = root.getSons().get(i);
 						root.getSons().remove(i);
 						best.setParent(null);
-						mt.addToDelete(root);
+						//mt.addToDelete(root);
 						root = best;
+						System.gc();
 						best = null;
 						opponentMove = null;
 						espandi();

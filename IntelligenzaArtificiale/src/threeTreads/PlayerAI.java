@@ -10,10 +10,10 @@ public class PlayerAI {
 
 		SpeakerThread st = new SpeakerThread(port, address);
 		DecisionThread dt = new DecisionThread();
-		MemoryThread mt = new MemoryThread();
+		//MemoryThread mt = new MemoryThread();
 
 		st.setDt(dt);
-		dt.setMt(mt);
+		//dt.setMt(mt);
 
 		st.start();
 	}
