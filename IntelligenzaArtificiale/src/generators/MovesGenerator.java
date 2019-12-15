@@ -95,6 +95,7 @@ public class MovesGenerator {
 			r = m & (p | (~ec));
 
 			positions = HashMapGenerator.zerosPosition(r);
+			
 
 			// System.out.println(Arrays.toString(positions));
 			// System.out.println(posToPawn.get((byte)9));
@@ -316,6 +317,16 @@ public class MovesGenerator {
 				}
 			}
 
+		}
+		
+		if(root.getSons().size()==0) {
+			for(int i=0;i<myP.length;i++) {
+				if(isWhite) {
+					root.addSon(new Node(root,ec,mc,posToPawn,posToCell.get(myP[i]),"N","0"));
+				}else {
+					root.addSon(new Node(root,mc,ec,posToPawn,posToCell.get(myP[i]),"S","0"));
+				}
+			}
 		}
 
 	}
