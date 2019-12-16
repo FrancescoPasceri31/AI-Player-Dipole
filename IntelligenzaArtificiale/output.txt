@@ -1,5 +1,1 @@
 iterazione: 1
-tempo generazione 5 livelli -> 0.439
-tempo search ricorsiva 5 livelli -> 0.007
-res: [ id: 8, mossa: H5,NE,2, value: -743.999998686 ]
-

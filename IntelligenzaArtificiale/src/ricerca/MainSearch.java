@@ -48,7 +48,7 @@ public class MainSearch {
 		 *********************************************************************************************************************************
 		 */
 		boolean isWhite = true;
-		int livelloMax = 5;
+		int livelloMax = 7;
 //		int livelloMax =Integer.parseInt(args[0]);
 		
 		long tstart,tend;
