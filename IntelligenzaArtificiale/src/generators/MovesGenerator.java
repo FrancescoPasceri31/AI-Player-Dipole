@@ -252,7 +252,7 @@ public class MovesGenerator {
 					root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "S", "" + (miePedine)));
 				}
 
-				for (; numMinimoPDT < miePedine; numMinimoPDT++) {
+				for (; numMinimoPDT < miePedine; numMinimoPDT+=2) {
 
 					posFiglio = posToPawn.clone();
 
@@ -398,4 +398,5 @@ public class MovesGenerator {
 			metodoStampaTree(son, liv + 1);
 		}
 	}
+	
 }
