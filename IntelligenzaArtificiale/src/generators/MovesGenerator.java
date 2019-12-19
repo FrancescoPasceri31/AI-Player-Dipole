@@ -80,7 +80,7 @@ public class MovesGenerator {
 		for (int k = 0; k < myP.length; k++) {
 
 			miaPosizione = myP[k];
-			miaRiga = (byte) (miaPosizione / (byte) 4);
+			miaRiga = (byte) (miaPosizione / 4);
 
 			miePedine = posToPawn[miaPosizione];
 

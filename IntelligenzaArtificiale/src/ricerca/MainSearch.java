@@ -1,6 +1,7 @@
 package ricerca;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import generators.MovesGenerator;
 import rappresentazione.Node;
@@ -48,7 +49,7 @@ public class MainSearch {
 		 *********************************************************************************************************************************
 		 */
 		boolean isWhite = true;
-		int livelloMax = 7;
+		int livelloMax = 6;
 //		int livelloMax =Integer.parseInt(args[0]);
 		
 		long tstart,tend;
@@ -66,7 +67,19 @@ public class MainSearch {
 		}
 		
 		System.out.println("tempo generazione "+livelloMax+" livelli -> "+ (sum/iterations));
-
+		Search s = new Search();
+		s.init();
+		root = s.recursiveSearch(root, isWhite, mg.getCellToPos());
+		LinkedList<Node> leaves = null;
+		tstart = System.currentTimeMillis();
+		leaves = mg.getLeaves(root);
+		for(Node leaf: leaves)
+			mg.generateMoves(leaf, isWhite);
+		tend = System.currentTimeMillis();
+		sum = (tend - tstart)/1000.0;
+		System.out.println("Tempo generazione "+(livelloMax+1)+"° livello: "+sum);
+		System.out.println("Best move: "+root.getMossa());
+		System.out.println("Numero foglie: "+leaves.size());
 		/*
 		 ********************************************************************************************************************************* 
 		 * RICERCA MINIMAX CON PRUNING ALPHA-BETA
@@ -105,26 +118,26 @@ public class MainSearch {
 //		System.out.println(root.getSons());
 		
 
-		Search s = new Search();
-
+//		Search s = new Search();
+//
+////		tstart = System.currentTimeMillis();
+////		Node ret = s.search(root);
+////		tend = System.currentTimeMillis();
+////		
+////		System.out.println("tempo search iterativa "+livelloMax+" livelli -> "+ ((tend - tstart)/1000.0)+", res: "+ret.getValue());
+//
 //		tstart = System.currentTimeMillis();
-//		Node ret = s.search(root);
+//		Node ret1 = s.recursiveSearch(root,isWhite,mg.getCellToPos());
 //		tend = System.currentTimeMillis();
+////		
+////		System.out.println(ret1);
+////		ret1 = s.minVal(root.getSons().get(ret1.getId()-1), Double.MIN_VALUE, Double.MAX_VALUE);
+////		System.out.println(ret1);
+//
 //		
-//		System.out.println("tempo search iterativa "+livelloMax+" livelli -> "+ ((tend - tstart)/1000.0)+", res: "+ret.getValue());
-
-		tstart = System.currentTimeMillis();
-		Node ret1 = s.recursiveSearch(root,isWhite,mg.getCellToPos());
-		tend = System.currentTimeMillis();
 //		
-//		System.out.println(ret1);
-//		ret1 = s.minVal(root.getSons().get(ret1.getId()-1), Double.MIN_VALUE, Double.MAX_VALUE);
-//		System.out.println(ret1);
-
-		
-		
-		
-		System.out.println("tempo search ricorsiva " + livelloMax + " livelli -> " + ((tend - tstart) / 1000.0)+ "\nres: " + ret1);
+//		
+//		System.out.println("tempo search ricorsiva " + livelloMax + " livelli -> " + ((tend - tstart) / 1000.0)+ "\nres: " + ret1);
 		
 //		System.out.println(Node.generateGenericVerbose(root.getSons().get(ret1.getId()-1), "", false, false, new StringBuilder()));
 //		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));

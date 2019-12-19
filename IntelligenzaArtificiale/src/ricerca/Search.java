@@ -10,7 +10,10 @@ import rappresentazione.Node;
 
 public class Search {
 	
-	private Euristica e;
+	public Euristica e;
+	
+	private final double VICTORY = 121037.0;
+	private final double LOSE = -151237.0;
 	
 	
 	public void init() {
@@ -48,25 +51,25 @@ public class Search {
 	
 	public Node recursiveSearch(Node n,boolean isWhite,HashMap<String, Byte> cp) {
 		double c = 0;
-		return maxVal(n,Double.MIN_VALUE,Double.MAX_VALUE,isWhite,c,cp);
+		return maxVal(n,Double.MIN_VALUE,Double.MAX_VALUE,isWhite,c,cp,0);
 	}
 	
-	public Node maxVal(Node n, double alpha, double beta,boolean isWhite,double c,HashMap<String, Byte> cp) {
+	public Node maxVal(Node n, double alpha, double beta,boolean isWhite,double c,HashMap<String, Byte> cp, int level) {
 		c += e.getEuristica(n, isWhite, cp);
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
-			if(isWhite && n.getBc()==0) n.setValue(121037.0);
-			else if(isWhite && n.getWc()==0) n.setValue(-151237.0);
-			else if(!isWhite && n.getWc()==0) n.setValue(121037.0);
-			else if(!isWhite && n.getBc()==0) n.setValue(-151237.0);
+			if(isWhite && n.getBc()==0) n.setValue(VICTORY-level);
+			else if(isWhite && n.getWc()==0) n.setValue(LOSE-level);
+			else if(!isWhite && n.getWc()==0) n.setValue(VICTORY-level);
+			else if(!isWhite && n.getBc()==0) n.setValue(LOSE-level);
 			else n.setValue(c);
 //			System.out.println("Valore Euristica nodo "+n.getId()+" "+n.getValue());
 			return n;
 			} //da cambiare
 		double v = -Double.MAX_VALUE;
 		for(Node f: n.getSons()) {
-			double min = (minVal(f,alpha,beta,isWhite,c,cp)).getValue(); //valore del figlio
+			double min = (minVal(f,alpha,beta,isWhite,c,cp,level+1)).getValue(); //valore del figlio
 			v = Math.max(v, min);
 			if(v==min) ret=f;  //se non entra mai in questo if, allora ritornerà null
 			n.setValue(v);
@@ -78,21 +81,21 @@ public class Search {
 		return ret;
 	}
 	
-	public Node minVal(Node n, double alpha,double beta,boolean isWhite,double c,HashMap<String, Byte> cp) {
+	public Node minVal(Node n, double alpha,double beta,boolean isWhite,double c,HashMap<String, Byte> cp,int level) {
 		c += e.getEuristica(n, isWhite, cp);
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
-			if(isWhite && n.getBc()==0) n.setValue(121037.0);
-			else if(isWhite && n.getWc()==0) n.setValue(-151237.0);
-			else if(!isWhite && n.getWc()==0) n.setValue(121037.0);
-			else if(!isWhite && n.getBc()==0) n.setValue(-151237.0);
+			if(isWhite && n.getBc()==0) n.setValue(VICTORY-level);
+			else if(isWhite && n.getWc()==0) n.setValue(LOSE-level);
+			else if(!isWhite && n.getWc()==0) n.setValue(VICTORY-level);
+			else if(!isWhite && n.getBc()==0) n.setValue(LOSE-level);
 			else n.setValue(c);
 			return n;
 			} //da cambiare
 		double v = Double.MAX_VALUE;
 		for(Node f: n.getSons()) {
-			double max = (maxVal(f,alpha,beta,isWhite,c,cp)).getValue(); //valore del figlio
+			double max = (maxVal(f,alpha,beta,isWhite,c,cp,level+1)).getValue(); //valore del figlio
 			v = Math.min(v, max);
 			if(v==max) ret=f;
 			n.setValue(v);

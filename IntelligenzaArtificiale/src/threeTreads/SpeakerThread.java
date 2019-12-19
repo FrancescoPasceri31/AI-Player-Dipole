@@ -66,6 +66,7 @@ public class SpeakerThread extends Thread {
 						out.println("MOVE " + dt.bestMove);
 					else
 						out.println("MOVE " + dt.myMove);
+					System.out.println("MOSSA INVIATA: "+dt.myMove);
 					dt.myMove = null;
 					break;
 				case "VALID_MOVE":
