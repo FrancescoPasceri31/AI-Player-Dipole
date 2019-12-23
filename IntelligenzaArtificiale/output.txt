@@ -1,5 +1,5 @@
 iterazione: 1
-tempo generazione 6 livelli -> 3.006
-Tempo generazione 7° livello: 2.106
-Best move: H5,NE,2
-Numero foglie: 263240
+tempo generazione 5 livelli -> 0.404
+Tempo generazione 6° livello: 0.312
+Best move: H5,N,2, 48.0
+Numero foglie: 13883

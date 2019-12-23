@@ -49,7 +49,7 @@ public class MainSearch {
 		 *********************************************************************************************************************************
 		 */
 		boolean isWhite = true;
-		int livelloMax = 6;
+		int livelloMax = 5;
 //		int livelloMax =Integer.parseInt(args[0]);
 		
 		long tstart,tend;
@@ -78,7 +78,7 @@ public class MainSearch {
 		tend = System.currentTimeMillis();
 		sum = (tend - tstart)/1000.0;
 		System.out.println("Tempo generazione "+(livelloMax+1)+"° livello: "+sum);
-		System.out.println("Best move: "+root.getMossa());
+		System.out.println("Best move: "+root.getMossa()+", "+root.getValue());
 		System.out.println("Numero foglie: "+leaves.size());
 		/*
 		 ********************************************************************************************************************************* 

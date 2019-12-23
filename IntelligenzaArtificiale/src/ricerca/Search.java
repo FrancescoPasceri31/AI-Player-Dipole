@@ -51,7 +51,11 @@ public class Search {
 	
 	public Node recursiveSearch(Node n,boolean isWhite,HashMap<String, Byte> cp) {
 		double c = 0;
-		return maxVal(n,Double.MIN_VALUE,Double.MAX_VALUE,isWhite,c,cp,0);
+		double v = maxVal(n,Double.MIN_VALUE,Double.MAX_VALUE,isWhite,c,cp,0).getValue();
+		LinkedList<Node> l = new LinkedList();
+		for(Node f: n.getSons()) 
+			if(f.getValue()==v) l.add(f);
+		return l.get((new Random()).nextInt(l.size()));
 	}
 	
 	public Node maxVal(Node n, double alpha, double beta,boolean isWhite,double c,HashMap<String, Byte> cp, int level) {
