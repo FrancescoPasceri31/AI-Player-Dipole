@@ -23,7 +23,7 @@ public class MainSearch {
 				posToPawn.put((byte) i, (byte) 12);
 			else if (i == 30) // black start position
 				posToPawn.put((byte) i, (byte) 32);
-			else
+			else 
 				posToPawn.put((byte) i, (byte) 0);
 		}
 

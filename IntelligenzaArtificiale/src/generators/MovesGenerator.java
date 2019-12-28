@@ -16,7 +16,7 @@ public class MovesGenerator {
 	private HashMap<Byte, Object[]> masksWhite = null;
 
 	private Byte[] posToCol = { 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8, 6, 4, 2, 7, 5, 3, 1, 8,
-			6, 4, 2 };
+			6, 4, 2 }; 
 
 	public HashMap<String, Byte> getCellToPos() {
 		return cellToPos;
