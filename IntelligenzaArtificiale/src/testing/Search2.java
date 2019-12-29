@@ -19,23 +19,23 @@ public class Search2 {
 	
 	
 	public void init() {
-		this.e = new Euristica();
+		this.e = new Euristica(); 
 		this.e.init();
-		this.mg = new MovesGenerator();
+		this.mg = new MovesGenerator(); 
 		this.mg.init();
 	}
 
 	
 	public Node recursiveSearch(Node n,boolean isWhite,HashMap<String, Byte> cp,int maxLevel) {
 		double c = 0;
-		double v = maxVal(n,Double.MIN_VALUE,Double.MAX_VALUE,isWhite,c,cp,0,maxLevel).getValue();
+		double v = maxVal(n,-Double.MAX_VALUE,Double.MAX_VALUE,isWhite,c,cp,0,maxLevel).getValue();
 		LinkedList<Node> l = new LinkedList();
 		for(Node f: n.getSons()) { 
 			if(f.getValue()==v) l.add(f);
-			f.setParent(null);
+			//f.setParent(null); 
 		}
-		n.setSons(new LinkedList());
-		System.gc();
+		//n.setSons(new LinkedList());
+		//System.gc();
 		return l.get((new Random()).nextInt(l.size()));
 	}
 	

@@ -4,9 +4,8 @@ import java.util.LinkedList;
 
 import generators.MovesGenerator;
 import rappresentazione.Node;
-import ricerca.Search;
 
-public class MainSearch2 {
+public class MainSearch3 {
 	
 	public static void main(String[] args) {
 		
@@ -26,13 +25,13 @@ public class MainSearch2 {
 		int bc = mg.createConfig(posToPawn2, false);
 		int wc = mg.createConfig(posToPawn2, true);
 		
-		boolean isWhite = true;
-		int livelloMax = 5; 
+		boolean isWhite = true;  
+		int livelloMax = 5;
 		long tstart,tend;
 		double sum;
 		
-		Node root = new Node(null, bc, wc, posToPawn2,"","","0"); 
-		Search2 s = new Search2();
+		Node root = new Node(null, bc, wc, posToPawn2,"","","0");
+		Search3 s = new Search3();
 		s.init();
 		tstart = System.currentTimeMillis();
 		Node best = s.recursiveSearch(root, isWhite, mg.getCellToPos(),livelloMax);
