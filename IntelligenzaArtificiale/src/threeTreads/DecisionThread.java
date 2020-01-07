@@ -54,25 +54,32 @@ public class DecisionThread extends Thread {
 
 		mg = new MovesGenerator();
 		mg.init();
+		searcher.init();
 
 		int bc = mg.createConfig(posToPawn, false);
 		int wc = mg.createConfig(posToPawn, true);
 
 		root = new Node(null, bc, wc, posToPawn,"","", "0");
-		mg.generateMovesRecursive(root, isWhite, START_LEVEL, MAX_FIRST_LEVEL);
+		mg.generateMovesRecursive(root, true, START_LEVEL, MAX_FIRST_LEVEL);
 
 		while (true) {
 			if (startSearch) {
+				long t = System.currentTimeMillis();
 				best = searcher.recursiveSearch(root, isWhite,mg.getCellToPos()); // cerco il best per la scelta -> CODIFICARE QUI
-																// L'ALGORITMO DI RICERCA PER SETTARE IL BEST TEMPORANEO
+				System.out.println("search: "+(System.currentTimeMillis()-t) );		
+				System.out.println("\nValore risalito: "+best.getValue()+"\n");// L'ALGORITMO DI RICERCA PER SETTARE IL BEST TEMPORANEO
 				myMove = best.getMossa(); // lo dichiaro allo speaker per farlo comunicare al server
+				for(Node n:root.getSons()) 
+					System.out.println(n);
 				best.setParent(null); // best diventa root perche scelto
 				root.getSons().remove(best);
 				//mt.addToDelete(root); // elimino il resto dell'albero per liberare memoria
 				root = best;
 				System.gc();
 				best = null;
-				espandi();
+				t = System.currentTimeMillis();
+				espandi(isWhite);
+				System.out.println("generazione your turn: "+(System.currentTimeMillis()-t));
 				startSearch=false;	// da togliere e mettere nello speaker e riuscire ad espandere il root best
 			}
 			if (opponentMove!=null) {
@@ -86,7 +93,9 @@ public class DecisionThread extends Thread {
 						System.gc();
 						best = null;
 						opponentMove = null;
-						espandi();
+						long t = System.currentTimeMillis();
+						espandi(!isWhite);
+						System.out.println("generazione opponent: "+(System.currentTimeMillis()-t));
 						break;
 					}
 				}
@@ -94,12 +103,18 @@ public class DecisionThread extends Thread {
 		}
 	}
 
-	private void espandi() {
+	private void espandi(boolean w) {
 		toExpand = mg.getLeaves(root);
 		for (Node n : toExpand) {
-			mg.generateMovesRecursive(n, isWhite, START_LEVEL, MAX_EXTENSION);
+			mg.generateMoves(n, w);
 		}
 		toExpand.clear();
 	}
+	
+	private int getLevel(Node n) {
+		if(n.getSons().size()==0) return 0;
+		return 1+getLevel(n.getSons().get(0));
+	}
+	
 
 }
