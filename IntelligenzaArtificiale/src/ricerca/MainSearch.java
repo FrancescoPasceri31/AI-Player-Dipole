@@ -61,24 +61,37 @@ public class MainSearch {
 			System.out.println("iterazione: "+(i+1));
 			tstart = System.currentTimeMillis();
 			root = new Node(null, bc, wc, posToPawn2,"","","0");
-			mg.generateMovesRecursive(root, isWhite, 0, livelloMax);
+			mg.generateMovesRecursive(root, isWhite,isWhite, 0, livelloMax);
 			tend = System.currentTimeMillis();
 			sum += (tend - tstart)/1000.0;
 		}
 		
 		System.out.println("tempo generazione "+livelloMax+" livelli -> "+ (sum/iterations));
+		System.out.println();
 		Search s = new Search();
+		
 		s.init();
+//		Node best = s.recursiveSearch(root, isWhite, mg.getCellToPos());
+//		System.out.println("Best1 move: "+best.getMossa()+", "+best.getValue());
+//		LinkedList<Node> leaves = mg.getLeaves(root); 
+//		System.out.println("Numero foglie: "+leaves.size());
+//		System.out.println();
+		
+//		best = s.recursiveSearch(root, isWhite, mg.getCellToPos());
+//		System.out.println("Best2 move: "+best.getMossa()+", "+best.getValue());
+//		leaves = mg.getLeaves(root); 
+//		System.out.println("Numero foglie: "+leaves.size());
+//		System.out.println();
+		
 		tstart = System.currentTimeMillis();
-		root = s.recursiveSearch(root, isWhite, mg.getCellToPos());
+		Node best = s.recursiveSearch(root, isWhite, mg.getCellToPos());
 		tend = System.currentTimeMillis();
-		LinkedList<Node> leaves = null;
-		leaves = mg.getLeaves(root); 
-		for(Node leaf: leaves)
-			mg.generateMoves(leaf, isWhite);
+		LinkedList<Node>leaves = mg.getLeaves(root); 
+//		for(Node leaf: leaves)
+//			mg.generateMoves(leaf, isWhite);
 		sum = (tend - tstart)/1000.0;
-		System.out.println("Tempo generazione "+(livelloMax+1)+"° livello: "+sum);
-		System.out.println("Best move: "+root.getMossa()+", "+root.getValue());
+		System.out.println("Tempo seconda search "+sum);
+		System.out.println("Best2 move: "+best.getMossa()+", "+best.getValue());
 		System.out.println("Numero foglie: "+leaves.size());
 		/*
 		 ********************************************************************************************************************************* 
@@ -174,4 +187,5 @@ public class MainSearch {
 //		System.out.println("array: "+((double)f2.length() / (1024 * 1024) + " mb"));
 
 	}
+	
 }

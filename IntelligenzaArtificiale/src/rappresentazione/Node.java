@@ -19,7 +19,7 @@ public class Node implements Serializable{
 	private double value;
 	private LinkedList<Node> sons = new LinkedList<Node>();
 	private Node parent;
-	private boolean isMax, hasValue = false;
+	private boolean toExpand = false;
 
 	private int bc, wc; // mia configurazione e avversaria
 	private String cella,direzione,pedine;
@@ -34,8 +34,16 @@ public class Node implements Serializable{
 		this.cella = cella;
 		this.direzione = direzione;
 		this.pedine = pedine;
-		isMax = (parent == null) ? true : !parent.isMax();
+//		isMax = (parent == null) ? true : !parent.isMax();
 		id = gid++;
+	}
+	
+	public boolean getToExpand() {
+		return toExpand;
+	}
+	
+	public void setToExpand(boolean toExpand) {
+		this.toExpand = toExpand;
 	}
 
 	public String getCella() {
@@ -62,9 +70,9 @@ public class Node implements Serializable{
 		this.pedine = pedine;
 	}
 
-	public void setHasValue(boolean hasValue) {
-		this.hasValue = hasValue;
-	}
+//	public void setHasValue(boolean hasValue) {
+//		this.hasValue = hasValue;
+//	}
 
 	public double getValue() {
 		return value;
@@ -142,9 +150,9 @@ public class Node implements Serializable{
 		return tmp;
 	}
 
-	public boolean isMax() {
-		return this.isMax;
-	}
+//	public boolean isMax() {
+//		return this.isMax;
+//	}
 
 	public boolean equals(Node n) {
 		return id == n.getId();
@@ -166,27 +174,27 @@ public class Node implements Serializable{
 
 	}
 
-	public LinkedList<Node> ancestors() {
-		LinkedList<Node> ll = new LinkedList<Node>();
-		Node p = parent;
-		while (p != null) {
-			if (!(isMax ^ p.isMax))
-				ll.add(p);
-			p = p.getParent();
-		}
+//	public LinkedList<Node> ancestors() {
+//		LinkedList<Node> ll = new LinkedList<Node>();
+//		Node p = parent;
+//		while (p != null) {
+//			if (!(isMax ^ p.isMax))
+//				ll.add(p);
+//			p = p.getParent();
+//		}
+//
+////		System.out.println("ancestors di "+ this.getId() +" -> "+ll);
+//
+//		return ll;
+//	}
 
-//		System.out.println("ancestors di "+ this.getId() +" -> "+ll);
-
-		return ll;
-	}
-
-	public boolean hasValue() {
-		return hasValue;
-	}
-
-	public void reset() {
-		hasValue = false;
-	}
+//	public boolean hasValue() {
+//		return hasValue;
+//	}
+//
+//	public void reset() {
+//		hasValue = false;
+//	}
 
 	public int getId() {
 		return id;

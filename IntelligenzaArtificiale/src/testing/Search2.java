@@ -1,6 +1,7 @@
 package testing;
 
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
@@ -55,6 +56,7 @@ public class Search2 {
 		if(n.getSons().size()==0)
 			mg.generateMoves(n, isWhite);
 		double v = -Double.MAX_VALUE;
+		Collections.shuffle(n.getSons());
 		for(Node f: n.getSons()) {
 			double min = (minVal(f,alpha,beta,isWhite,c,cp,level+1,maxLevel)).getValue(); //valore del figlio
 			v = Math.max(v, min);
@@ -83,6 +85,7 @@ public class Search2 {
 		if(n.getSons().size()==0)
 			mg.generateMoves(n, !isWhite);
 		double v = Double.MAX_VALUE;
+		Collections.shuffle(n.getSons());
 		for(Node f: n.getSons()) {
 			double max = (maxVal(f,alpha,beta,isWhite,c,cp,level+1,maxLevel)).getValue(); //valore del figlio
 			v = Math.min(v, max);

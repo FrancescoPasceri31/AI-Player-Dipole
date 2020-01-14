@@ -12,6 +12,7 @@ import java.util.StringTokenizer;
 import generators.MovesGenerator;
 import rappresentazione.Node;
 import ricerca.Search;
+import testing.Search2;
 
 public class Run {
 	
@@ -29,7 +30,7 @@ public class Run {
 		MovesGenerator mg = null;
 		Node root = null;
 		String opponent_move = null;
-		Search s = null;
+		Search2 s = null;
 		LinkedList<Node> leaves = null;
 		
 		
@@ -72,9 +73,10 @@ public class Run {
 //							mg.generateMovesRecursive(root, true, 0,5);
 //						else
 //							mg.generateMovesRecursive(root, true, 0,6);
-					    mg.generateMovesRecursive(root, true, 0,5);
+//					    mg.generateMovesRecursive(root, true, 0,5);
 						
-						s = new Search();
+						s = new Search2();
+						s.init();
 					}
 					System.out.println(ret);
 					break;
@@ -83,16 +85,13 @@ public class Run {
 					opponent_move = st.nextToken();
 					System.out.println(opponent_move);
 					System.out.println("root prima: "+root);
+					if(root.getSons().size()==0)
+						mg.generateMoves(root, !isWhite);
 					for(Node f: root.getSons())
 						if(f.getMossa().equals(opponent_move)) {
 							root = f;
-							
 							System.out.println(root);
 							root.setParent(null);
-							leaves = mg.getLeaves(root);
-							System.out.println("root to opponent");
-							for(Node n: leaves)
-								mg.generateMoves(n,!isWhite);
 							break;
 						}
 					System.out.println("root dopo: "+root);
@@ -100,7 +99,7 @@ public class Run {
 				case "YOUR_TURN":
 					System.out.println("root prima: "+root);
 					
-					root = s.recursiveSearch(root, isWhite,mg.getCellToPos());
+					root = s.recursiveSearch(root, isWhite,mg.getCellToPos(),5);
 					
 					System.out.println("root dopo: "+root);
 					out.println("MOVE "+root.getMossa());
@@ -109,16 +108,6 @@ public class Run {
 					//System.out.println("isWhite: "+isWhite+"mossa: "+root.getMossa()+" \nposToPawn: "+Arrays.toString(root.getPosToPawns()));
 					System.out.println("Mossa inviata: "+root.getMossa());
 					
-					leaves = mg.getLeaves(root);
-//					if(isWhite) {
-//						for(Node n: leaves)
-//							mg.generateMovesRecursive(mg, n, isWhite, 0, 3);
-//					}else {
-//						for(Node n: leaves)
-//							mg.generateMovesRecursive(mg, n, isWhite, 0, 2);
-//					}
-					for(Node n: leaves)
-						mg.generateMoves(n,isWhite);
 					break;
 				case "VALID_MOVE":
 					System.out.println(ret);

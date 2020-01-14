@@ -31,7 +31,7 @@ public class MainSearch3 {
 		double sum;
 		
 		Node root = new Node(null, bc, wc, posToPawn2,"","","0");
-		Search3 s = new Search3();
+		SearchVecchia s = new SearchVecchia();
 		s.init();
 		tstart = System.currentTimeMillis();
 		Node best = s.recursiveSearch(root, isWhite, mg.getCellToPos(),livelloMax);

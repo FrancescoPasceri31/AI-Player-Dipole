@@ -60,7 +60,7 @@ public class DecisionThread extends Thread {
 		int wc = mg.createConfig(posToPawn, true);
 
 		root = new Node(null, bc, wc, posToPawn,"","", "0");
-		mg.generateMovesRecursive(root, true, START_LEVEL, MAX_FIRST_LEVEL);
+		mg.generateMovesRecursive(root, true,isWhite, START_LEVEL, MAX_FIRST_LEVEL);
 
 		while (true) {
 			if (startSearch) {
@@ -69,8 +69,6 @@ public class DecisionThread extends Thread {
 				System.out.println("search: "+(System.currentTimeMillis()-t) );		
 				System.out.println("\nValore risalito: "+best.getValue()+"\n");// L'ALGORITMO DI RICERCA PER SETTARE IL BEST TEMPORANEO
 				myMove = best.getMossa(); // lo dichiaro allo speaker per farlo comunicare al server
-				for(Node n:root.getSons()) 
-					System.out.println(n);
 				best.setParent(null); // best diventa root perche scelto
 				root.getSons().remove(best);
 				//mt.addToDelete(root); // elimino il resto dell'albero per liberare memoria
@@ -106,7 +104,7 @@ public class DecisionThread extends Thread {
 	private void espandi(boolean w) {
 		toExpand = mg.getLeaves(root);
 		for (Node n : toExpand) {
-			mg.generateMoves(n, w);
+			mg.generateMoves(n, w,isWhite);
 		}
 		toExpand.clear();
 	}
@@ -114,6 +112,11 @@ public class DecisionThread extends Thread {
 	private int getLevel(Node n) {
 		if(n.getSons().size()==0) return 0;
 		return 1+getLevel(n.getSons().get(0));
+	}
+	
+	public void setSearch(Search s) {
+		this.searcher = s;
+		this.searcher.init();
 	}
 	
 

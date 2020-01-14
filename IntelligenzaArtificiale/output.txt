@@ -1,1 +1,6 @@
 iterazione: 1
+tempo generazione 6 livelli -> 4.022
+
+Tempo seconda search 0.045
+Best2 move: H5,N,2, 46.0
+Numero foglie: 3287934
