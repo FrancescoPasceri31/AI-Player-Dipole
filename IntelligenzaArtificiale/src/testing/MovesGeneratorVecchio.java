@@ -1,16 +1,14 @@
-package generators;
+package testing;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import euristica.Euristica;
+import generators.HashMapGenerator;
 import rappresentazione.Node;
 
-public class MovesGenerator {
-	
-	private Euristica e;
+public class MovesGeneratorVecchio {
 
 	private HashMap<Byte, String> posToCell = null;
 	private HashMap<Byte, HashMap<Byte, String>> posToDir = null;
@@ -40,11 +38,8 @@ public class MovesGenerator {
 	private int mc, ec, m, p, r, mcr, ecr;
 	private boolean merge;
 	private HashMap<Byte, Object[]> masks;
-	private Node f;
 
 	public void init() {
-		this.e = new Euristica();
-		this.e.init();
 		try {
 			ObjectInputStream i = new ObjectInputStream(new FileInputStream("hashMaps"));
 			posToCell = (HashMap<Byte, String>) i.readObject();
@@ -58,7 +53,7 @@ public class MovesGenerator {
 		}
 	}
 
-	public void generateMoves(Node root, boolean isWhite, boolean myColor) {// (int mc, int ec, HashMap<Byte, Byte> posToPawn, boolean
+	public void generateMoves(Node root, boolean isWhite) {// (int mc, int ec, HashMap<Byte, Byte> posToPawn, boolean
 															// isWhite) {
 		if (isWhite) {
 			mc = root.getWc();
@@ -146,15 +141,11 @@ public class MovesGenerator {
 							mcr = mcr ^ (1 << miaPosizione);
 
 						if (isWhite) {
-							f = new Node(root, ecr, mcr, posFiglio, posToCell.get(miaPosizione),
-									(posToDir.get(miaPosizione)).get(positions[j]), "" + numPedineDaSpostare);
-							f.setValue(root.getValue()+e.getEuristica(f, myColor));
-							root.addSon(f);
+							root.addSon(new Node(root, ecr, mcr, posFiglio, posToCell.get(miaPosizione),
+									(posToDir.get(miaPosizione)).get(positions[j]), "" + numPedineDaSpostare));
 						} else { // sono nero
-							f = new Node(root, mcr, ecr, posFiglio, posToCell.get(miaPosizione),
-									(posToDir.get(miaPosizione)).get(positions[j]), "" + numPedineDaSpostare);
-							f.setValue(root.getValue()+e.getEuristica(f, myColor));
-							root.addSon(f);
+							root.addSon(new Node(root, mcr, ecr, posFiglio, posToCell.get(miaPosizione),
+									(posToDir.get(miaPosizione)).get(positions[j]), "" + numPedineDaSpostare));
 						}
 
 						// System.out.println(Integer.toBinaryString(mc));
@@ -174,15 +165,11 @@ public class MovesGenerator {
 						mcr = mcr ^ (1 << miaPosizione);
 
 					if (isWhite) {
-						f=new Node(root, ecr, mcr, posFiglio, posToCell.get(miaPosizione),
-								(posToDir.get(miaPosizione)).get(positions[j]), "" + numPedineDaSpostare);
-						f.setValue(root.getValue()+e.getEuristica(f, myColor));
-						root.addSon(f);
+						root.addSon(new Node(root, ecr, mcr, posFiglio, posToCell.get(miaPosizione),
+								(posToDir.get(miaPosizione)).get(positions[j]), "" + numPedineDaSpostare));
 					} else { // sono nero
-						f=new Node(root, mcr, ecr, posFiglio, posToCell.get(miaPosizione),
-								(posToDir.get(miaPosizione)).get(positions[j]), "" + numPedineDaSpostare);
-						f.setValue(root.getValue()+e.getEuristica(f, myColor));
-						root.addSon(f);
+						root.addSon(new Node(root, mcr, ecr, posFiglio, posToCell.get(miaPosizione),
+								(posToDir.get(miaPosizione)).get(positions[j]), "" + numPedineDaSpostare));
 					}
 
 					// System.out.println(Integer.toBinaryString(mc));
@@ -212,15 +199,11 @@ public class MovesGenerator {
 				posFiglio[miaPosizione] = (byte) 0;
 
 				if (isWhite) {
-					f=
-							new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NW", "" + (miePedine));
-					f.setValue(root.getValue()+e.getEuristica(f, myColor));
-					root.addSon(f);
+					root.addSon(
+							new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NW", "" + (miePedine)));
 				} else { // sono nero
-					f=
-							new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SE", "" + (miePedine));
-					f.setValue(root.getValue()+e.getEuristica(f, myColor));
-					root.addSon(f);
+					root.addSon(
+							new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SE", "" + (miePedine)));
 				}
 
 				// System.out.println(Integer.toBinaryString(mc));
@@ -242,15 +225,11 @@ public class MovesGenerator {
 					posFiglio[miaPosizione] = (byte) (miePedine - numMinimoPDT + (!isWhite ? 20 : 0));
 
 					if (isWhite) {
-						f=new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NW",
-								"" + numMinimoPDT);
-						f.setValue(root.getValue()+e.getEuristica(f, myColor));
-						root.addSon(f);
+						root.addSon(new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NW",
+								"" + numMinimoPDT));
 					} else { // sono nero
-						f=new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SE",
-								"" + numMinimoPDT);
-						f.setValue(root.getValue()+e.getEuristica(f, myColor));
-						root.addSon(f);
+						root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SE",
+								"" + numMinimoPDT));
 					}
 
 				}
@@ -269,13 +248,9 @@ public class MovesGenerator {
 				posFiglio[miaPosizione] = (byte) 0;
 
 				if (isWhite) {
-					f=new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "N", "" + (miePedine));
-					f.setValue(root.getValue()+e.getEuristica(f, myColor));
-					root.addSon(f);
+					root.addSon(new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "N", "" + (miePedine)));
 				} else { // sono nero
-					f=new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "S", "" + (miePedine));
-					f.setValue(root.getValue()+e.getEuristica(f, myColor));
-					root.addSon(f);
+					root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "S", "" + (miePedine)));
 				}
 
 				for (; numMinimoPDT < miePedine; numMinimoPDT+=2) {
@@ -288,15 +263,11 @@ public class MovesGenerator {
 					posFiglio[miaPosizione] = (byte) (miePedine - numMinimoPDT + (!isWhite ? 20 : 0));
 
 					if (isWhite) {
-						f=new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "N",
-								"" + numMinimoPDT);
-						f.setValue(root.getValue()+e.getEuristica(f, myColor));
-						root.addSon(f);
+						root.addSon(new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "N",
+								"" + numMinimoPDT));
 					} else { // sono nero
-						f=new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "S",
-								"" + numMinimoPDT);
-						f.setValue(root.getValue()+e.getEuristica(f, myColor));
-						root.addSon(f);
+						root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "S",
+								"" + numMinimoPDT));
 					}
 				}
 			}
@@ -317,15 +288,11 @@ public class MovesGenerator {
 				posFiglio[miaPosizione] = (byte) 0;
 
 				if (isWhite) {
-					f=
-							new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NE", "" + (miePedine));
-					f.setValue(root.getValue()+e.getEuristica(f, myColor));
-					root.addSon(f);
+					root.addSon(
+							new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NE", "" + (miePedine)));
 				} else { // sono nero
-					f=
-							new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SW", "" + (miePedine));
-					f.setValue(root.getValue()+e.getEuristica(f, myColor));
-					root.addSon(f);
+					root.addSon(
+							new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SW", "" + (miePedine)));
 				}
 
 				for (; numMinimoPDT < miePedine; numMinimoPDT++) {
@@ -342,15 +309,11 @@ public class MovesGenerator {
 					posFiglio[miaPosizione] = (byte) (miePedine - numMinimoPDT + (!isWhite ? 20 : 0));
 
 					if (isWhite) {
-						f=new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NE",
-								"" + numMinimoPDT);
-						f.setValue(root.getValue()+e.getEuristica(f, myColor));
-						root.addSon(f);
+						root.addSon(new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NE",
+								"" + numMinimoPDT));
 					} else { // sono nero
-						f=new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SW",
-								"" + numMinimoPDT);
-						f.setValue(root.getValue()+e.getEuristica(f, myColor));
-						root.addSon(f);
+						root.addSon(new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SW",
+								"" + numMinimoPDT));
 					}
 				}
 			}
@@ -360,13 +323,9 @@ public class MovesGenerator {
 		if(root.getSons().size()==0) {
 			for(int i=0;i<myP.length;i++) {
 				if(isWhite) {
-					f=new Node(root,ec,mc,posToPawn,posToCell.get(myP[i]),"N","0");
-					f.setValue(root.getValue()+e.getEuristica(f, myColor));
-					root.addSon(f);
+					root.addSon(new Node(root,ec,mc,posToPawn,posToCell.get(myP[i]),"N","0"));
 				}else {
-					f=new Node(root,mc,ec,posToPawn,posToCell.get(myP[i]),"S","0");
-					f.setValue(root.getValue()+e.getEuristica(f, myColor));
-					root.addSon(f);
+					root.addSon(new Node(root,mc,ec,posToPawn,posToCell.get(myP[i]),"S","0"));
 				}
 			}
 		}
@@ -399,18 +358,18 @@ public class MovesGenerator {
 	 * } } } }
 	 */
 
-	public void generateMovesRecursive(Node n, boolean isWhite,boolean myColor, int liv, int limite) {
+	public void generateMovesRecursive(Node n, boolean isWhite, int liv, int limite) {
 		if (liv == limite - 1 || n == null) {
 			return;
 		}
 		// System.out.println("id: "+n.getId());
-		generateMoves(n, isWhite,myColor);
+		generateMoves(n, isWhite);
 //		if(/*n.getSons().size()==0 &&*/ n.getBc()!=0 && n.getWc()!=0) {
 //			n.addSon(new Node(n,n.getBc(),n.getWc(),n.getPosToPawns(),""+posToCell.get(HashMapGenerator.onesPosition(isWhite?n.getWc():n.getBc())[0])+",N,0"));
 //			//return;
 //		}
 		for (Node son : n.getSons()) {
-			generateMovesRecursive(son, !isWhite,myColor, liv + 1, limite);
+			generateMovesRecursive(son, !isWhite, liv + 1, limite);
 		}
 	}
 

@@ -60,7 +60,7 @@ public class SearchVecchia extends Search{
 	}
 	
 	public Node maxVal(Node n, double alpha, double beta,boolean isWhite,double c,HashMap<String, Byte> cp, int level) {
-		c += e.getEuristica(n, isWhite, cp);
+		c += e.getEuristica(n, isWhite);
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 
@@ -87,7 +87,7 @@ public class SearchVecchia extends Search{
 	}
 	
 	public Node minVal(Node n, double alpha,double beta,boolean isWhite,double c,HashMap<String, Byte> cp,int level) {
-		c += e.getEuristica(n, isWhite, cp);
+		c += e.getEuristica(n, isWhite);
 //		System.out.println(n.getId());
 		Node ret = null;
 		if(testTerminazione(n)) { 

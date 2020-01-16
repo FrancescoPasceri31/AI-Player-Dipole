@@ -1,6 +1,11 @@
 iterazione: 1
-tempo generazione 6 livelli -> 4.022
+tempo generazione 5 livelli -> 0.515
 
-Tempo seconda search 0.045
-Best2 move: H5,N,2, 46.0
-Numero foglie: 3287934
+[[ id: 6, mossa: H5,NW,2, value: 24.0 bc: 1073741824 wc: 1026 ]
+, [ id: 7, mossa: H5,N,2, value: 24.0 bc: 1073741824 wc: 514 ]
+, [ id: 8, mossa: H5,NE,2, value: 24.0 bc: 1073741824 wc: 258 ]
+]
+
+Tempo generazione prossimo livello 3.278
+Best move: H5,NE,2, 24.0
+Numero foglie: 206098

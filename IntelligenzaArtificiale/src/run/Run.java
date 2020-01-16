@@ -12,6 +12,7 @@ import java.util.StringTokenizer;
 import generators.MovesGenerator;
 import rappresentazione.Node;
 import ricerca.Search;
+import testing.MovesGeneratorVecchio;
 import testing.Search2;
 
 public class Run {
@@ -27,7 +28,7 @@ public class Run {
 		String ret = null;
 		StringTokenizer st = null;
 		boolean isWhite = false;
-		MovesGenerator mg = null;
+		MovesGeneratorVecchio mg = null;
 		Node root = null;
 		String opponent_move = null;
 		Search2 s = null;
@@ -62,18 +63,15 @@ public class Run {
 								posToPawn[i] = (byte) 0;
 						}
 
-						mg = new MovesGenerator();
+						mg = new MovesGeneratorVecchio();
 						mg.init();
 
 						int bc = mg.createConfig(posToPawn, false);
 						int wc = mg.createConfig(posToPawn, true);
 						
 					    root = new Node(null, bc, wc, posToPawn,"","", "0");
-//						if(isWhite)
-//							mg.generateMovesRecursive(root, true, 0,5);
-//						else
-//							mg.generateMovesRecursive(root, true, 0,6);
-//					    mg.generateMovesRecursive(root, true, 0,5);
+					    
+					    mg.generateMovesRecursive(root, isWhite, 0, 6);
 						
 						s = new Search2();
 						s.init();
@@ -81,32 +79,24 @@ public class Run {
 					System.out.println(ret);
 					break;
 				case "OPPONENT_MOVE":
-					System.out.println(ret);
 					opponent_move = st.nextToken();
-					System.out.println(opponent_move);
-					System.out.println("root prima: "+root);
 					if(root.getSons().size()==0)
 						mg.generateMoves(root, !isWhite);
 					for(Node f: root.getSons())
 						if(f.getMossa().equals(opponent_move)) {
 							root = f;
-							System.out.println(root);
 							root.setParent(null);
 							break;
 						}
-					System.out.println("root dopo: "+root);
 					break;
 				case "YOUR_TURN":
-					System.out.println("root prima: "+root);
 					
-					root = s.recursiveSearch(root, isWhite,mg.getCellToPos(),5);
+					root = s.recursiveSearch(root, isWhite,5);
 					
-					System.out.println("root dopo: "+root);
-					out.println("MOVE "+root.getMossa());
 					System.out.println(root);
+					
+					out.println("MOVE "+root.getMossa());
 					root.setParent(null);
-					//System.out.println("isWhite: "+isWhite+"mossa: "+root.getMossa()+" \nposToPawn: "+Arrays.toString(root.getPosToPawns()));
-					System.out.println("Mossa inviata: "+root.getMossa());
 					
 					break;
 				case "VALID_MOVE":

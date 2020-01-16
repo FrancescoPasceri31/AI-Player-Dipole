@@ -65,7 +65,7 @@ public class DecisionThread extends Thread {
 		while (true) {
 			if (startSearch) {
 				long t = System.currentTimeMillis();
-				best = searcher.recursiveSearch(root, isWhite,mg.getCellToPos()); // cerco il best per la scelta -> CODIFICARE QUI
+				best = searcher.recursiveSearch(root, isWhite); // cerco il best per la scelta -> CODIFICARE QUI
 				System.out.println("search: "+(System.currentTimeMillis()-t) );		
 				System.out.println("\nValore risalito: "+best.getValue()+"\n");// L'ALGORITMO DI RICERCA PER SETTARE IL BEST TEMPORANEO
 				myMove = best.getMossa(); // lo dichiaro allo speaker per farlo comunicare al server
@@ -106,7 +106,7 @@ public class DecisionThread extends Thread {
 		for (Node n : toExpand) {
 			mg.generateMoves(n, w,isWhite);
 		}
-		toExpand.clear();
+//		toExpand.clear();
 	}
 	
 	private int getLevel(Node n) {

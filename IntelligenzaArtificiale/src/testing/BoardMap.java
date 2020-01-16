@@ -106,7 +106,7 @@ public class BoardMap {
 		}
 
 
-		mg.generateMoves(n, isWhite);
+		mg.generateMoves(n, isWhite,isWhite);
 
 //		System.out.println(Arrays.toString(n.getPosToPawns()));
 		if (n.getParent() != null)
@@ -371,34 +371,34 @@ public class BoardMap {
 		}
 	}
 
-	private static void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite, int liv, int limite) {
+	private static void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite,boolean myColor, int liv, int limite) {
 		if (liv == limite || n == null) {
 			return;
 		}
-		mg.generateMoves(n, isWhite);
+		mg.generateMoves(n, isWhite,myColor);
 		for (Node son : n.getSons()) {
-			generateMovesRecursive(mg, son, !isWhite, liv + 1, limite);
+			generateMovesRecursive(mg, son, !isWhite,myColor, liv + 1, limite);
 		}
 	}
 
-	private static void generateMovesIterative(MovesGenerator mg, Node root, boolean isWhite, int limite) {
-		HashMap<Integer, Object[]> nodeLev = new HashMap<Integer, Object[]>();
-		LinkedList<Node> ll = new LinkedList<Node>();
-		nodeLev.put(root.getId(), new Object[] { 0, isWhite });
-
-		ll.add(root);
-		while (!ll.isEmpty()) {
-			Node n = ll.removeFirst();
-			if (((int) nodeLev.get(n.getId())[0]) < limite) {
-				boolean myColor = (boolean) nodeLev.get(n.getId())[1];
-				mg.generateMoves(n, myColor);
-				ll.addAll(0, n.getSons());
-				for (Node node : n.getSons()) {
-					nodeLev.put(node.getId(),
-							new Object[] { 1 + ((int) nodeLev.get(node.getParent().getId())[0]), !myColor });
-				}
-			}
-		}
-	}
+//	private static void generateMovesIterative(MovesGenerator mg, Node root, boolean isWhite, int limite) {
+//		HashMap<Integer, Object[]> nodeLev = new HashMap<Integer, Object[]>();
+//		LinkedList<Node> ll = new LinkedList<Node>();
+//		nodeLev.put(root.getId(), new Object[] { 0, isWhite });
+//
+//		ll.add(root);
+//		while (!ll.isEmpty()) {
+//			Node n = ll.removeFirst();
+//			if (((int) nodeLev.get(n.getId())[0]) < limite) {
+//				boolean myColor = (boolean) nodeLev.get(n.getId())[1];
+//				mg.generateMoves(n, myColor);
+//				ll.addAll(0, n.getSons());
+//				for (Node node : n.getSons()) {
+//					nodeLev.put(node.getId(),
+//							new Object[] { 1 + ((int) nodeLev.get(node.getParent().getId())[0]), !myColor });
+//				}
+//			}
+//		}
+//	}
 
 }

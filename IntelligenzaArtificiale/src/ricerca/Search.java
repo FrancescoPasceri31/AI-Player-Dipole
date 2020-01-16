@@ -1,6 +1,7 @@
 package ricerca;
 
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
@@ -8,6 +9,7 @@ import java.util.Random;
 import euristica.Euristica;
 import generators.MovesGenerator;
 import rappresentazione.Node;
+import testing.ByValue;
 
 public class Search {
 	
@@ -25,17 +27,18 @@ public class Search {
 		this.e.init();
 	}
 	
-	public Node recursiveSearch(Node n,boolean isWhite,HashMap<String, Byte> cp) {
+	public Node recursiveSearch(Node n,boolean isWhite) {
 		boolean myColor = isWhite;
-		double v = maxVal(n,-Double.MAX_VALUE,Double.MAX_VALUE,isWhite,myColor,cp,0).getValue();
+		double v = maxVal(n,-Double.MAX_VALUE,Double.MAX_VALUE,isWhite,myColor,0).getValue();
 		LinkedList<Node> l = new LinkedList();
 		for(Node f: n.getSons()) 
 			if(f.getValue()==v) l.add(f);
+		System.out.println(l);
 		return l.get((new Random()).nextInt(l.size()));
 	}
 	
 	
-	public Node maxVal(Node n, double alpha, double beta,boolean isWhite,boolean myColor,HashMap<String, Byte> cp, int level) {
+	public Node maxVal(Node n, double alpha, double beta,boolean isWhite,boolean myColor, int level) {
 		Node ret = n;
 		if(testTerminazione(n)|| n.getBc()==0||n.getWc()==0) { 
 			if(isWhite && n.getBc()==0) n.setValue(VICTORY-level);
@@ -54,18 +57,17 @@ public class Search {
 		} //da cambiare
 		double v = -Double.MAX_VALUE;
 		for(Node f: n.getSons()) {
-			double min = (minVal(f,alpha,beta,isWhite,myColor,cp,level+1)).getValue(); //valore del figlio
+			double min = (minVal(f,alpha,beta,isWhite,myColor,level+1)).getValue(); //valore del figlio
 			v = Math.max(v, min);
 			if(v==min) ret=f;  //se non entra mai in questo if, allora ritornerà null
 			n.setValue(v);
 			if(v >= beta) return n;
 			alpha = Math.max(alpha, v);
 		}
-		//n.setValue(v);
 		return ret;
 	}
 	
-	public Node minVal(Node n, double alpha,double beta,boolean isWhite,boolean myColor,HashMap<String, Byte> cp,int level) {
+	public Node minVal(Node n, double alpha,double beta,boolean isWhite,boolean myColor,int level) {
 		Node ret = n;
 		if(testTerminazione(n)|| n.getBc()==0||n.getWc()==0) { 
 			if(isWhite && n.getBc()==0) n.setValue(VICTORY-level);
@@ -85,7 +87,7 @@ public class Search {
 			} //da cambiare
 		double v = Double.MAX_VALUE;
 		for(Node f: n.getSons()) {
-			double max = (maxVal(f,alpha,beta,isWhite,myColor,cp,level+1)).getValue(); //valore del figlio
+			double max = (maxVal(f,alpha,beta,isWhite,myColor,level+1)).getValue(); //valore del figlio
 			v = Math.min(v, max);
 			if(v==max) ret=f;
 			n.setValue(v);

@@ -49,7 +49,7 @@ public class MainSearch {
 		 *********************************************************************************************************************************
 		 */
 		boolean isWhite = true;
-		int livelloMax = 6;
+		int livelloMax = 5;
 //		int livelloMax =Integer.parseInt(args[0]);
 		
 		long tstart,tend;
@@ -69,29 +69,17 @@ public class MainSearch {
 		System.out.println("tempo generazione "+livelloMax+" livelli -> "+ (sum/iterations));
 		System.out.println();
 		Search s = new Search();
-		
 		s.init();
-//		Node best = s.recursiveSearch(root, isWhite, mg.getCellToPos());
-//		System.out.println("Best1 move: "+best.getMossa()+", "+best.getValue());
-//		LinkedList<Node> leaves = mg.getLeaves(root); 
-//		System.out.println("Numero foglie: "+leaves.size());
-//		System.out.println();
-		
-//		best = s.recursiveSearch(root, isWhite, mg.getCellToPos());
-//		System.out.println("Best2 move: "+best.getMossa()+", "+best.getValue());
-//		leaves = mg.getLeaves(root); 
-//		System.out.println("Numero foglie: "+leaves.size());
-//		System.out.println();
-		
+
+		Node best = s.recursiveSearch(root, isWhite);
 		tstart = System.currentTimeMillis();
-		Node best = s.recursiveSearch(root, isWhite, mg.getCellToPos());
-		tend = System.currentTimeMillis();
 		LinkedList<Node>leaves = mg.getLeaves(root); 
-//		for(Node leaf: leaves)
-//			mg.generateMoves(leaf, isWhite);
+		for(Node leaf: leaves)
+			mg.generateMoves(leaf, isWhite,isWhite);
+		tend = System.currentTimeMillis();
 		sum = (tend - tstart)/1000.0;
-		System.out.println("Tempo seconda search "+sum);
-		System.out.println("Best2 move: "+best.getMossa()+", "+best.getValue());
+		System.out.println("Tempo generazione prossimo livello "+sum);
+		System.out.println("Best move: "+best.getMossa()+", "+best.getValue());
 		System.out.println("Numero foglie: "+leaves.size());
 		/*
 		 ********************************************************************************************************************************* 
