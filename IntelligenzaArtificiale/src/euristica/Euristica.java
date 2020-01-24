@@ -20,14 +20,14 @@ public class Euristica {
 			i.readObject();
 			cellToPos = (HashMap<String, Byte>) i.readObject();
 			masksBlack = (HashMap<Byte, Object[]>) i.readObject();
-			masksWhite = (HashMap<Byte, Object[]>) i.readObject();
+			masksWhite = (HashMap<Byte, Object[]>) i.readObject(); 
 			i.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private double strategy_0(Node n, boolean isWhite) { // conta le pedine sulla scacchiera in base al colore
+	public double strategy_0(Node n, boolean isWhite) { // conta le pedine sulla scacchiera in base al colore
 		byte[] posToPawn = n.getPosToPawns();
 		int sum = 0;
 		for (int i = 0; i < 32; i++) {
@@ -38,38 +38,38 @@ public class Euristica {
 		return (sum - 12);
 	}
 
-//	private double strategy_1(Node n, boolean isWhite) { // non perdere pedine
-//		Node p = n.getParent();
-//		if (p == null)
-//			return 0;
-//		byte[] pawnsChild = n.getPosToPawns();
-//		byte[] pawnsParent = p.getPosToPawns();
-//		int childConf, parentConf;
-//		if (isWhite) {
-//			childConf = n.getWc();
-//			parentConf = p.getWc();
-//		} else {
-//			childConf = n.getBc();
-//			parentConf = p.getBc();
-//		}
-//		byte[] childPos = HashMapGenerator.onesPosition(childConf);
-//		byte[] parentPos = HashMapGenerator.onesPosition(parentConf);
-//		double ret = 0;
-//		for (int i = 0; i < childPos.length; i++) {
-//			byte x = pawnsChild[childPos[i]];
-//			if (!isWhite && x != 0)
-//				x -= 20;
-//			ret += x;
-//		}
-//		for (int i = 0; i < parentPos.length; i++) {
-//			byte x = pawnsParent[parentPos[i]];
-//			if (!isWhite && x != 0)
-//				x -= 20;
-//			ret -= x;
-//		}
-//		return ret;
-//
-//	}
+	private double strategy_1(Node n, boolean isWhite) { // non perdere pedine
+		Node p = n.getParent();
+		if (p == null)
+			return 0;
+		byte[] pawnsChild = n.getPosToPawns();
+		byte[] pawnsParent = p.getPosToPawns();
+		int childConf, parentConf;
+		if (isWhite) {
+			childConf = n.getWc();
+			parentConf = p.getWc();
+		} else {
+			childConf = n.getBc();
+			parentConf = p.getBc();
+		}
+		byte[] childPos = HashMapGenerator.onesPosition(childConf);
+		byte[] parentPos = HashMapGenerator.onesPosition(parentConf);
+		double ret = 0;
+		for (int i = 0; i < childPos.length; i++) {
+			byte x = pawnsChild[childPos[i]];
+			if (!isWhite && x != 0)
+				x -= 20;
+			ret += x;
+		}
+		for (int i = 0; i < parentPos.length; i++) {
+			byte x = pawnsParent[parentPos[i]];
+			if (!isWhite && x != 0)
+				x -= 20;
+			ret -= x;
+		}
+		return ret;
+
+	}
 
 	private double strategy_2(Node n, boolean isWhite) { // non muovermi troppo in avanti, 2 pedine vanno bene
 		if (n.getParent() == null)
@@ -115,7 +115,7 @@ public class Euristica {
 		case 4:
 			return -10;
 		default:
-			return -12;
+			return -12; 
 		}
 
 	}
@@ -171,7 +171,7 @@ public class Euristica {
 	private double strategy_5(Node n, boolean isWhite) { // non buttarti fuori
 		if (n.getParent() == null)
 			return 0;
-		return (isOut(n, isWhite)) ? -(7351 * Integer.parseUnsignedInt(n.getPedine())) : 0;
+		return (isOut(n, isWhite)) ? -(/*7351 */ Integer.parseUnsignedInt(n.getPedine())) : 0;
 	}
 
 	private boolean isOut(Node n, boolean isWhite) {
@@ -196,7 +196,7 @@ public class Euristica {
 			case "SW":
 				return p >= HashMapGenerator.getOutLeastPawns(masksBlack, pos)[0];
 			case "SE":
-				return p >= HashMapGenerator.getOutLeastPawns(masksBlack, pos)[2];
+				return p >= HashMapGenerator.getOutLeastPawns(masksBlack, pos)[2]; 
 			default:
 				return false;
 			}
@@ -205,7 +205,7 @@ public class Euristica {
 	}
 
 	public double getEuristica(Node n, boolean isWhite) {
-		double ret = strategy_0(n, isWhite) + 2 * strategy_2(n, isWhite) + strategy_3(n, isWhite)
+		double ret = (3*strategy_0(n, isWhite)) +(2*strategy_2(n, isWhite)) + (3*strategy_3(n, isWhite))
 				+ strategy_5(n, isWhite)+ strategy_4(n, isWhite);
 		return ret;
 	}
