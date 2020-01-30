@@ -16,7 +16,7 @@ public class MainSearch4 {
 			else if (i == 30) // black start position
 				posToPawn2[i] = (byte) 32;
 			else
-				posToPawn2[i] = (byte) 0;
+				posToPawn2[i] = (byte) 0; 
 		}
 
 		MovesGenerator mg = new MovesGenerator();
@@ -32,18 +32,20 @@ public class MainSearch4 {
 
 		Node root = new Node(null, bc, wc, posToPawn2, "", "", "0");
 //		tstart = System.currentTimeMillis();
-//		mg.generateMovesRecursive(root, isWhite,isWhite, 0, livelloMax);
+//		mg.generateMovesRecursive(root, isWhite,isWhite, 0, 5);
 //		tend = System.currentTimeMillis();
 //		sum = (tend - tstart) / 1000.0;
 //		
 //		System.out.println("Generazione: "+sum);
+//		System.out.println(root.getSons().get(6).getSons());
 		
-//		 System.out.println(root.generateGenericVerbose("", false, false, new StringBuilder()));
+		
+//		 System.out.println(root.getSons().getFirst().getSons().getFirst().generateGenericVerbose("", false, false, new StringBuilder()));
 
 		Search4 s = new Search4();
 		s.init();
 		Node best = null;
-		for (int i = 0; i < 10; i++) { 
+		for (int i = 0; i < 5; i++) { 
 			tstart = System.currentTimeMillis();
 			best = s.recursiveSearch(root, isWhite, livelloMax);
 			tend = System.currentTimeMillis();
@@ -52,7 +54,7 @@ public class MainSearch4 {
 			System.out.println((i+1)+" Search " + livelloMax + " livelli: " + sum);
 			System.out.println("Best move: " + best.getMossa() + ", " + best.getValue());
 		
-//			root=best;
+			root=best;
 			root.setParent(null);
 			System.gc();
 			isWhite=!isWhite;
@@ -68,6 +70,10 @@ public class MainSearch4 {
 //			System.out.println("Tempo: "+sum);
 //			System.out.println();
 		}
+		
+		System.gc();
+		
+//		System.out.println(root.getSons());
 		
 //		 System.out.println(root.generateGenericVerbose("", false, false, new StringBuilder()));
 //

@@ -31,14 +31,6 @@ public class MovesGeneratorVecchio {
 		return posToDir;
 	}
 
-	private byte[] posToPawn, myP, positions, posFiglio, direzioni;
-	private byte miaPosizione, miaRiga, miePedine, rigaAvversario, numPedineDestinazione, numPedineDaSpostare,
-			numPedineRimanenti, numMinimoPDT;
-	private int[] msk;
-	private int mc, ec, m, p, r, mcr, ecr;
-	private boolean merge;
-	private HashMap<Byte, Object[]> masks;
-
 	public void init() {
 		try {
 			ObjectInputStream i = new ObjectInputStream(new FileInputStream("hashMaps"));
@@ -55,6 +47,14 @@ public class MovesGeneratorVecchio {
 
 	public void generateMoves(Node root, boolean isWhite) {// (int mc, int ec, HashMap<Byte, Byte> posToPawn, boolean
 															// isWhite) {
+		byte[] posToPawn, myP, positions, posFiglio, direzioni;
+		byte miaPosizione, miaRiga, miePedine, rigaAvversario, numPedineDestinazione, numPedineDaSpostare,
+				numPedineRimanenti, numMinimoPDT;
+		int[] msk;
+		int mc, ec, m, p, r, mcr, ecr;
+		boolean merge;
+		HashMap<Byte, Object[]> masks;
+		
 		if (isWhite) {
 			mc = root.getWc();
 			ec = root.getBc();
@@ -359,7 +359,7 @@ public class MovesGeneratorVecchio {
 	 */
 
 	public void generateMovesRecursive(Node n, boolean isWhite, int liv, int limite) {
-		if (liv == limite - 1 || n == null) {
+		if (liv == limite || n == null) {
 			return;
 		}
 		// System.out.println("id: "+n.getId());

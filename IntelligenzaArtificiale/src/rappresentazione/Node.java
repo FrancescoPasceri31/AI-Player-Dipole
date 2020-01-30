@@ -20,6 +20,8 @@ public class Node implements Serializable{
 	private LinkedList<Node> sons = new LinkedList<Node>();
 	private Node parent;
 	private boolean toExpand = false;
+	
+	private int movesOut = 0;
 
 	private int bc, wc; // mia configurazione e avversaria
 	private String cella,direzione,pedine;
@@ -140,6 +142,7 @@ public class Node implements Serializable{
 	public String toString() {
 //		return "\n[ p_id: " + parent.id +", p_mossa: "+parent.getMossa() +", p_value: "+parent.value+" ]"+"\n[ id: " + id +", mossa: "+getMossa() +", value: "+value+" ]\n";
 		return "[ id: " + id +", mossa: "+getMossa() +", value: "+value+" bc: "+bc+" wc: "+wc+" ]\n";
+//		return "["+value+"]";
 	}
 
 	private String toBinaryString(int i) {
@@ -229,6 +232,22 @@ public class Node implements Serializable{
 					child.equals(children.get(0)) ? true : false, sb);
 		}
 		return sb.toString();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj==null) return false;
+		if(!(obj instanceof Node)) return false;
+		Node x = (Node)obj;
+		return wc == x.wc && bc == x.bc;
+	}
+
+	public int getMovesOut() {
+		return movesOut;
+	}
+
+	public void setMovesOut(int movesOut) {
+		this.movesOut = movesOut;
 	}
 
 }

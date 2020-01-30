@@ -7,8 +7,7 @@ import generators.MovesGenerator;
 import rappresentazione.Node;
 
 public class MainSearch {
-	
-	
+
 	public static void main(String[] args) throws Exception {
 
 		/*
@@ -23,13 +22,13 @@ public class MainSearch {
 				posToPawn.put((byte) i, (byte) 12);
 			else if (i == 30) // black start position
 				posToPawn.put((byte) i, (byte) 32);
-			else 
+			else
 				posToPawn.put((byte) i, (byte) 0);
 		}
 
 		byte[] posToPawn2 = new byte[32];
 		for (int i = 0; i < 32; i++) {
-			if (i == 1) // white start position
+			if (i == 1) // white start position 
 				posToPawn2[i] = (byte) 12;
 			else if (i == 30) // black start position
 				posToPawn2[i] = (byte) 32;
@@ -51,42 +50,83 @@ public class MainSearch {
 		boolean isWhite = true;
 		int livelloMax = 5;
 //		int livelloMax =Integer.parseInt(args[0]);
-		
-		long tstart,tend;
+
+		long tstart, tend;
 		Node root = null;
 //		int iterations = Integer.parseInt(args[1]);
 		int iterations = 1;
 		double sum = 0;
-		for(int i =0;i<iterations; i++) {
-			System.out.println("iterazione: "+(i+1));
+		for (int i = 0; i < iterations; i++) {
+			System.out.println("iterazione: " + (i + 1));
 			tstart = System.currentTimeMillis();
-			root = new Node(null, bc, wc, posToPawn2,"","","0");
-			mg.generateMovesRecursive(root, isWhite,isWhite, 0, livelloMax);
+			root = new Node(null, bc, wc, posToPawn2, "", "", "0");
+			mg.generateMovesRecursive(root, isWhite, isWhite, 0, livelloMax);
 			tend = System.currentTimeMillis();
-			sum += (tend - tstart)/1000.0;
+			sum += (tend - tstart) / 1000.0;
 		}
 		
-		System.out.println("tempo generazione "+livelloMax+" livelli -> "+ (sum/iterations));
+
+		System.out.println("tempo generazione " + livelloMax + " livelli -> " + (sum / iterations));
 		System.out.println();
 		Search s = new Search();
 		s.init();
 
-		Node best = s.recursiveSearch(root, isWhite);
-		tstart = System.currentTimeMillis();
-		LinkedList<Node>leaves = mg.getLeaves(root); 
-		for(Node leaf: leaves)
-			mg.generateMoves(leaf, isWhite,isWhite);
-		tend = System.currentTimeMillis();
-		sum = (tend - tstart)/1000.0;
-		System.out.println("Tempo generazione prossimo livello "+sum);
-		System.out.println("Best move: "+best.getMossa()+", "+best.getValue());
-		System.out.println("Numero foglie: "+leaves.size());
+		for (int i = 0; i < 5; i++) {
+			tstart = System.currentTimeMillis(); 
+			Node best = s.recursiveSearch(root, isWhite);
+			tend = System.currentTimeMillis();
+			sum = (tend - tstart) / 1000.0;
+
+			System.out.println("Search " + livelloMax + " livelli: " + sum);
+			System.out.println("Best move: " + best.getMossa() + ", " + best.getValue());
+			System.out.println();
+
+			root = best;
+			root.setParent(null);
+			System.gc();
+			isWhite = !isWhite;
+
+			LinkedList<Node> l = mg.getLeaves(root);
+			System.out.println("Leaves: " + l.size());
+			
+//			tstart = System.currentTimeMillis();
+//			for (Node n : l)
+//				mg.generateMoves(n, isWhite, true);
+//			tend = System.currentTimeMillis();
+//			sum = (tend - tstart) / 1000.0;
+//			System.out.println("Tempo: " + sum);
+//			System.out.println();
+			
+			if (l.size() > 1000) {
+				tstart = System.currentTimeMillis();
+				for (Node n : l)
+					mg.generateMoves(n, isWhite, true);
+				tend = System.currentTimeMillis();
+				sum = (tend - tstart) / 1000.0;
+				System.out.println("Tempo: " + sum);
+				System.out.println();
+			}else {
+				tstart = System.currentTimeMillis();
+				for (Node n : l)
+					mg.generateMovesRecursive(n, isWhite, true, 0, 4);
+				tend = System.currentTimeMillis();
+				sum = (tend - tstart) / 1000.0;
+				System.out.println("Tempo 3 livelli: " + sum);
+				System.out.println();
+			}
+
+		}
+		
+		
+		
+		
+		
 		/*
 		 ********************************************************************************************************************************* 
 		 * RICERCA MINIMAX CON PRUNING ALPHA-BETA
 		 *********************************************************************************************************************************
 		 */
-		
+
 //		for(Node f: root.getSons()) {
 //			if(f.getMossa().equals("H5,NE,1")) {
 //				root = f;
@@ -117,7 +157,6 @@ public class MainSearch {
 //		}
 //		
 //		System.out.println(root.getSons());
-		
 
 //		Search s = new Search();
 //
@@ -139,10 +178,10 @@ public class MainSearch {
 //		
 //		
 //		System.out.println("tempo search ricorsiva " + livelloMax + " livelli -> " + ((tend - tstart) / 1000.0)+ "\nres: " + ret1);
-		
+
 //		System.out.println(Node.generateGenericVerbose(root.getSons().get(ret1.getId()-1), "", false, false, new StringBuilder()));
 //		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
-		
+
 		/*
 		 *********************************************************************************************************************************
 		 * RISULTATI GENERAZIONE E RICERCA
@@ -175,5 +214,5 @@ public class MainSearch {
 //		System.out.println("array: "+((double)f2.length() / (1024 * 1024) + " mb"));
 
 	}
-	
+
 }

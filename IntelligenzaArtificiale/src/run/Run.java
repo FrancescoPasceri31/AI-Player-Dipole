@@ -14,25 +14,32 @@ import rappresentazione.Node;
 import ricerca.Search;
 import testing.MovesGeneratorVecchio;
 import testing.Search2;
+import testing.Search4;
 
 public class Run {
 	
 	public static void main(String[] args) {
 		
 		String address = args[0];
-		int port = Integer.parseInt(args[1]);
-		
+		int port = Integer.parseInt(args[1]); 
+		 
 		Socket soc = null;
 		BufferedReader in = null;
 		PrintWriter out = null;
 		String ret = null;
-		StringTokenizer st = null;
+		StringTokenizer st = null; 
 		boolean isWhite = false;
-		MovesGeneratorVecchio mg = null;
+		
+		MovesGenerator mg = null;
+		
 		Node root = null;
-		String opponent_move = null;
-		Search2 s = null;
+		String opponent_move = null; 
+		
+		Search4 s = null;
+		
 		LinkedList<Node> leaves = null;
+		
+		int livelloMax = 8;
 		
 		
 		try {
@@ -63,7 +70,7 @@ public class Run {
 								posToPawn[i] = (byte) 0;
 						}
 
-						mg = new MovesGeneratorVecchio();
+						mg = new MovesGenerator();
 						mg.init();
 
 						int bc = mg.createConfig(posToPawn, false);
@@ -71,32 +78,41 @@ public class Run {
 						
 					    root = new Node(null, bc, wc, posToPawn,"","", "0");
 					    
-					    mg.generateMovesRecursive(root, isWhite, 0, 6);
+//					    mg.generateMovesRecursive(root, isWhite,isWhite, 0, 5);
 						
-						s = new Search2();
-						s.init();
+						s = new Search4();
+						s.init(); 
 					}
 					System.out.println(ret);
 					break;
 				case "OPPONENT_MOVE":
 					opponent_move = st.nextToken();
-					if(root.getSons().size()==0)
-						mg.generateMoves(root, !isWhite);
+					if(root.getSons().size()==0) mg.generateMoves(root, !isWhite,isWhite);
 					for(Node f: root.getSons())
 						if(f.getMossa().equals(opponent_move)) {
 							root = f;
 							root.setParent(null);
+							System.gc();
 							break;
 						}
+//					leaves = mg.getLeaves(root);
+//					for(Node n: leaves) mg.generateMoves(n, isWhite);
 					break;
 				case "YOUR_TURN":
 					
-					root = s.recursiveSearch(root, isWhite,5);
+					long tstart = System.currentTimeMillis();
+					root = s.recursiveSearch(root, isWhite,livelloMax);
+					long tend = System.currentTimeMillis();
+					System.out.println("Tempo: "+(tend-tstart)/1000.0);
 					
-					System.out.println(root);
-					
-					out.println("MOVE "+root.getMossa());
 					root.setParent(null);
+					out.println("MOVE "+root.getMossa());
+					System.gc();
+					
+					leaves = mg.getLeaves(root);
+					System.out.println("Leaves: "+leaves.size());
+					System.out.println();
+//					for(Node n: leaves) mg.generateMoves(n, !isWhite);
 					
 					break;
 				case "VALID_MOVE":

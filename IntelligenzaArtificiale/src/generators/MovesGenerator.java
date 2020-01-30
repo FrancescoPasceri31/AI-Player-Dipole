@@ -81,6 +81,8 @@ public class MovesGenerator {
 
 //		System.out.println(isWhite);
 //		HashMapGenerator2.printHash(masks);
+		
+		int c = 0;
 
 		/* INIZIO CALCOLO MOSSA */
 		for (int k = 0; k < myP.length; k++) {
@@ -190,6 +192,7 @@ public class MovesGenerator {
 					// System.out.println();
 				}
 			}
+			
 
 			direzioni = HashMapGenerator.getOutLeastPawns(masks, miaPosizione);
 
@@ -212,11 +215,13 @@ public class MovesGenerator {
 				posFiglio[miaPosizione] = (byte) 0;
 
 				if (isWhite) {
+					c++;
 					f=
 							new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NW", "" + (miePedine));
 					f.setValue(root.getValue()+e.getEuristica(f, myColor));
 					root.addSon(f);
 				} else { // sono nero
+					c++;
 					f=
 							new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SE", "" + (miePedine));
 					f.setValue(root.getValue()+e.getEuristica(f, myColor));
@@ -242,11 +247,13 @@ public class MovesGenerator {
 					posFiglio[miaPosizione] = (byte) (miePedine - numMinimoPDT + (!isWhite ? 20 : 0));
 
 					if (isWhite) {
+						c++;
 						f=new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NW",
 								"" + numMinimoPDT);
 						f.setValue(root.getValue()+e.getEuristica(f, myColor));
 						root.addSon(f);
-					} else { // sono nero
+					} else {// sono nero
+						c++;
 						f=new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SE",
 								"" + numMinimoPDT);
 						f.setValue(root.getValue()+e.getEuristica(f, myColor));
@@ -269,10 +276,12 @@ public class MovesGenerator {
 				posFiglio[miaPosizione] = (byte) 0;
 
 				if (isWhite) {
+					c++;
 					f=new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "N", "" + (miePedine));
 					f.setValue(root.getValue()+e.getEuristica(f, myColor));
 					root.addSon(f);
 				} else { // sono nero
+					c++;
 					f=new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "S", "" + (miePedine));
 					f.setValue(root.getValue()+e.getEuristica(f, myColor));
 					root.addSon(f);
@@ -288,11 +297,13 @@ public class MovesGenerator {
 					posFiglio[miaPosizione] = (byte) (miePedine - numMinimoPDT + (!isWhite ? 20 : 0));
 
 					if (isWhite) {
+						c++;
 						f=new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "N",
 								"" + numMinimoPDT);
 						f.setValue(root.getValue()+e.getEuristica(f, myColor));
 						root.addSon(f);
 					} else { // sono nero
+						c++;
 						f=new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "S",
 								"" + numMinimoPDT);
 						f.setValue(root.getValue()+e.getEuristica(f, myColor));
@@ -317,11 +328,13 @@ public class MovesGenerator {
 				posFiglio[miaPosizione] = (byte) 0;
 
 				if (isWhite) {
+					c++;
 					f=
 							new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NE", "" + (miePedine));
 					f.setValue(root.getValue()+e.getEuristica(f, myColor));
 					root.addSon(f);
 				} else { // sono nero
+					c++;
 					f=
 							new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SW", "" + (miePedine));
 					f.setValue(root.getValue()+e.getEuristica(f, myColor));
@@ -342,17 +355,20 @@ public class MovesGenerator {
 					posFiglio[miaPosizione] = (byte) (miePedine - numMinimoPDT + (!isWhite ? 20 : 0));
 
 					if (isWhite) {
+						c++;
 						f=new Node(root, ec, mcr, posFiglio, posToCell.get(miaPosizione), "NE",
 								"" + numMinimoPDT);
 						f.setValue(root.getValue()+e.getEuristica(f, myColor));
 						root.addSon(f);
 					} else { // sono nero
+						c++;
 						f=new Node(root, mcr, ec, posFiglio, posToCell.get(miaPosizione), "SW",
 								"" + numMinimoPDT);
 						f.setValue(root.getValue()+e.getEuristica(f, myColor));
 						root.addSon(f);
 					}
 				}
+				
 			}
 
 		}
@@ -370,6 +386,8 @@ public class MovesGenerator {
 				}
 			}
 		}
+		
+		root.setMovesOut(c);
 
 	}
 
@@ -400,7 +418,7 @@ public class MovesGenerator {
 	 */
 
 	public void generateMovesRecursive(Node n, boolean isWhite,boolean myColor, int liv, int limite) {
-		if (liv == limite - 1 || n == null) {
+		if (liv == limite || n == null) {
 			return;
 		}
 		// System.out.println("id: "+n.getId());

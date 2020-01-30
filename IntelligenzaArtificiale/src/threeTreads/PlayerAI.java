@@ -5,7 +5,7 @@ public class PlayerAI {
 //		String address = args[0];
 //		int port = Integer.valueOf(args[1]);
 
-//		String address = "192.168.43.86";
+//		String address = "160.97.138.93";
 		String address = "localhost";
 		int port = 8901;
 

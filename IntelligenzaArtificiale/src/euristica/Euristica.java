@@ -5,9 +5,11 @@ import java.io.ObjectInputStream;
 import java.util.HashMap;
 
 import generators.HashMapGenerator;
+import generators.MovesGenerator;
 import rappresentazione.Node;
 
 public class Euristica {
+	
 
 	private HashMap<String, Byte> cellToPos = null;
 	private HashMap<Byte, Object[]> masksBlack = null;
@@ -38,7 +40,7 @@ public class Euristica {
 		return (sum - 12);
 	}
 
-	private double strategy_1(Node n, boolean isWhite) { // non perdere pedine
+	public double strategy_1(Node n, boolean isWhite) { // non perdere pedine
 		Node p = n.getParent();
 		if (p == null)
 			return 0;
@@ -71,7 +73,7 @@ public class Euristica {
 
 	}
 
-	private double strategy_2(Node n, boolean isWhite) { // non muovermi troppo in avanti, 2 pedine vanno bene
+	public  double strategy_2(Node n, boolean isWhite) { // non muovermi troppo in avanti, 2 pedine vanno bene
 		if (n.getParent() == null)
 			return 0;
 		String cella = n.getCella();
@@ -104,7 +106,7 @@ public class Euristica {
 
 	}
 
-	private double daiPesi2(byte numPedine) {
+	public  double daiPesi2(byte numPedine) {
 		switch (numPedine) {
 		case 1:
 			return -1;
@@ -120,7 +122,7 @@ public class Euristica {
 
 	}
 
-	private double daiPesi1(byte numPedine, char cella, char c1, char c2) {
+	public  double daiPesi1(byte numPedine, char cella, char c1, char c2) {
 		if (cella == c1 || cella == c2) {
 			switch (numPedine) {
 			case 1:
@@ -151,11 +153,11 @@ public class Euristica {
 
 	}
 
-	private double strategy_3(Node n, boolean isWhite) { // minimizzare pedine dell'avversario
+	public  double strategy_3(Node n, boolean isWhite) { // minimizzare pedine dell'avversario
 		return -strategy_0(n, !isWhite);// * (isWhite ? 13.5 : 27.71);
 	}
 
-	private double strategy_4(Node n, boolean isWhite) {
+	public double strategy_4(Node n, boolean isWhite) {
 		double ret;
 		if (n.getParent() == null)
 			return 0;
@@ -168,13 +170,13 @@ public class Euristica {
 		return ret;
 	}
 
-	private double strategy_5(Node n, boolean isWhite) { // non buttarti fuori
+	public double strategy_5(Node n, boolean isWhite) { // non buttarti fuori
 		if (n.getParent() == null)
 			return 0;
 		return (isOut(n, isWhite)) ? -(/*7351 */ Integer.parseUnsignedInt(n.getPedine())) : 0;
 	}
 
-	private boolean isOut(Node n, boolean isWhite) {
+	public boolean isOut(Node n, boolean isWhite) {
 		byte pos = cellToPos.get(n.getCella());
 		String dir = n.getDirezione();
 		byte p = Byte.parseByte(n.getPedine());
@@ -198,15 +200,16 @@ public class Euristica {
 			case "SE":
 				return p >= HashMapGenerator.getOutLeastPawns(masksBlack, pos)[2]; 
 			default:
-				return false;
+				return false; 
 			}
 
 		}
 	}
 
+
 	public double getEuristica(Node n, boolean isWhite) {
-		double ret = (3*strategy_0(n, isWhite)) +(2*strategy_2(n, isWhite)) + (3*strategy_3(n, isWhite))
-				+ strategy_5(n, isWhite)+ strategy_4(n, isWhite);
+		double ret = (7*strategy_0(n, isWhite)) +(strategy_2(n, isWhite)) + (strategy_3(n, isWhite))
+				+ (8*strategy_5(n, isWhite))+ (3*strategy_4(n, isWhite));
 		return ret;
 	}
 

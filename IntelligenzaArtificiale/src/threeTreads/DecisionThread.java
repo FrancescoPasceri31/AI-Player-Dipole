@@ -64,20 +64,14 @@ public class DecisionThread extends Thread {
 
 		while (true) {
 			if (startSearch) {
-				long t = System.currentTimeMillis();
 				best = searcher.recursiveSearch(root, isWhite); // cerco il best per la scelta -> CODIFICARE QUI
-				System.out.println("search: "+(System.currentTimeMillis()-t) );		
-				System.out.println("\nValore risalito: "+best.getValue()+"\n");// L'ALGORITMO DI RICERCA PER SETTARE IL BEST TEMPORANEO
 				myMove = best.getMossa(); // lo dichiaro allo speaker per farlo comunicare al server
 				best.setParent(null); // best diventa root perche scelto
 				root.getSons().remove(best);
-				//mt.addToDelete(root); // elimino il resto dell'albero per liberare memoria
 				root = best;
 				System.gc();
 				best = null;
-				t = System.currentTimeMillis();
 				espandi(isWhite);
-				System.out.println("generazione your turn: "+(System.currentTimeMillis()-t));
 				startSearch=false;	// da togliere e mettere nello speaker e riuscire ad espandere il root best
 			}
 			if (opponentMove!=null) {
@@ -103,10 +97,28 @@ public class DecisionThread extends Thread {
 
 	private void espandi(boolean w) {
 		toExpand = mg.getLeaves(root);
-		for (Node n : toExpand) {
-			mg.generateMoves(n, w,isWhite);
+		
+		if (toExpand.size() > 1000) {
+			long tstart = System.currentTimeMillis();
+			for (Node n : toExpand)
+				mg.generateMoves(n, w, isWhite);
+			long tend = System.currentTimeMillis();
+			double sum = (tend - tstart) / 1000.0;
+			System.out.println("Tempo: " + sum);
+			System.out.println();
+		}else {
+			long tstart = System.currentTimeMillis();
+			for (Node n : toExpand)
+				mg.generateMovesRecursive(n, w, isWhite, 0, 4);
+			long tend = System.currentTimeMillis();
+			double sum = (tend - tstart) / 1000.0;
+			System.out.println("Tempo 3: " + sum);
+			System.out.println();
 		}
-//		toExpand.clear();
+//		for (Node n : toExpand) {
+//			mg.generateMoves(n, w,isWhite);
+//		}
+		toExpand.clear();
 	}
 	
 	private int getLevel(Node n) {
@@ -118,6 +130,7 @@ public class DecisionThread extends Thread {
 		this.searcher = s;
 		this.searcher.init();
 	}
+
 	
 
 }
