@@ -106,7 +106,7 @@ public class BoardMap {
 		}
 
 
-		mg.generateMoves(n, isWhite,isWhite);
+		mg.generateMoves(n, isWhite, isWhite);
 
 //		System.out.println(Arrays.toString(n.getPosToPawns()));
 		if (n.getParent() != null)
@@ -308,7 +308,6 @@ public class BoardMap {
 //		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
 
 		BoardMap bm = new BoardMap();
-		bm.createFrameBoard(root, true);
 		
 		String ret;
 		StringTokenizer st;
@@ -321,8 +320,13 @@ public class BoardMap {
 			st = new StringTokenizer(ret," ");
 			switch(st.nextToken()){
 			case "WELCOME":
-				if(st.nextToken().equals("White"))
+				if(st.nextToken().equals("White")) {
 					isWhite = true;
+					bm.createFrameBoard(root, isWhite);
+				}else {
+					isWhite=false;
+					mg.generateMoves(root, true, isWhite);
+				}
 				break;
 			case "MESSAGE":
 				System.out.println(ret);
@@ -330,15 +334,17 @@ public class BoardMap {
 			case "OPPONENT_MOVE":
 				System.out.println(ret);
 				opponent_move = st.nextToken();
-				for(Node f: root.getSons())
+				for(Node f: root.getSons()) {
 					if(f.getMossa().equals(opponent_move)) {
+						System.out.println("found");
 						root = f;
 						System.out.println(root);
 						root.setParent(null);
-						bm.createFrameBoard(root, !isWhite);
+						bm.createFrameBoard(root, isWhite);
 						System.out.println("root to opponent");
 						break;
 					}
+				}
 				break;
 			case "YOUR_TURN":
 				System.out.println(ret);
