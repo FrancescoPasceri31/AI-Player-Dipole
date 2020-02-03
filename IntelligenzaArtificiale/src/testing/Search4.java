@@ -20,7 +20,6 @@ public class Search4 {
 
 	private Euristica e;
 	private MovesGenerator mg;
-	private double err = 1;
 
 	private final double VICTORY = 1210037.0;
 	private final double LOSE = -1510237.0;
@@ -38,6 +37,23 @@ public class Search4 {
 		for (Node f : n.getSons())
 			if (f.getValue() == v)
 				l.add(f);
+//		System.out.println(l);
+//		if(l.size()==1) return l.getFirst();
+//		double max = -Double.MAX_VALUE;
+//		Node ret = null;
+//		for(Node x: l) {
+//			Node t = minVal(x,-Double.MAX_VALUE,Double.MAX_VALUE,!isWhite, 0,maxLevel);
+//			if(t.getValue() > max) {
+//				max = t.getValue();
+//				ret = x;
+//			}
+//		}
+//		return ret;
+		
+		
+		
+		
+		
 		System.out.println(l);
 		if(l.size()==1) return l.getFirst();
 		Node best = maxVal(n, -Double.MAX_VALUE, Double.MAX_VALUE, isWhite, 0, 6);

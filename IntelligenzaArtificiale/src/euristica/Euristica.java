@@ -157,16 +157,33 @@ public class Euristica {
 		return 1-strategy_0(n, !isWhite);// * (isWhite ? 13.5 : 27.71);
 	}
 
-	public double strategy_4(Node n, boolean isWhite) {
+	public double strategy_4(Node n, boolean isWhite) { //calcolo della distanza dalla fine della scacchiera
 		double ret;
-		if (n.getParent() == null)
+		if (n.getParent() == null) {
+			System.out.println("test");
 			return 0;
-		byte riga = (byte) (cellToPos.get(n.getCella()) / 4);
-		if (isWhite)
-			ret = -riga * 12.0 / 7;
-		else
-			ret = -(7 - riga) * 12.0 / 7;
-		return ret;
+		}
+		byte riga;
+		if (isWhite) {
+			if(n.getDirezione().charAt(0)=='N') //avanti
+				riga = (byte) ((cellToPos.get(n.getCella()) / 4) - Integer.parseInt(n.getPedine()));
+			else if(n.getDirezione().charAt(0)=='S') //indietro
+				riga = (byte) ((cellToPos.get(n.getCella()) / 4) + Integer.parseInt(n.getPedine()));
+			else
+				riga = (byte) ((cellToPos.get(n.getCella()) / 4));
+			ret = riga;
+		}
+		else {
+			if(n.getDirezione().charAt(0)=='N')
+				riga = (byte) ((cellToPos.get(n.getCella()) / 4) + Integer.parseInt(n.getPedine()));
+			else if(n.getDirezione().charAt(0)=='S')
+				riga = (byte) ((cellToPos.get(n.getCella()) / 4) - Integer.parseInt(n.getPedine()));
+			else
+				riga = (byte) ((cellToPos.get(n.getCella()) / 4));
+			ret = (7-riga);
+		}
+//		System.out.println(ret+" mossa "+n.getMossa());
+		return ret/7.0;
 
 	}
 
