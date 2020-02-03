@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import generators.MovesGenerator;
 import rappresentazione.Node;
 
-public class MainSearch4 { 
+public class MainSearch4 {
 
 	public static void main(String[] args) {
 
@@ -16,7 +16,7 @@ public class MainSearch4 {
 			else if (i == 30) // black start position
 				posToPawn2[i] = (byte) 32;
 			else
-				posToPawn2[i] = (byte) 0; 
+				posToPawn2[i] = (byte) 0;
 		}
 
 		MovesGenerator mg = new MovesGenerator();
@@ -32,49 +32,56 @@ public class MainSearch4 {
 
 		Node root = new Node(null, bc, wc, posToPawn2, "", "", "0");
 //		tstart = System.currentTimeMillis();
-//		mg.generateMovesRecursive(root, isWhite,isWhite, 0, 5);
+//		mg.generateMovesRecursive(root, isWhite,isWhite, 0, 3);
 //		tend = System.currentTimeMillis();
 //		sum = (tend - tstart) / 1000.0;
 //		
 //		System.out.println("Generazione: "+sum);
-//		System.out.println(root.getSons().get(6).getSons());
-		
-		
+//		System.out.println(root.getSons());
+
 //		 System.out.println(root.getSons().getFirst().getSons().getFirst().generateGenericVerbose("", false, false, new StringBuilder()));
 
 		Search4 s = new Search4();
 		s.init();
 		Node best = null;
-		for (int i = 0; i < 5; i++) { 
+		for (int i = 0; i < 20; i++) {
 			tstart = System.currentTimeMillis();
-			best = s.recursiveSearch(root, isWhite, livelloMax);
+			root = s.recursiveSearch(root, isWhite, livelloMax);
 			tend = System.currentTimeMillis();
 			sum = (tend - tstart) / 1000.0;
-			
-			System.out.println((i+1)+" Search " + livelloMax + " livelli: " + sum);
-			System.out.println("Best move: " + best.getMossa() + ", " + best.getValue());
-		
-			root=best;
+
+			System.out.println((i + 1) + " Search " + livelloMax + " livelli: " + sum);
+			System.out.println("Best move: " + root.getMossa() + ", " + root.getValue());
+
 			root.setParent(null);
 			System.gc();
-			isWhite=!isWhite;
-			
-			
-			LinkedList<Node> l = mg.getLeaves(root);
-			System.out.println("Leaves: "+l.size());
+			isWhite = !isWhite;
+
+			LinkedList<Node> leaves = mg.getLeaves(root);
+			System.out.println("Leaves: " + leaves.size()); 
 			System.out.println();
+
+			int th = leaves.size();
+			if (th <= 4750)
+				livelloMax = 12;
+			if (th > 4750 && th <= 6525)
+				livelloMax = 11;
+			if (th > 6525 && th <= 8700)
+				livelloMax = 10;
+			else
+				livelloMax = 8;
 //			tstart = System.currentTimeMillis();
-//			for(Node n: l) mg.generateMoves(n, isWhite);
+//			for(Node n: l) mg.generateMoves(n,< isWhite);
 //			tend = System.currentTimeMillis();
 //			sum = (tend - tstart) / 1000.0;
 //			System.out.println("Tempo: "+sum);
 //			System.out.println();
 		}
-		
+
 		System.gc();
-		
+
 //		System.out.println(root.getSons());
-		
+
 //		 System.out.println(root.generateGenericVerbose("", false, false, new StringBuilder()));
 //
 //		System.out.println(root.getSons());
@@ -93,8 +100,5 @@ public class MainSearch4 {
 //		System.out.println("Numero foglie: "+leaves.size());
 
 	}
-
-	
-	
 
 }

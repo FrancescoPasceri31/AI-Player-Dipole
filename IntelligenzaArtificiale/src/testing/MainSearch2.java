@@ -1,11 +1,9 @@
 package testing;
 
-import java.util.Collections;
 import java.util.LinkedList;
 
 import generators.MovesGenerator;
 import rappresentazione.Node;
-import ricerca.Search;
 
 public class MainSearch2 { 
 

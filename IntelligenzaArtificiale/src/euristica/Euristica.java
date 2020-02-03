@@ -2,6 +2,7 @@ package euristica;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import generators.HashMapGenerator;
@@ -9,7 +10,6 @@ import generators.MovesGenerator;
 import rappresentazione.Node;
 
 public class Euristica {
-	
 
 	private HashMap<String, Byte> cellToPos = null;
 	private HashMap<Byte, Object[]> masksBlack = null;
@@ -37,7 +37,7 @@ public class Euristica {
 				sum += (isWhite && posToPawn[i] <= 12) ? posToPawn[i]
 						: (!isWhite && posToPawn[i] > 12) ? posToPawn[i] - 20 : 0;
 		}
-		return (sum - 12);
+		return sum/12;
 	}
 
 	public double strategy_1(Node n, boolean isWhite) { // non perdere pedine
@@ -69,7 +69,7 @@ public class Euristica {
 				x -= 20;
 			ret -= x;
 		}
-		return ret;
+		return   (ret+12)/12;
 
 	}
 
@@ -88,7 +88,7 @@ public class Euristica {
 					ret += daiPesi1(numPedine, cella.charAt(0), 'H', 'G');
 				}
 			} else { // mossa all'indietro
-				ret = 12 + numPedine;
+				ret = (numPedine-1)/6;  //max=7,min=1
 			}
 		} else {
 			if (direzione.charAt(0) == 'S') { // mossa in avanti
@@ -98,7 +98,7 @@ public class Euristica {
 					ret += daiPesi1(numPedine, cella.charAt(0), 'A', 'B');
 				}
 			} else { // mossa all'indietro
-				ret = 12 + numPedine;
+				ret = (numPedine-1)/6;
 			}
 
 		}
@@ -109,15 +109,15 @@ public class Euristica {
 	public  double daiPesi2(byte numPedine) {
 		switch (numPedine) {
 		case 1:
-			return -1;
+			return 0.7; //0.9
 		case 2:
-			return -4;
+			return 0.6;
 		case 3:
-			return -7;
+			return 0.4;
 		case 4:
-			return -10;
+			return 0.2;
 		default:
-			return -12; 
+			return 0.1; 
 		}
 
 	}
@@ -126,35 +126,35 @@ public class Euristica {
 		if (cella == c1 || cella == c2) {
 			switch (numPedine) {
 			case 1:
-				return -3;
+				return 0.7;
 			case 2:
-				return -1;
+				return 0.9;
 			case 3:
-				return -6;
+				return 0.5;
 			case 4:
-				return -9;
+				return 0.4;
 			default:
-				return -12;
+				return 0.1;
 			}
 		} else {
 			switch (numPedine) {
 			case 1:
-				return -4;
+				return 0.8;
 			case 2:
-				return -1;
+				return 0.9;
 			case 3:
-				return -6;
+				return 0.5;
 			case 4:
-				return -10;
+				return 0.2;
 			default:
-				return -12;
+				return 0.1;
 			}
 		}
 
 	}
 
 	public  double strategy_3(Node n, boolean isWhite) { // minimizzare pedine dell'avversario
-		return -strategy_0(n, !isWhite);// * (isWhite ? 13.5 : 27.71);
+		return 1-strategy_0(n, !isWhite);// * (isWhite ? 13.5 : 27.71);
 	}
 
 	public double strategy_4(Node n, boolean isWhite) {
@@ -163,17 +163,17 @@ public class Euristica {
 			return 0;
 		byte riga = (byte) (cellToPos.get(n.getCella()) / 4);
 		if (isWhite)
-			ret = -riga * 12 / 7;// 1.71428571; // 12/7
-//			ret=(riga-7)*1.71428571; //12/7
+			ret = -riga * 12.0 / 7;
 		else
-			ret = -(7 - riga) * 12 / 7;// 1.71428571;
+			ret = -(7 - riga) * 12.0 / 7;
 		return ret;
+
 	}
 
 	public double strategy_5(Node n, boolean isWhite) { // non buttarti fuori
 		if (n.getParent() == null)
 			return 0;
-		return (isOut(n, isWhite)) ? -(/*7351 */ Integer.parseUnsignedInt(n.getPedine())) : 0;
+		return (isOut(n, isWhite)) ? -((Integer.parseUnsignedInt(n.getPedine())/12.0)) : 0.0;
 	}
 
 	public boolean isOut(Node n, boolean isWhite) {
@@ -198,7 +198,7 @@ public class Euristica {
 			case "SW":
 				return p >= HashMapGenerator.getOutLeastPawns(masksBlack, pos)[0];
 			case "SE":
-				return p >= HashMapGenerator.getOutLeastPawns(masksBlack, pos)[2]; 
+				return p >= HashMapGenerator.getOutLeastPawns(masksBlack, pos)[2];  
 			default:
 				return false; 
 			}
@@ -208,9 +208,13 @@ public class Euristica {
 
 
 	public double getEuristica(Node n, boolean isWhite) {
-		double ret = (7*strategy_0(n, isWhite)) +(strategy_2(n, isWhite)) + (strategy_3(n, isWhite))
-				+ (8*strategy_5(n, isWhite))+ (3*strategy_4(n, isWhite));
-		return ret;
+//		double ret = (1.5*strategy_0(n, isWhite)) +strategy_1(n, isWhite)+(strategy_2(n, isWhite)) + (0.5*strategy_3(n, isWhite))
+//				+ (7.75*strategy_5(n, isWhite))+ (strategy_4(n, isWhite));
+//		return ret;                                                                                                //1.75
+		double[] ret = new double[] {1.5*strategy_0(n, isWhite),3.75*strategy_1(n, isWhite),strategy_2(n, isWhite),1.95*strategy_3(n, isWhite),
+				strategy_4(n, isWhite),1.5*strategy_5(n, isWhite)};
+//		System.out.println(n.getId()+" "+n.getMossa()+" "+Arrays.toString(ret));
+		return ret[0]+ret[1]+ret[2]+ret[3]+ret[4]+ret[5];
 	}
 
 }

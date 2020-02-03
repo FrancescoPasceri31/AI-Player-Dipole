@@ -21,7 +21,9 @@ public class Node implements Serializable{
 	private Node parent;
 	private boolean toExpand = false;
 	
-	private int movesOut = 0;
+	private int movesOut;
+	private int attacks;
+	private int moves;
 
 	private int bc, wc; // mia configurazione e avversaria
 	private String cella,direzione,pedine;
@@ -30,7 +32,7 @@ public class Node implements Serializable{
 
 	public Node(Node parent, int bc, int wc, byte[] posToPawns, String cella, String direzione, String pedine) {
 		this.parent = parent;
-		this.bc = bc;
+		this.bc = bc; 
 		this.wc = wc;
 		this.posToPawns = posToPawns.clone(); 
 		this.cella = cella;
@@ -248,6 +250,22 @@ public class Node implements Serializable{
 
 	public void setMovesOut(int movesOut) {
 		this.movesOut = movesOut;
+	}
+
+	public int getAttacks() {
+		return attacks;
+	}
+
+	public void setAttacks(int attacks) {
+		this.attacks = attacks;
+	}
+
+	public int getMoves() {
+		return moves;
+	}
+
+	public void setMoves(int moves) {
+		this.moves = moves;
 	}
 
 }

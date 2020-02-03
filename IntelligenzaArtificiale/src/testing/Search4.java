@@ -35,12 +35,19 @@ public class Search4 {
 	public Node recursiveSearch(Node n, boolean isWhite, int maxLevel) {
 		double v = maxVal(n, -Double.MAX_VALUE, Double.MAX_VALUE, isWhite, 0, maxLevel).getValue();
 		LinkedList<Node> l = new LinkedList();
-		for (Node f : n.getSons()) {
+		for (Node f : n.getSons())
 			if (f.getValue() == v)
 				l.add(f);
-		}
 		System.out.println(l);
-		return l.get((new Random()).nextInt(l.size()));
+		if(l.size()==1) return l.getFirst();
+		Node best = maxVal(n, -Double.MAX_VALUE, Double.MAX_VALUE, isWhite, 0, 6);
+		System.out.println("Best: "+best);
+		if(l.contains(best)) return best;
+		try {
+			return l.get((new Random()).nextInt(l.size()));
+		}catch(IllegalArgumentException e) {
+			return n.getSons().getFirst();
+		}
 	}
 
 	public Node maxVal(Node n, double alpha, double beta, boolean isWhite, int level, int maxLevel) {
@@ -61,14 +68,17 @@ public class Search4 {
 
 		double v = -Double.MAX_VALUE;
 
-		double mm = -Double.MAX_VALUE+(level/2);
-		for (Node f : n.getSons()) {
-			if (f.getValue() > mm-(level/2)) {
+		double th = -Double.MAX_VALUE;
+		for (Node f : n.getSons()) {  
+			if (f.getValue() > th) {
 				if (f.getSons().size() == 0)
 					mg.generateMoves(f, !isWhite, isWhite);
-				f.setValue(f.getValue() - (f.getSons().size() - f.getMovesOut()));
-				if (f.getValue() > mm-(level/2))
-					mm = f.getValue();
+				double tmp = f.getValue();
+//				f.setValue(f.getValue() - (double)(f.getSons().size() - f.getMovesOut())/f.getSons().size());
+				f.setValue(f.getValue() - (double)f.getAttacks());
+//				f.setValue(f.getValue() - (double)f.getMoves());
+				if (f.getValue() > th)
+					th = tmp;
 				else
 					continue;
 			} else
@@ -107,14 +117,17 @@ public class Search4 {
 
 		double v = Double.MAX_VALUE;
 
-		double mm = Double.MAX_VALUE-(level/2);
+		double th = Double.MAX_VALUE;
 		for (Node f : n.getSons()) {
-			if (f.getValue() < mm+(level/2)) {
+			if (f.getValue() < th) {
 				if (f.getSons().size() == 0)
 					mg.generateMoves(f, isWhite, isWhite);
-				f.setValue(f.getValue() - (f.getSons().size() - f.getMovesOut()));
-				if (f.getValue() < mm+(level/2))
-					mm = f.getValue();
+				double tmp = f.getValue();
+//				f.setValue(f.getValue() + (double)(f.getSons().size() - f.getMovesOut())/f.getSons().size());
+				f.setValue(f.getValue() + (double)f.getAttacks());
+//				f.setValue(f.getValue() + (double)f.getMoves());
+				if (f.getValue() < th)
+					th = tmp;
 				else
 					continue;
 			} else
@@ -128,6 +141,7 @@ public class Search4 {
 			n.setValue(v);
 			if (v <= alpha) {
 				return n;
+				
 			}
 			beta = Math.max(beta, v);
 		}
