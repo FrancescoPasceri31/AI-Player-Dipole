@@ -1,6 +1,5 @@
 package testing;
 
-import java.util.LinkedList;
 
 import generators.MovesGenerator;
 import rappresentazione.Node;
@@ -26,25 +25,32 @@ public class MainSearch4 {
 		int wc = mg.createConfig(posToPawn2, true);
 
 		boolean isWhite = true;
-		int livelloMax = 1;
+		int livelloMax = 8;
 		long tstart, tend;
 		double sum;
 
 		Node root = new Node(null, bc, wc, posToPawn2, "", "", "0");
 //		tstart = System.currentTimeMillis();
-		mg.generateMovesRecursive(root, isWhite,isWhite, 0, 1);
+//		mg.generateMovesRecursive(root, isWhite,isWhite, 0, 1);
 //		tend = System.currentTimeMillis();
 //		sum = (tend - tstart) / 1000.0;
 //		
 //		System.out.println("Generazione: "+sum);
-//		System.out.println(root.getSons());
+		mg.generateMoves(root, true, isWhite);
+		System.out.println(root.getSons());
+		System.out.println();
+		mg.generateMoves(root.getSons().get(5),false,isWhite);
+		System.out.println(root.getSons().get(5).getSons());
+		System.out.println();
+		mg.generateMoves(root.getSons().get(5).getSons().get(3),true,isWhite);
+		System.out.println(root.getSons().get(5).getSons().get(3).getSons());
 
-//		 System.out.println(root.getSons().getFirst().getSons().getFirst().generateGenericVerbose("", false, false, new StringBuilder()));
+//		 System.out.println(root.generateGenericVerbose("", false, false, new StringBuilder()));
 
 //		Search4 s = new Search4();
 //		s.init();
 //		Node best = null;
-//		for (int i = 0; i < 1; i++) {
+//		for (int i = 0; i < 5; i++) {
 //			tstart = System.currentTimeMillis();
 //			root = s.recursiveSearch(root, isWhite, livelloMax);
 //			tend = System.currentTimeMillis();

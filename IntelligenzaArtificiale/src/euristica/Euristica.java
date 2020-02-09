@@ -22,7 +22,7 @@ public class Euristica {
 			i.readObject();
 			cellToPos = (HashMap<String, Byte>) i.readObject();
 			masksBlack = (HashMap<Byte, Object[]>) i.readObject();
-			masksWhite = (HashMap<Byte, Object[]>) i.readObject(); 
+			masksWhite = (HashMap<Byte, Object[]>) i.readObject();
 			i.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -37,7 +37,7 @@ public class Euristica {
 				sum += (isWhite && posToPawn[i] <= 12) ? posToPawn[i]
 						: (!isWhite && posToPawn[i] > 12) ? posToPawn[i] - 20 : 0;
 		}
-		return sum/12;
+		return sum / 12;
 	}
 
 	public double strategy_1(Node n, boolean isWhite) { // non perdere pedine
@@ -69,47 +69,46 @@ public class Euristica {
 				x -= 20;
 			ret -= x;
 		}
-		return   (ret+12)/12;
+		return (ret + 12) / 12;
 
 	}
 
-	public  double strategy_2(Node n, boolean isWhite) { // non muovermi troppo in avanti, 2 pedine vanno bene
+	public double strategy_2(Node n, boolean isWhite) { // non muovermi troppo in avanti, 2 pedine vanno bene
 		if (n.getParent() == null)
 			return 0;
-		String cella = n.getCella();
-		String direzione = n.getDirezione();
-		byte numPedine = Byte.parseByte(n.getPedine());
-		double ret = 0;
-		if (isWhite) {
-			if (direzione.charAt(0) == 'N') { // mossa in avanti
-				if (cella.charAt(0) <= 'D') {
-					ret += daiPesi2(numPedine);
-				} else {
-					ret += daiPesi1(numPedine, cella.charAt(0), 'H', 'G');
+			String cella = n.getCella();
+			String direzione = n.getDirezione();
+			byte numPedine = Byte.parseByte(n.getPedine());
+			double ret = 0;
+			if (isWhite) {
+				if (direzione.charAt(0) == 'N') { // mossa in avanti
+					if (cella.charAt(0) <= 'D') {
+						ret += daiPesi2(numPedine);
+					} else {
+						ret += daiPesi1(numPedine, cella.charAt(0), 'H', 'G');
+					}
+				} else { // mossa all'indietro
+					ret = (numPedine - 1) / 6; // max=7,min=1
 				}
-			} else { // mossa all'indietro
-				ret = (numPedine-1)/6;  //max=7,min=1
-			}
-		} else {
-			if (direzione.charAt(0) == 'S') { // mossa in avanti
-				if (cella.charAt(0) >= 'E') {
-					ret += daiPesi2(numPedine);
-				} else {
-					ret += daiPesi1(numPedine, cella.charAt(0), 'A', 'B');
+			} else {
+				if (direzione.charAt(0) == 'S') { // mossa in avanti
+					if (cella.charAt(0) >= 'E') {
+						ret += daiPesi2(numPedine);
+					} else {
+						ret += daiPesi1(numPedine, cella.charAt(0), 'A', 'B');
+					}
+				} else { // mossa all'indietro
+					ret = (numPedine - 1) / 6;
 				}
-			} else { // mossa all'indietro
-				ret = (numPedine-1)/6;
+
 			}
-
-		}
-		return ret;
-
+			return ret;
 	}
 
-	public  double daiPesi2(byte numPedine) {
+	public double daiPesi2(byte numPedine) {
 		switch (numPedine) {
 		case 1:
-			return 0.7; //0.9
+			return 0.7; // 0.9
 		case 2:
 			return 0.6;
 		case 3:
@@ -117,12 +116,12 @@ public class Euristica {
 		case 4:
 			return 0.2;
 		default:
-			return 0.1; 
+			return 0.1;
 		}
 
 	}
 
-	public  double daiPesi1(byte numPedine, char cella, char c1, char c2) {
+	public double daiPesi1(byte numPedine, char cella, char c1, char c2) {
 		if (cella == c1 || cella == c2) {
 			switch (numPedine) {
 			case 1:
@@ -153,44 +152,58 @@ public class Euristica {
 
 	}
 
-	public  double strategy_3(Node n, boolean isWhite) { // minimizzare pedine dell'avversario
-		return 1-strategy_0(n, !isWhite);// * (isWhite ? 13.5 : 27.71);
+	public double strategy_3(Node n, boolean isWhite) { // minimizzare pedine dell'avversario
+		return 1 - strategy_0(n, !isWhite);// * (isWhite ? 13.5 : 27.71);
 	}
 
-	public double strategy_4(Node n, boolean isWhite) { //calcolo della distanza dalla fine della scacchiera
-		double ret;
-		if (n.getParent() == null) {
-			System.out.println("test");
+//	public double strategy_4(Node n, boolean isWhite) { //calcolo della distanza dalla fine della scacchiera
+//		double ret;
+//		if (n.getParent() == null)
+//			return 0;
+//		double riga;
+//		if (isWhite) {
+//			if(n.getDirezione().charAt(0)=='N') //avanti
+//				riga = (byte) ((cellToPos.get(n.getCella()) / 4) - Integer.parseInt(n.getPedine()));
+//			else if(n.getDirezione().charAt(0)=='S') //indietro
+//				riga = (byte) ((cellToPos.get(n.getCella()) / 4) + Integer.parseInt(n.getPedine()));
+//			else
+//				riga = (byte) ((cellToPos.get(n.getCella()) / 4));
+//			ret = riga;
+//		}
+//		else {
+//			if(n.getDirezione().charAt(0)=='N')//indietro
+//				riga = (byte) ((cellToPos.get(n.getCella()) / 4) + Integer.parseInt(n.getPedine()));
+//			else if(n.getDirezione().charAt(0)=='S')//avanti
+//				riga = (byte) ((cellToPos.get(n.getCella()) / 4) - Integer.parseInt(n.getPedine()));
+//			else
+//				riga = (byte) ((cellToPos.get(n.getCella()) / 4));
+//			ret = (riga-7);
+//		}
+////		System.out.println((ret+12)/12+" mossa "+n.getMossa());
+//		return (ret+12)/12;    
+//
+//	}
+
+	public double strategy_4(Node n, boolean isWhite) {
+		if (n.getParent() == null)
 			return 0;
-		}
-		byte riga;
-		if (isWhite) {
+		double ret;
+		double riga = (double) (cellToPos.get(n.getCella()) / 4);
+		if(isWhite) { 
 			if(n.getDirezione().charAt(0)=='N') //avanti
-				riga = (byte) ((cellToPos.get(n.getCella()) / 4) - Integer.parseInt(n.getPedine()));
-			else if(n.getDirezione().charAt(0)=='S') //indietro
-				riga = (byte) ((cellToPos.get(n.getCella()) / 4) + Integer.parseInt(n.getPedine()));
-			else
-				riga = (byte) ((cellToPos.get(n.getCella()) / 4));
-			ret = riga;
+				return -riga/7;
+		}else{ 
+			if(n.getDirezione().charAt(0)=='S')
+				return -(7-riga)/7;
 		}
-		else {
-			if(n.getDirezione().charAt(0)=='N')
-				riga = (byte) ((cellToPos.get(n.getCella()) / 4) + Integer.parseInt(n.getPedine()));
-			else if(n.getDirezione().charAt(0)=='S')
-				riga = (byte) ((cellToPos.get(n.getCella()) / 4) - Integer.parseInt(n.getPedine()));
-			else
-				riga = (byte) ((cellToPos.get(n.getCella()) / 4));
-			ret = (7-riga);
-		}
-//		System.out.println(ret+" mossa "+n.getMossa());
-		return ret/7.0;
-
+		return 0;
 	}
+	
 
 	public double strategy_5(Node n, boolean isWhite) { // non buttarti fuori
 		if (n.getParent() == null)
 			return 0;
-		return (isOut(n, isWhite)) ? -((Integer.parseUnsignedInt(n.getPedine())/12.0)) : 0.0;
+			return (isOut(n, isWhite)) ? -((Integer.parseUnsignedInt(n.getPedine()) / 12.0)) : 0.0;
 	}
 
 	public boolean isOut(Node n, boolean isWhite) {
@@ -213,25 +226,34 @@ public class Euristica {
 			case "S":
 				return p >= HashMapGenerator.getOutLeastPawns(masksBlack, pos)[1];
 			case "SW":
-				return p >= HashMapGenerator.getOutLeastPawns(masksBlack, pos)[0];
+				return p >= HashMapGenerator.getOutLeastPawns(masksBlack, pos)[2];
 			case "SE":
-				return p >= HashMapGenerator.getOutLeastPawns(masksBlack, pos)[2];  
+				return p >= HashMapGenerator.getOutLeastPawns(masksBlack, pos)[0];
 			default:
-				return false; 
+				return false;
 			}
 
 		}
 	}
 
+	public double getEuristica(Node n, boolean isWhite,boolean myColor) {
 
-	public double getEuristica(Node n, boolean isWhite) {
-//		double ret = (1.5*strategy_0(n, isWhite)) +strategy_1(n, isWhite)+(strategy_2(n, isWhite)) + (0.5*strategy_3(n, isWhite))
-//				+ (7.75*strategy_5(n, isWhite))+ (strategy_4(n, isWhite));
-//		return ret;                                                                                                //1.75
-		double[] ret = new double[] {1.5*strategy_0(n, isWhite),3.75*strategy_1(n, isWhite),strategy_2(n, isWhite),1.95*strategy_3(n, isWhite),
-				strategy_4(n, isWhite),1.5*strategy_5(n, isWhite)};
-//		System.out.println(n.getId()+" "+n.getMossa()+" "+Arrays.toString(ret));
-		return ret[0]+ret[1]+ret[2]+ret[3]+ret[4]+ret[5];
+
+//		double[] ret = new double[] { 1.5 * strategy_0(n, myColor), 3.75 * strategy_1(n, myColor),
+//				strategy_2(n, isWhite), 1.95 * strategy_3(n, myColor), strategy_4(n, myColor),
+//				1.5 * strategy_5(n, isWhite) };
+////		System.out.println(n.getId() + " " + n.getMossa() + " " + Arrays.toString(ret));
+//		return ret[0] + ret[1] + ret[2] + ret[3] + ret[4] + ret[5];
+		
+		if(!(isWhite^myColor)) { //isWhite == myColor
+			return 1.5 * strategy_0(n, myColor)+ 3.75 * strategy_1(n, myColor)+
+					strategy_2(n, myColor)+ 1.95 * strategy_3(n, myColor)+ strategy_4(n, myColor)+
+					1.75 * strategy_5(n, myColor);
+		}else {
+			return -1.5 * strategy_0(n, isWhite) - 3.75 * strategy_1(n, isWhite)
+					-strategy_2(n, isWhite) + 1.95 * (strategy_3(n, isWhite)-1)- strategy_4(n, isWhite)
+					-1.75 * strategy_5(n, isWhite);
+		}
 	}
 
 }

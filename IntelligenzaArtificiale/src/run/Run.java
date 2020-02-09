@@ -14,6 +14,7 @@ import rappresentazione.Node;
 import ricerca.Search;
 import testing.MovesGeneratorVecchio;
 import testing.Search2;
+import testing.Search3;
 import testing.Search4;
 
 public class Run {
@@ -35,7 +36,7 @@ public class Run {
 		Node root = null;
 		String opponent_move = null;
 
-		Search4 s = null;
+		Search3 s = null;
 
 		LinkedList<Node> leaves = null;
 
@@ -77,9 +78,9 @@ public class Run {
 
 						root = new Node(null, bc, wc, posToPawn, "", "", "0");
 
-//					    mg.generateMovesRecursive(root, isWhite,isWhite, 0, 5);
+//					    mg.generateMovesRecursive(root, isWhite,isWhite, 0, 4);
 
-						s = new Search4();
+						s = new Search3();
 						s.init();
 					}
 					System.out.println(ret);
@@ -95,8 +96,6 @@ public class Run {
 							System.gc();
 							break;
 						}
-//					leaves = mg.getLeaves(root);
-//					for(Node n: leaves) mg.generateMoves(n, isWhite);
 					break;
 				case "YOUR_TURN":
 
@@ -116,23 +115,38 @@ public class Run {
 
 					int th = leaves.size();
 					
-					if (th <= 3262)
-						livelloMax = 12;
+					if (th <= 1631)
+						livelloMax = 14;
+					else if (th > 1631 && th <= 3262)
+						livelloMax = 13;
 					else if (th > 3262 && th <= 4893)
-						livelloMax = 11;
+						livelloMax = 12;
 					else if (th > 4893 && th <= 6525)
-						livelloMax = 10;
+						livelloMax = 11;
 					else if (th > 6525 && th <= 8700)
+						livelloMax = 10;
+					else if (th > 8700 && th <=13000)
 						livelloMax = 9;
 					else
 						livelloMax = 8;
-
-//					if (th <= 4750)
+					
+//					if (th <= 3262)
 //						livelloMax = 12;
-//					if (th > 4750 && th <= 6525)
+//					else if (th > 3262 && th <= 4893)
 //						livelloMax = 11;
-//					if (th > 6525 && th <= 8700)
+//					else if (th > 4893 && th <= 6525)
 //						livelloMax = 10;
+//					else if (th > 6525 && th <= 8700)
+//						livelloMax = 9;
+//					else
+//						livelloMax = 8;
+
+//					if (th <= 5600)
+//						livelloMax = 12;
+//					else if (th > 5600 && th <= 8700)
+//						livelloMax = 10;
+//					else
+//						livelloMax = 8;
 
 					break;
 				case "VALID_MOVE":

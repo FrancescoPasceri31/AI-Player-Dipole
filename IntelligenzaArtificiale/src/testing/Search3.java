@@ -1,12 +1,5 @@
 package testing;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -14,7 +7,7 @@ import euristica.Euristica;
 import generators.MovesGenerator;
 import rappresentazione.Node;
 
-public class Search4 {
+public class Search3 {
 
 	// valori dentro generator, espansione solo se necessaria
 
@@ -31,13 +24,16 @@ public class Search4 {
 		this.mg.init();
 	}
 
-	public Node recursiveSearch(Node n, boolean isWhite, int maxLevel) {
-		double v = maxVal(n, -Double.MAX_VALUE, Double.MAX_VALUE, isWhite, 0, maxLevel).getValue();
+	public Node recursiveSearch(Node n,boolean isWhite, int maxLevel) {
+		double v=0.0;
+		for(int i=1;i<=maxLevel;i++) {
+			v = maxVal(n,-Double.MAX_VALUE,Double.MAX_VALUE,isWhite,0,i).getValue();
+			pathSearch(n,v,0,i);
+		}
 		LinkedList<Node> l = new LinkedList();
 		for (Node f : n.getSons())
 			if (f.getValue() == v)
 				l.add(f);
-		System.out.println(l);		
 		if(l.size()==1) return l.getFirst();
 		try {
 			return l.get((new Random()).nextInt(l.size()));
@@ -77,8 +73,8 @@ public class Search4 {
 					continue;
 			} else
 				continue;
-
-			double min = (minVal(f, alpha, beta, isWhite, level + 1, maxLevel)).getValue(); // valore del figlio
+			
+			double min = minVal(f, alpha, beta, isWhite, level + 1, maxLevel).getValue(); // valore del figlio
 			v = Math.max(v, min);
 			if (v == min)
 				ret = f; // se non entra mai in questo if, allora ritornerà null
@@ -123,19 +119,33 @@ public class Search4 {
 			} else
 				continue;
 
-			double max = (maxVal(f, alpha, beta, isWhite, level + 1, maxLevel)).getValue(); // valore del figlio
+			double max = maxVal(f, alpha, beta, isWhite, level + 1, maxLevel).getValue(); // valore del figlio
 			v = Math.min(v, max);
 			if (v == max)
 				ret = f;
 			n.setValue(v);
 			if (v <= alpha) {
 				return n;
-				
 			}
 			beta = Math.max(beta, v);
 		}
 		return ret;
 
+	}
+	
+	public void pathSearch(Node n, double v,int level, int maxLevel) {
+		if(level==maxLevel) return;
+		
+		LinkedList<Node> l = new LinkedList<Node>();
+		for(Node f: n.getSons())
+			if(f.getValue()==v)
+				l.add(f);
+		
+		for(Node x:l) {
+			n.getSons().remove(x);
+			n.getSons().addFirst(x);
+			pathSearch(x,v,level+1,maxLevel);
+		}
 	}
 
 	public boolean testTerminazione(Node n, int level, int maxLevel) {

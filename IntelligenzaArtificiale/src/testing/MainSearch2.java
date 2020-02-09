@@ -33,10 +33,35 @@ public class MainSearch2 {
 		Node root = new Node(null, bc, wc, posToPawn2, "", "", "0");
 //		mg.generateMovesRecursive(root, isWhite,isWhite, 0, livelloMax);
 		
+		
+		
+		
 //		 System.out.println(root.generateGenericVerbose("", false, false, new StringBuilder()));
 
 		Search2 s = new Search2();
 		s.init();
+		
+//		
+////		tstart = System.currentTimeMillis();
+////		root = s.recursiveSearch(root, isWhite, livelloMax);
+////		tend = System.currentTimeMillis();
+////		sum = (tend - tstart) / 1000.0;
+////		System.out.println("Search "+livelloMax+" livelli: "+sum);
+////		
+////		System.out.println("Leaves: "+mg.getLeaves(root).size());
+////		System.out.println();
+////		
+////		root.setSons(new LinkedList<Node>());
+////		
+////		tstart = System.currentTimeMillis();
+////		root = s.recursiveSearch(root, !isWhite, livelloMax);
+////		tend = System.currentTimeMillis();
+////		sum = (tend - tstart) / 1000.0;
+////		System.out.println("Search "+livelloMax+" livelli: "+sum);
+////		
+////		System.out.println("Leaves: "+mg.getLeaves(root).size());
+//		
+//		
 		Node best = null;
 		for (int i = 0; i < 5; i++) { 
 			tstart = System.currentTimeMillis();
@@ -49,13 +74,14 @@ public class MainSearch2 {
 		
 			root=best;
 			root.setParent(null);
-			System.gc();
 			isWhite=!isWhite;
 			
 			
 			LinkedList<Node> l = mg.getLeaves(root);
 			System.out.println("Leaves: "+l.size());
 			System.out.println();
+			root.setSons(new LinkedList<Node>());
+			System.gc();
 //			tstart = System.currentTimeMillis();
 //			for(Node n: l) mg.generateMoves(n, isWhite);
 //			tend = System.currentTimeMillis();

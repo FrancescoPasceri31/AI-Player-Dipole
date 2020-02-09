@@ -257,7 +257,10 @@ public class HashMapGenerator {
 		masksWhite = (HashMap<Byte, Object[]>) i.readObject();
 		i.close();
 		
-		System.out.println(""+Arrays.toString(getOutLeastPawns(masksWhite,(byte)17)));
+		int[] r = getMask(masksWhite,(byte)14,(byte)3);
+		System.out.println(Integer.toBinaryString(r[0]));
+		System.out.println(Integer.toBinaryString(r[1]));
+		
 //
 ////		System.out.println(tempi / run);
 //		System.out.println();

@@ -24,6 +24,7 @@ public class Node implements Serializable{
 	private int movesOut;
 	private int attacks;
 	private int moves;
+	
 
 	private int bc, wc; // mia configurazione e avversaria
 	private String cella,direzione,pedine;
@@ -267,5 +268,6 @@ public class Node implements Serializable{
 	public void setMoves(int moves) {
 		this.moves = moves;
 	}
+	
 
 }
