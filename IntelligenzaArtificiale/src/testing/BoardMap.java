@@ -10,8 +10,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashMap;
@@ -29,9 +30,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
+import euristica.Euristica;
 import generators.MovesGenerator;
 import rappresentazione.Node;
-import ricerca.Search;
 
 public class BoardMap {
 
@@ -55,9 +56,8 @@ public class BoardMap {
 	private static Socket soc;
 	private static BufferedReader in;
 	private static PrintWriter out;
-	
-	
-	private static boolean mossa= false;
+
+	private static boolean mossa = false;
 
 	public Node getNode() {
 		return n;
@@ -104,7 +104,6 @@ public class BoardMap {
 			endGame(n);
 			return;
 		}
-
 
 		mg.generateMoves(n, isWhite, isWhite);
 
@@ -254,10 +253,11 @@ public class BoardMap {
 
 		this.f = frame;
 		opened.add(this);
-		
+
 		System.out.println("fine creazione board");
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws Exception {
 
 		try {
@@ -276,21 +276,34 @@ public class BoardMap {
 		 */
 
 		byte[] posToPawn = new byte[32];
-		for (int i = 0; i < 32; i++) {
-			if (i == 1) // white start position
-				posToPawn[i] = (byte) 12;
-			else if (i == 30) // black start position
-				posToPawn[i] = (byte) 32;
-			else
-				posToPawn[i] = (byte) 0;
+		for(int i=0; i<32; i++) {
+			if(i==1) { // white start position
+				posToPawn[i] = 12;
+			}else if(i==30) {	// black start position
+				posToPawn[i] = 32;
+			}else {
+				posToPawn[i] = 0;
+			}
 		}
-
+		
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream("hashMaps"));
+		HashMap<Byte, String> posToCell = (HashMap<Byte, String>) ois.readObject();
+		HashMap<String, Byte> cellToPos = (HashMap<String, Byte>) ois.readObject();
+		HashMap<Byte, Object[]> masksBlack = (HashMap<Byte, Object[]>) ois.readObject();
+		HashMap<Byte, Object[]> masksWhite = (HashMap<Byte, Object[]>) ois.readObject();
+		HashMap<Byte, HashMap<Byte, String>> posToDir = (HashMap<Byte, HashMap<Byte, String>>) ois.readObject();
+		ois.close();
+		
+		Euristica e = new Euristica();
+		e.init(cellToPos, masksBlack, masksWhite);
+		
 		mg = new MovesGenerator();
-		mg.init();
-
-		int bc = mg.createConfig(posToPawn, false);
+		mg.init(e, posToCell, cellToPos, masksBlack, masksWhite, posToDir);
+		
 		int wc = mg.createConfig(posToPawn, true);
-
+		int bc = mg.createConfig(posToPawn, false);
+		
+		
 		/*
 		 ********************************************************************************************************************************* 
 		 * GENERAZIONE ALBERO MOSSE
@@ -298,33 +311,24 @@ public class BoardMap {
 		 */
 
 		boolean isWhite = true;
-		int livelloMax = 3;
 		root = new Node(null, bc, wc, posToPawn, "", "", "0");
 
-//		generateMovesRecursive(mg, root, isWhite, 0, livelloMax);
-//		generateMovesIterative(mg, root, isWhite, livelloMax);
-
-//		System.out.println("Created tree with depth " + livelloMax);
-//		System.out.println(Node.generateGenericVerbose(root, "", false, false, new StringBuilder()));
-
 		BoardMap bm = new BoardMap();
-		
+
 		String ret;
 		StringTokenizer st;
 		String opponent_move;
-		
-		while(true) {
-			//if(root!=null) System.out.println(root.getMossa());
+
+		while (true) {
 			ret = in.readLine();
-			//if(ret==null) continue;
-			st = new StringTokenizer(ret," ");
-			switch(st.nextToken()){
+			st = new StringTokenizer(ret, " ");
+			switch (st.nextToken()) {
 			case "WELCOME":
-				if(st.nextToken().equals("White")) {
+				if (st.nextToken().equals("White")) {
 					isWhite = true;
 					bm.createFrameBoard(root, isWhite);
-				}else {
-					isWhite=false;
+				} else {
+					isWhite = false;
 					mg.generateMoves(root, true, isWhite);
 				}
 				break;
@@ -334,8 +338,8 @@ public class BoardMap {
 			case "OPPONENT_MOVE":
 				System.out.println(ret);
 				opponent_move = st.nextToken();
-				for(Node f: root.getSons()) {
-					if(f.getMossa().equals(opponent_move)) {
+				for (Node f : root.getSons()) {
+					if (f.getMossa().equals(opponent_move)) {
 						System.out.println("found");
 						root = f;
 						System.out.println(root);
@@ -348,7 +352,9 @@ public class BoardMap {
 				break;
 			case "YOUR_TURN":
 				System.out.println(ret);
-				while(!mossa) {System.out.println();}
+				while (!mossa) {
+					System.out.println();
+				}
 				mossa = false;
 				System.out.println("break");
 				break;
@@ -376,35 +382,4 @@ public class BoardMap {
 			}
 		}
 	}
-
-	private static void generateMovesRecursive(MovesGenerator mg, Node n, boolean isWhite,boolean myColor, int liv, int limite) {
-		if (liv == limite || n == null) {
-			return;
-		}
-		mg.generateMoves(n, isWhite,myColor);
-		for (Node son : n.getSons()) {
-			generateMovesRecursive(mg, son, !isWhite,myColor, liv + 1, limite);
-		}
-	}
-
-//	private static void generateMovesIterative(MovesGenerator mg, Node root, boolean isWhite, int limite) {
-//		HashMap<Integer, Object[]> nodeLev = new HashMap<Integer, Object[]>();
-//		LinkedList<Node> ll = new LinkedList<Node>();
-//		nodeLev.put(root.getId(), new Object[] { 0, isWhite });
-//
-//		ll.add(root);
-//		while (!ll.isEmpty()) {
-//			Node n = ll.removeFirst();
-//			if (((int) nodeLev.get(n.getId())[0]) < limite) {
-//				boolean myColor = (boolean) nodeLev.get(n.getId())[1];
-//				mg.generateMoves(n, myColor);
-//				ll.addAll(0, n.getSons());
-//				for (Node node : n.getSons()) {
-//					nodeLev.put(node.getId(),
-//							new Object[] { 1 + ((int) nodeLev.get(node.getParent().getId())[0]), !myColor });
-//				}
-//			}
-//		}
-//	}
-
 }

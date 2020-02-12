@@ -1,6 +1,6 @@
 package testing;
 
-public class LauncherApp {
+public class AvvioVisualizzazioneScacchiera {
 
 	public static void main(String[] args) throws Exception {
 
