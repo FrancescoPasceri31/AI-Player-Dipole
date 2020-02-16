@@ -47,11 +47,11 @@ public class Search extends Thread {
 			if (isWhite && n.getBc() == 0)
 				n.setValue(VICTORY - level);
 			else if (isWhite && n.getWc() == 0)
-				n.setValue(LOSE - level);
+				n.setValue(LOSE + level);
 			else if (!isWhite && n.getWc() == 0)
 				n.setValue(VICTORY - level);
 			else if (!isWhite && n.getBc() == 0)
-				n.setValue(LOSE - level);
+				n.setValue(LOSE + level);
 			return n;
 		}
 		if (n.getSons().size() == 0)
@@ -99,11 +99,11 @@ public class Search extends Thread {
 		Node ret = n;
 		if (testTerminazione(n, level, maxLevel)) {
 			if (isWhite && n.getBc() == 0)
-				n.setValue(VICTORY - level);
+				n.setValue(VICTORY + level);
 			else if (isWhite && n.getWc() == 0)
 				n.setValue(LOSE - level);
 			else if (!isWhite && n.getWc() == 0)
-				n.setValue(VICTORY - level);
+				n.setValue(VICTORY + level);
 			else if (!isWhite && n.getBc() == 0)
 				n.setValue(LOSE - level);
 			return n;

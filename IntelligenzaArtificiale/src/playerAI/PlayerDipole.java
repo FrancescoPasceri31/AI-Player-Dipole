@@ -22,7 +22,7 @@ public class PlayerDipole {
 	public static volatile Node root; 
 	public static volatile boolean isWhite; 
 	public static volatile int maxLevel;
-	
+
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 
@@ -108,23 +108,28 @@ public class PlayerDipole {
 					break;
 				
 				case "OPPONENT_MOVE":
+					long timeF = System.currentTimeMillis();
 					opponentMove = st.nextToken();
 					if(root.getSons().size()==0) {
 						mg.generateMoves(root, !isWhite, isWhite);
 					}
 					ll = root.getSons();
 					for(Node son : ll) {
-						if(son.getMossa().equalsIgnoreCase(opponentMove)) {
+						if(son.getMossa().equals(opponentMove)) {
 							root = son;
 							root.setParent(null);
-							System.gc();
+							//System.gc();
 							break;
 						}
 					}
+					long tendF = System.currentTimeMillis();
+					System.out.println("TEMPO opp: "+ (tendF - timeF)/1000.0 );
 					break;
 					
 				case "YOUR_TURN":
-
+					
+					long tstart = System.currentTimeMillis();
+					
 					searches[idSearch].start();
 					int attempts=8;
 					while(attempts>0 && best == null) {
@@ -144,9 +149,14 @@ public class PlayerDipole {
 					root.setParent(null);
 					out.println("MOVE "+root.getMossa());
 					
+					long tendSearch = System.currentTimeMillis();
+					
+					System.out.println("LIVELLO: "+maxLevel);
+					System.out.println("TEMPO SEARCH: "+  (tendSearch - tstart)/1000.0  );
+					
 					idSearch+=1;
 					
-					System.gc();
+					//System.gc();
 
 					int th = countLeaves(root);
 
@@ -165,6 +175,11 @@ public class PlayerDipole {
 					else
 						maxLevel = 8;
 
+					long tend = System.currentTimeMillis();	
+					System.out.println("TEMPO TOTALE: "+ (tend - tstart)/1000.0);
+
+					
+					
 					break;
 				
 				case "VALID_MOVE":

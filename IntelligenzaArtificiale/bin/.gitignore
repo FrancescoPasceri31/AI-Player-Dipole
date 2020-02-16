@@ -1,9 +1,6 @@
-/threeTreads/
-/testing/
-/playerAI/
-/generators/
-/ricerca/
-/run/
-/dummyPlayer/
 /euristica/
+/generators/
+/playerAI/
 /rappresentazione/
+/ricerca/
+/testing/
