@@ -48,9 +48,13 @@ public class PlayerDipole {
 		
 		LinkedList<Node> ll = null;
 		
+		long tstart=0, tend=0;
+		long delay;
+		long attemps = 10;
+		
 		try {
 
-			
+			tstart = System.currentTimeMillis();
 			soc = new Socket(address,port);
 			in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
 			out = new PrintWriter(soc.getOutputStream(), true);
@@ -63,11 +67,18 @@ public class PlayerDipole {
 				switch(st.nextToken()) {
 				
 				case "WELCOME":
+					tend = System.currentTimeMillis();
+					System.out.println(ret);
 					isWhite = "White".equalsIgnoreCase(st.nextToken());
 					break;
 				
 				case "MESSAGE":
 					if(st.nextToken().equals("All")) {
+					
+						delay = tend - tstart;
+						System.out.println("DELAY= "+ (delay)/1000.0);
+						attemps = (900 - delay)/50;
+						System.out.println("ATTEMPS="+attemps);
 						
 						byte[] posToPawn = new byte[32];
 						for(int i=0; i<32; i++) {
@@ -108,7 +119,6 @@ public class PlayerDipole {
 					break;
 				
 				case "OPPONENT_MOVE":
-					long timeF = System.currentTimeMillis();
 					opponentMove = st.nextToken();
 					if(root.getSons().size()==0) {
 						mg.generateMoves(root, !isWhite, isWhite);
@@ -118,25 +128,28 @@ public class PlayerDipole {
 						if(son.getMossa().equals(opponentMove)) {
 							root = son;
 							root.setParent(null);
-							//System.gc();
 							break;
 						}
 					}
-					long tendF = System.currentTimeMillis();
-					System.out.println("TEMPO opp: "+ (tendF - timeF)/1000.0 );
 					break;
 					
 				case "YOUR_TURN":
 					
-					long tstart = System.currentTimeMillis();
-					
+					Search.n = root;
+					Search.isWhite = isWhite;
+					Search.maxLevel = maxLevel;
+
 					searches[idSearch].start();
-					int attempts=8;
-					while(attempts>0 && best == null) {
-						Thread.sleep(100);
-						attempts-=1;
+					
+					//searches[idSearch].search();
+					
+					long attempsTMP = attemps;
+					
+					while(attempsTMP>0 && best == null) {
+						Thread.sleep(50);
+						attempsTMP-=1;
 					}
-					if(best == null) Thread.sleep(80);
+					//if(best == null) Thread.sleep(80);
 					
 					searches[idSearch].interrupt();
 					
@@ -144,20 +157,13 @@ public class PlayerDipole {
 						root = searches[idSearch].bestTmp;
 					}else {
 						root = best;
-						best = null;
 					}
+					best = null;
 					root.setParent(null);
 					out.println("MOVE "+root.getMossa());
 					
-					long tendSearch = System.currentTimeMillis();
-					
-					System.out.println("LIVELLO: "+maxLevel);
-					System.out.println("TEMPO SEARCH: "+  (tendSearch - tstart)/1000.0  );
-					
 					idSearch+=1;
 					
-					//System.gc();
-
 					int th = countLeaves(root);
 
 					if (th <= 1631)
@@ -174,11 +180,6 @@ public class PlayerDipole {
 						maxLevel = 9;
 					else
 						maxLevel = 8;
-
-					long tend = System.currentTimeMillis();	
-					System.out.println("TEMPO TOTALE: "+ (tend - tstart)/1000.0);
-
-					
 					
 					break;
 				

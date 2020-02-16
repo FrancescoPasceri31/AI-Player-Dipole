@@ -18,15 +18,15 @@ public class Search extends Thread {
 		this.mg = mg;
 	}
 
-	public Node bestTmp;
+	public Node bestTmp = null;
 	static double bestTmpValue = -Double.MAX_VALUE;
 
+	public static volatile Node n;
+	public static volatile boolean isWhite;
+	public static volatile int maxLevel;
+	
 	@Override
 	public void run() {
-		Node n = PlayerDipole.root;
-		boolean isWhite = PlayerDipole.isWhite;
-		int maxLevel = PlayerDipole.maxLevel;
-
 		double v = maxVal(n, -Double.MAX_VALUE, Double.MAX_VALUE, isWhite, 0, maxLevel).getValue();
 		LinkedList<Node> l = new LinkedList<Node>();
 		for (Node f : n.getSons())
@@ -41,6 +41,23 @@ public class Search extends Thread {
 		}
 	}
 
+	
+	public void search() {
+		double v = maxVal(n, -Double.MAX_VALUE, Double.MAX_VALUE, isWhite, 0, maxLevel).getValue();
+		LinkedList<Node> l = new LinkedList<Node>();
+		for (Node f : n.getSons())
+			if (f.getValue() == v)
+				l.add(f);
+		if (l.size() == 1)
+			PlayerDipole.best = l.getFirst();
+		try {
+			PlayerDipole.best = l.get((new Random()).nextInt(l.size()));
+		} catch (IllegalArgumentException e) {
+			PlayerDipole.best = n.getSons().getFirst();
+		}
+	}
+	
+	
 	public Node maxVal(Node n, double alpha, double beta, boolean isWhite, int level, int maxLevel) {
 		Node ret = n;
 		if (testTerminazione(n, level, maxLevel)) {
