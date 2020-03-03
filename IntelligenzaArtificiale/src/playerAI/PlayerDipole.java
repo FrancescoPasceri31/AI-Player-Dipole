@@ -111,7 +111,9 @@ public class PlayerDipole {
 				case "OPPONENT_MOVE":
 					opponentMove = st.nextToken();
 					if(root.getSons().size()==0) {
-						mg.generateMoves(root, !isWhite, isWhite);
+//						mg.generateMoves(root, !isWhite, isWhite);
+						if(isWhite) mg.generateMoves(root, false, true);
+						else	mg.generateMoves(root, true, false);
 					}
 
 					ll = root.getSons();
@@ -127,11 +129,15 @@ public class PlayerDipole {
 					
 				case "YOUR_TURN":
 					
-					Search.n = root;
-					Search.isWhite = isWhite;
-					Search.maxLevel = maxLevel;
-					best = null;
+					searches[idSearch].n = root;
+					searches[idSearch].isWhite = isWhite;	
+					searches[idSearch].maxLevel = maxLevel;
 					
+//					System.out.println("--------------------------------------------------------------------");
+//					System.out.println( root.getSons() );
+//					System.out.println(Arrays.toString(root.getPosToPawns()));
+//					System.out.print( (isWhite? "WHITE " : "BLACK ") +root.getMossa()+" {"+root.getId()+"} --> ");
+
 					searches[idSearch].start();
 					
 					int attempts = 8;
@@ -149,19 +155,12 @@ public class PlayerDipole {
 						root = best;
 					}
 
-					if(best == null) {
-						System.out.println("BEST: "+searches[idSearch].bestTmp);
-					}else {
-						System.out.println("BEST_REALE: "+best);
-					}
 					
-					System.out.print(root.getId()+" "+ root.getMossa() +" -> [ ");
-					for(Node x : root.getSons()) {
-						System.out.print(x.getId()+"["+x.getMossa()+"] ");
-					}
-					System.out.println("]");
-					System.out.println();
-//					best = null;
+//					System.out.print(root.getMossa()+" {"+root.getId()+"}\n");
+//					System.out.println(Arrays.toString(root.getPosToPawns()));
+//					System.out.println("--------------------------------------------------------------------\n");
+					
+					best = null;
 					root.setParent(null);
 					out.println("MOVE "+root.getMossa());
 					
@@ -169,7 +168,7 @@ public class PlayerDipole {
 					
 					int th = countLeaves(root);
 
-					if (th <= 1631)
+				/*	if (th <= 1631)
 						maxLevel = 14;
 					else if (th > 1631 && th <= 3262)
 						maxLevel = 13;
@@ -177,7 +176,7 @@ public class PlayerDipole {
 						maxLevel = 12;
 					else if (th > 4893 && th <= 6525)
 						maxLevel = 11;
-					else if (th > 6525 && th <= 8700)
+					else*/ if (th > 6525 && th <= 8700)
 						maxLevel = 10;
 					else if (th > 8700 && th <=13000)
 						maxLevel = 9;

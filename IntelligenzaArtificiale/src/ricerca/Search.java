@@ -19,16 +19,17 @@ public class Search extends Thread {
 	}
 
 	public Node bestTmp = null;
+	private Node canBe_bestTmp = null;
 	double bestTmpValue = -Double.MAX_VALUE;
+	double canBe_bestTmpValue = -Double.MAX_VALUE;
 
-	public static volatile  Node n;
-	public static volatile boolean isWhite;
-	public static volatile int maxLevel;
+	public volatile Node n;
+	public volatile boolean isWhite;
+	public volatile int maxLevel;
 	
 	
 	@Override
 	public void run() {
-		bestTmp = null;
 		double v = maxVal(n, -Double.MAX_VALUE, Double.MAX_VALUE, isWhite, 0, maxLevel).getValue();
 		LinkedList<Node> l = new LinkedList<Node>();
 		for (Node f : n.getSons())
@@ -65,13 +66,17 @@ public class Search extends Thread {
 		double th = -Double.MAX_VALUE;
 		for (Node f : n.getSons()) {
 
-			if (n.getParent() == null) {
+/*			if (n.getParent() == null) {
 				if (f.getValue() > bestTmpValue) {
-					bestTmp = f;
-					bestTmpValue = f.getValue();
+					if(bestTmp == null) {
+						bestTmp = f;
+						bestTmpValue = f.getValue();
+					}
+					canBe_bestTmp = f;
+					canBe_bestTmpValue = f.getValue();
 				}
 			}
-			
+*/			
 			if (f.getValue() > th) {
 				if (f.getSons().size() == 0)
 					mg.generateMoves(f, !isWhite, isWhite);
@@ -88,9 +93,17 @@ public class Search extends Thread {
 			v = Math.max(v, min);
 			if (v == min) {
 				ret = f;
+				if(n.getParent() == null) bestTmp = f;
 			}
 			n.setValue(v);
 			
+/*			if (n.getParent() == null) {
+				if (f.getValue() > bestTmpValue) {
+					bestTmp = canBe_bestTmp;
+					bestTmpValue = canBe_bestTmpValue;
+				}
+			}
+*/			
 			if (v >= beta) {
 				return n;
 			}
