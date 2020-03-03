@@ -28,6 +28,7 @@ public class Search extends Thread {
 	
 	@Override
 	public void run() {
+		bestTmp = null;
 		double v = maxVal(n, -Double.MAX_VALUE, Double.MAX_VALUE, isWhite, 0, maxLevel).getValue();
 		LinkedList<Node> l = new LinkedList<Node>();
 		for (Node f : n.getSons())
@@ -64,6 +65,13 @@ public class Search extends Thread {
 		double th = -Double.MAX_VALUE;
 		for (Node f : n.getSons()) {
 
+			if (n.getParent() == null) {
+				if (f.getValue() > bestTmpValue) {
+					bestTmp = f;
+					bestTmpValue = f.getValue();
+				}
+			}
+			
 			if (f.getValue() > th) {
 				if (f.getSons().size() == 0)
 					mg.generateMoves(f, !isWhite, isWhite);
@@ -82,15 +90,6 @@ public class Search extends Thread {
 				ret = f;
 			}
 			n.setValue(v);
-
-
-			if (n.getParent() == null) {
-				if (f.getValue() > bestTmpValue) {
-					bestTmp = f;
-					bestTmpValue = f.getValue();
-				}
-			}
-			
 			
 			if (v >= beta) {
 				return n;

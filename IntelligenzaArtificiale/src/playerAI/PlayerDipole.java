@@ -130,6 +130,7 @@ public class PlayerDipole {
 					Search.n = root;
 					Search.isWhite = isWhite;
 					Search.maxLevel = maxLevel;
+					best = null;
 					
 					searches[idSearch].start();
 					
@@ -148,7 +149,19 @@ public class PlayerDipole {
 						root = best;
 					}
 
-					best = null;
+					if(best == null) {
+						System.out.println("BEST: "+searches[idSearch].bestTmp);
+					}else {
+						System.out.println("BEST_REALE: "+best);
+					}
+					
+					System.out.print(root.getId()+" "+ root.getMossa() +" -> [ ");
+					for(Node x : root.getSons()) {
+						System.out.print(x.getId()+"["+x.getMossa()+"] ");
+					}
+					System.out.println("]");
+					System.out.println();
+//					best = null;
 					root.setParent(null);
 					out.println("MOVE "+root.getMossa());
 					
