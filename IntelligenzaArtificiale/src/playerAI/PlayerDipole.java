@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
@@ -39,7 +40,7 @@ public class PlayerDipole {
 		MovesGenerator mg = null;
 		String opponentMove = null;
 		root = null;
-		maxLevel  = 8;
+		maxLevel  = 4;
 		
 		
 		Search[] searches = null;
@@ -48,13 +49,8 @@ public class PlayerDipole {
 		
 		LinkedList<Node> ll = null;
 		
-		long tstart=0, tend=0;
-		long delay;
-		long attemps = 10;
-		
 		try {
 
-			tstart = System.currentTimeMillis();
 			soc = new Socket(address,port);
 			in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
 			out = new PrintWriter(soc.getOutputStream(), true);
@@ -67,19 +63,12 @@ public class PlayerDipole {
 				switch(st.nextToken()) {
 				
 				case "WELCOME":
-					tend = System.currentTimeMillis();
-					System.out.println(ret);
 					isWhite = "White".equalsIgnoreCase(st.nextToken());
 					break;
 				
 				case "MESSAGE":
 					if(st.nextToken().equals("All")) {
 					
-						delay = tend - tstart;
-						System.out.println("DELAY= "+ (delay)/1000.0);
-						attemps = (900 - delay)/50;
-						System.out.println("ATTEMPS="+attemps);
-						
 						byte[] posToPawn = new byte[32];
 						for(int i=0; i<32; i++) {
 							if(i==1) { // white start position
@@ -116,6 +105,7 @@ public class PlayerDipole {
 							searches[i].init(mg);
 						}
 					}
+					ret = "";
 					break;
 				
 				case "OPPONENT_MOVE":
@@ -123,6 +113,7 @@ public class PlayerDipole {
 					if(root.getSons().size()==0) {
 						mg.generateMoves(root, !isWhite, isWhite);
 					}
+
 					ll = root.getSons();
 					for(Node son : ll) {
 						if(son.getMossa().equals(opponentMove)) {
@@ -131,6 +122,7 @@ public class PlayerDipole {
 							break;
 						}
 					}
+					ret="";
 					break;
 					
 				case "YOUR_TURN":
@@ -138,26 +130,24 @@ public class PlayerDipole {
 					Search.n = root;
 					Search.isWhite = isWhite;
 					Search.maxLevel = maxLevel;
-
+					
 					searches[idSearch].start();
 					
-					//searches[idSearch].search();
-					
-					long attempsTMP = attemps;
-					
-					while(attempsTMP>0 && best == null) {
-						Thread.sleep(50);
-						attempsTMP-=1;
+					int attempts = 8;
+					while(attempts>0 && best == null) {
+						Thread.sleep(100);
+						attempts-=1;
 					}
 					//if(best == null) Thread.sleep(80);
 					
 					searches[idSearch].interrupt();
-					
+
 					if(best == null) {
 						root = searches[idSearch].bestTmp;
 					}else {
 						root = best;
 					}
+
 					best = null;
 					root.setParent(null);
 					out.println("MOVE "+root.getMossa());
@@ -181,6 +171,7 @@ public class PlayerDipole {
 					else
 						maxLevel = 8;
 					
+					ret="";
 					break;
 				
 				case "VALID_MOVE":

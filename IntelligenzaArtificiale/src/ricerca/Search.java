@@ -19,11 +19,12 @@ public class Search extends Thread {
 	}
 
 	public Node bestTmp = null;
-	static double bestTmpValue = -Double.MAX_VALUE;
+	double bestTmpValue = -Double.MAX_VALUE;
 
-	public static volatile Node n;
+	public static volatile  Node n;
 	public static volatile boolean isWhite;
 	public static volatile int maxLevel;
+	
 	
 	@Override
 	public void run() {
@@ -41,22 +42,6 @@ public class Search extends Thread {
 		}
 	}
 
-	
-	public void search() {
-		double v = maxVal(n, -Double.MAX_VALUE, Double.MAX_VALUE, isWhite, 0, maxLevel).getValue();
-		LinkedList<Node> l = new LinkedList<Node>();
-		for (Node f : n.getSons())
-			if (f.getValue() == v)
-				l.add(f);
-		if (l.size() == 1)
-			PlayerDipole.best = l.getFirst();
-		try {
-			PlayerDipole.best = l.get((new Random()).nextInt(l.size()));
-		} catch (IllegalArgumentException e) {
-			PlayerDipole.best = n.getSons().getFirst();
-		}
-	}
-	
 	
 	public Node maxVal(Node n, double alpha, double beta, boolean isWhite, int level, int maxLevel) {
 		Node ret = n;
@@ -79,13 +64,6 @@ public class Search extends Thread {
 		double th = -Double.MAX_VALUE;
 		for (Node f : n.getSons()) {
 
-			if (n.getParent() == null) {
-				if (f.getValue() > bestTmpValue) {
-					bestTmp = f;
-					bestTmpValue = f.getValue();
-				}
-			}
-
 			if (f.getValue() > th) {
 				if (f.getSons().size() == 0)
 					mg.generateMoves(f, !isWhite, isWhite);
@@ -104,6 +82,16 @@ public class Search extends Thread {
 				ret = f;
 			}
 			n.setValue(v);
+
+
+			if (n.getParent() == null) {
+				if (f.getValue() > bestTmpValue) {
+					bestTmp = f;
+					bestTmpValue = f.getValue();
+				}
+			}
+			
+			
 			if (v >= beta) {
 				return n;
 			}
@@ -116,13 +104,13 @@ public class Search extends Thread {
 		Node ret = n;
 		if (testTerminazione(n, level, maxLevel)) {
 			if (isWhite && n.getBc() == 0)
-				n.setValue(VICTORY + level);
+				n.setValue(VICTORY - level);
 			else if (isWhite && n.getWc() == 0)
-				n.setValue(LOSE - level);
+				n.setValue(LOSE + level);
 			else if (!isWhite && n.getWc() == 0)
-				n.setValue(VICTORY + level);
+				n.setValue(VICTORY - level);
 			else if (!isWhite && n.getBc() == 0)
-				n.setValue(LOSE - level);
+				n.setValue(LOSE + level);
 			return n;
 		}
 		if (n.getSons().size() == 0)

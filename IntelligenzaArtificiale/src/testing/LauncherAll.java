@@ -11,8 +11,8 @@ import java.io.InputStreamReader;
 
 public class LauncherAll {
 
-	private static int whiteWin = 0, blackWin = 0, invalidMoveError = 0, runWins = 0, threadWins = 0;
-	private static int numPartite = 1000;
+	private static int whiteWin = 0, blackWin = 0, invalidMoveError = 0, runWins = 0, threadWins = 0, timeout=0;
+	private static int numPartite = 100;
 	private static boolean gui = false;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
@@ -20,9 +20,9 @@ public class LauncherAll {
 		// numPartite = Integer.parseInt(args[0]);
 		String[][] players = {
 				new String[] { "sh", "-c",
-						"java -jar /home/ciccio/Scrivania/test11022020/Player_RUN.jar 127.0.0.1 8901" },
+						"java -jar /home/ciccio/Scrivania/PlayerDipole_vFINALE_4.jar 127.0.0.1 8901" },
 				new String[] { "sh", "-c",
-						"java -jar /home/ciccio/Scrivania/test11022020/Player_THREAD.jar 127.0.0.1 8901" } };
+						"java -jar /home/ciccio/Scrivania/PlayerDipole_vFINALE_4.jar 127.0.0.1 8901" } };
 
 		for (int i = 0; i < numPartite; i++) {
 
@@ -50,7 +50,7 @@ public class LauncherAll {
 
 			String line = null;
 			while ((line = br.readLine()) != null) {
-				if (line.equals("White wins - Black loses") || line.equals("Black loses - White wins")) {
+				if (line.equalsIgnoreCase("White wins - Black loses") || line.equalsIgnoreCase("Black loses - White wins")) {
 					whiteWin += 1;
 					if (i < numPartite / 2) {
 						threadWins += 1;
@@ -58,7 +58,7 @@ public class LauncherAll {
 						runWins += 1;
 					}
 					break;
-				} else if (line.equals("White loses - Black wins") || line.equals("Black wins - White loses")) {
+				} else if (line.equalsIgnoreCase("White loses - Black wins") || line.equalsIgnoreCase("Black wins - White loses")) {
 					blackWin += 1;
 					if (i < numPartite / 2) {
 						runWins += 1;
@@ -66,9 +66,13 @@ public class LauncherAll {
 						threadWins += 1;
 					}
 					break;
-				} else if (line.equals("INVALID MOVE")) {
+				} else if (line.equalsIgnoreCase("INVALID MOVE")) {
 					invalidMoveError += 1;
-					System.out.println("REPEAT");
+					System.out.println("REPEAT <- invalid move");
+					break;
+				} else if(line.equalsIgnoreCase("TIMEOUT")) {
+					timeout += 1;
+					System.out.println("REPEAT <- timeout");
 					break;
 				}
 			}
@@ -87,7 +91,8 @@ public class LauncherAll {
 		// 1000 : 100 = someting : x -> x = 100*something/1000
 		System.out.println("RUN_rate_win = " + (100*runWins)/1000.0 );
 		System.out.println("THREAD_rate_win = " + (100*threadWins)/1000.0);
-		System.out.println("ERROR_rate = " + (100*invalidMoveError)/1000.0);
+		System.out.println("INVALID-MOVE_rate = " + (100*invalidMoveError)/1000.0);
+		System.out.println("TIMEOUT_rate = " + (100*timeout)/1000.0);
 	}
 
 }
