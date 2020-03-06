@@ -20,9 +20,9 @@ public class LauncherAll {
 		// numPartite = Integer.parseInt(args[0]);
 		String[][] players = {
 				new String[] { "sh", "-c",
-						"java -jar /home/ciccio/Scrivania/PlayerDipole_vFINALE_4.jar 127.0.0.1 8901" },
+						"java -jar /home/ciccio/Scrivania/IA/Jars/RunP3.jar 127.0.0.1 8901" },
 				new String[] { "sh", "-c",
-						"java -jar /home/ciccio/Scrivania/PlayerDipole_vFINALE_4.jar 127.0.0.1 8901" } };
+						"java -jar /home/ciccio/Scrivania/IA/Jars/RunP3.jar 127.0.0.1 8901" } };
 
 		for (int i = 0; i < numPartite; i++) {
 
@@ -48,6 +48,8 @@ public class LauncherAll {
 				p2 = Runtime.getRuntime().exec(players[0]);
 			}
 
+			boolean toBreak = false;
+			
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				if (line.equalsIgnoreCase("White wins - Black loses") || line.equalsIgnoreCase("Black loses - White wins")) {
@@ -65,15 +67,21 @@ public class LauncherAll {
 					} else {
 						threadWins += 1;
 					}
-					break;
 				} else if (line.equalsIgnoreCase("INVALID MOVE")) {
 					invalidMoveError += 1;
+					System.out.println(line);
 					System.out.println("REPEAT <- invalid move");
-					break;
+					toBreak = true;
 				} else if(line.equalsIgnoreCase("TIMEOUT")) {
 					timeout += 1;
+					System.out.println(line);
 					System.out.println("REPEAT <- timeout");
-					break;
+					toBreak = true;
+				} else {
+					//System.out.println(line);
+					if(toBreak) {
+						break;
+					}
 				}
 			}
 

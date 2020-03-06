@@ -20,9 +20,9 @@ public class PlayerDipole {
 
 	public static volatile Node best;
 	
-	public static volatile Node root; 
-	public static volatile boolean isWhite; 
-	public static volatile int maxLevel;
+	public static Node root; 
+	public static boolean isWhite; 
+	public static int maxLevel;
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
@@ -111,7 +111,7 @@ public class PlayerDipole {
 				case "OPPONENT_MOVE":
 					opponentMove = st.nextToken();
 					if(root.getSons().size()==0) {
-//						mg.generateMoves(root, !isWhite, isWhite);
+//						mg.generateMoves(root, !isWhite, isWhite);	// modifica di fix ma esegue la stessa cosa delle due operazioni sottostanti
 						if(isWhite) mg.generateMoves(root, false, true);
 						else	mg.generateMoves(root, true, false);
 					}
@@ -132,12 +132,9 @@ public class PlayerDipole {
 					searches[idSearch].n = root;
 					searches[idSearch].isWhite = isWhite;	
 					searches[idSearch].maxLevel = maxLevel;
-					
-//					System.out.println("--------------------------------------------------------------------");
-//					System.out.println( root.getSons() );
-//					System.out.println(Arrays.toString(root.getPosToPawns()));
-//					System.out.print( (isWhite? "WHITE " : "BLACK ") +root.getMossa()+" {"+root.getId()+"} --> ");
 
+					//System.out.println((isWhite? "WHITE" : "BLACK")+" Level: "+maxLevel);
+					
 					searches[idSearch].start();
 					
 					int attempts = 8;
@@ -155,11 +152,6 @@ public class PlayerDipole {
 						root = best;
 					}
 
-					
-//					System.out.print(root.getMossa()+" {"+root.getId()+"}\n");
-//					System.out.println(Arrays.toString(root.getPosToPawns()));
-//					System.out.println("--------------------------------------------------------------------\n");
-					
 					best = null;
 					root.setParent(null);
 					out.println("MOVE "+root.getMossa());
@@ -168,15 +160,16 @@ public class PlayerDipole {
 					
 					int th = countLeaves(root);
 
-				/*	if (th <= 1631)
+					// modifica di fix 1/2, la seconda in Search
+					/*if (th <= 1631)
 						maxLevel = 14;
-					else if (th > 1631 && th <= 3262)
+					else*/ if (th > 1631 && th <= 3262)
 						maxLevel = 13;
 					else if (th > 3262 && th <= 4893)
 						maxLevel = 12;
 					else if (th > 4893 && th <= 6525)
 						maxLevel = 11;
-					else*/ if (th > 6525 && th <= 8700)
+					else if (th > 6525 && th <= 8700)
 						maxLevel = 10;
 					else if (th > 8700 && th <=13000)
 						maxLevel = 9;

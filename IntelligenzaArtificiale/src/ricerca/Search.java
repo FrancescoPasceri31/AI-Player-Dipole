@@ -19,13 +19,11 @@ public class Search extends Thread {
 	}
 
 	public Node bestTmp = null;
-	private Node canBe_bestTmp = null;
 	double bestTmpValue = -Double.MAX_VALUE;
-	double canBe_bestTmpValue = -Double.MAX_VALUE;
 
-	public volatile Node n;
-	public volatile boolean isWhite;
-	public volatile int maxLevel;
+	public Node n;
+	public boolean isWhite;
+	public int maxLevel;
 	
 	
 	@Override
@@ -65,18 +63,7 @@ public class Search extends Thread {
 
 		double th = -Double.MAX_VALUE;
 		for (Node f : n.getSons()) {
-
-/*			if (n.getParent() == null) {
-				if (f.getValue() > bestTmpValue) {
-					if(bestTmp == null) {
-						bestTmp = f;
-						bestTmpValue = f.getValue();
-					}
-					canBe_bestTmp = f;
-					canBe_bestTmpValue = f.getValue();
-				}
-			}
-*/			
+		
 			if (f.getValue() > th) {
 				if (f.getSons().size() == 0)
 					mg.generateMoves(f, !isWhite, isWhite);
@@ -93,17 +80,10 @@ public class Search extends Thread {
 			v = Math.max(v, min);
 			if (v == min) {
 				ret = f;
-				if(n.getParent() == null) bestTmp = f;
+				if(n.getParent() == null) bestTmp = f;	// fix 2/2, la prima in PlayerDipole
 			}
 			n.setValue(v);
-			
-/*			if (n.getParent() == null) {
-				if (f.getValue() > bestTmpValue) {
-					bestTmp = canBe_bestTmp;
-					bestTmpValue = canBe_bestTmpValue;
-				}
-			}
-*/			
+					
 			if (v >= beta) {
 				return n;
 			}
